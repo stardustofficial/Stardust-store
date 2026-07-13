@@ -259,7 +259,7 @@
                     <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
                     
                     <div class="form-group">
-                        <label class="form-label">App Icon (Select from Device Gallery)</label>
+                        <label class="form-label">App Icon (Device Gallery)</label>
                         <input type="file" id="form-icon-file" class="form-input" accept="image/*" required onchange="previewImagesField(this, 'wrapper-icon-preview', 'icon')">
                         <div class="preview-box-wrapper" id="wrapper-icon-preview"></div>
                     </div>
@@ -270,7 +270,7 @@
                     <div class="form-group"><label class="form-label">Long Comprehensive Technical Description</label><textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea></div>
                     
                     <div class="form-group">
-                        <label class="form-label">App UI Screenshots (Select Multiple Images together)</label>
+                        <label class="form-label">App UI Screenshots (Select multiple images together)</label>
                         <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required multiple onchange="previewImagesField(this, 'wrapper-screens-preview', 'screenshot')">
                         <div class="preview-box-wrapper" id="wrapper-screens-preview"></div>
                     </div>
@@ -379,6 +379,9 @@
         const database = firebase.database();
         const storage = firebase.storage();
         
+        // Verified ImgBB Public Upload Engine Token Key
+        const IMGBB_API_KEY = "6bbf8e41bf16259f6b9868c67926b485";
+
         let allApps = [];
         let navigationHistory = ['home'];
         let activeAppId = null;
@@ -466,38 +469,30 @@
         function uploadProfilePicture(input) {
             if(!input.files || !input.files[0]) return;
             const file = input.files[0];
-            showSpinner(true, "Synchronizing user display assets...");
+            showSpinner(true, "Synchronizing user profile picture via ImgBB...");
             
-            const storageRef = storage.ref('profiles/' + Date.now() + '_' + file.name);
-            storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
-                document.getElementById('user-pfp').src = url;
-                localStorage.setItem('stardust_profile_pfp', url);
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.success) {
+                    const url = resData.data.url;
+                    document.getElementById('user-pfp').src = url;
+                    localStorage.setItem('stardust_profile_pfp', url);
+                } else {
+                    throw new Error("ImgBB configuration rejected payload packet.");
+                }
                 showSpinner(false);
-            }).catch(err => { 
+            })
+            .catch(err => { 
                 alert("Profile image compression channel failed: " + err.message); 
                 showSpinner(false); 
             });
-        }
-
-        function setFormRating(stars) {
-            selectedRatingValue = stars;
-            const elements = document.querySelectorAll('#stars-selector-wrap .star-clickable');
-            elements.forEach(el => {
-                const val = parseInt(el.getAttribute('data-star'));
-                if(val <= stars) el.classList.add('active');
-                else el.classList.remove('active');
-            });
-        }
-
-        function openImageViewer(src) {
-            const viewer = document.getElementById('media-viewer');
-            const img = document.getElementById('media-viewer-img');
-            img.src = src;
-            viewer.classList.add('open');
-        }
-
-        function closeImageViewer() {
-            document.getElementById('media-viewer').classList.remove('open');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -546,28 +541,28 @@
             });
         }
 
-        function uploadToCatbox(file, statusText) {
+        // New Native ImgBB Core API Multi-Stream Upload Function
+        function uploadToImgBB(file, statusText) {
             return new Promise((resolve, reject) => {
                 if(statusText) document.getElementById('loading-text').innerText = statusText;
                 
                 const formData = new FormData();
-                formData.append('reqtype', 'fileupload');
-                formData.append('fileToUpload', file);
+                formData.append('image', file);
 
-                const proxyUrl = "https://api.allorigins.win/raw?url=";
-                const catboxUrl = "https://catbox.moe/user/api.php";
-
-                fetch(proxyUrl + encodeURIComponent(catboxUrl), {
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => {
-                    if (response.ok) return response.text();
-                    throw new Error('Catbox API network connection aborted.');
+                    if (response.ok) return response.json();
+                    throw new Error('ImgBB transmission channel handshake aborted.');
                 })
-                .then(url => {
-                    const directUrl = url.trim().includes("https://") ? url.trim() : "https://files.catbox.moe/" + url.trim();
-                    resolve(directUrl);
+                .then(resData => {
+                    if(resData.success && resData.data && resData.data.url) {
+                        resolve(resData.data.url);
+                    } else {
+                        reject(new Error("ImgBB engine parse error structure data."));
+                    }
                 })
                 .catch(error => reject(error));
             });
@@ -575,24 +570,23 @@
 
         function handleAppSubmit(e) {
             e.preventDefault();
-            showSpinner(true, "Initializing application stream pipeline...");
+            showSpinner(true, "Initializing ImgBB production pipeline...");
 
             const iconFile = document.getElementById('form-icon-file').files[0];
             const screenshotFiles = document.getElementById('form-screenshot-file').files;
-            // Fetches GitHub link value directly from text box input
             const apkDirectUrl = document.getElementById('form-apk-link').value.trim();
 
             let iconUploadedUrl = "";
             let screenshotUrlsArray = [];
 
-            uploadToCatbox(iconFile, "Uploading Application Icon artwork...")
+            uploadToImgBB(iconFile, "Uploading Application Icon artwork to ImgBB Engine...")
             .then(iconUrl => {
                 iconUploadedUrl = iconUrl;
                 
                 let uploadChain = Promise.resolve();
                 Array.from(screenshotFiles).forEach((file, index) => {
                     uploadChain = uploadChain.then(() => {
-                        return uploadToCatbox(file, `Uploading Interface Graphic Capture (${index + 1}/${screenshotFiles.length})...`)
+                        return uploadToImgBB(file, `Uploading Design Interface Capture (${index + 1}/${screenshotFiles.length}) to ImgBB...`)
                         .then(url => {
                             screenshotUrlsArray.push(url);
                         });
@@ -611,7 +605,7 @@
                     description: document.getElementById('form-long-desc').value,
                     icon: iconUploadedUrl,
                     screenshot: screenshotUrlsArray.join(','), 
-                    downloadUrl: apkDirectUrl, // GitHub direct link saved natively to Firebase node
+                    downloadUrl: apkDirectUrl, 
                     downloadCount: 0
                 };
                 
@@ -622,7 +616,7 @@
                 document.getElementById('upload-form').reset();
                 document.getElementById('wrapper-icon-preview').innerHTML = '';
                 document.getElementById('wrapper-screens-preview').innerHTML = '';
-                alert("Success Confirmation: Software infrastructure successfully pushed live.");
+                alert("Success Confirmation: Software infrastructure successfully pushed live via ImgBB.");
                 switchPage('home', 'Home');
             })
             .catch(err => {
@@ -776,6 +770,27 @@
             const filtered = allApps.filter(a => a.name.toLowerCase().includes(q));
             renderApps(filtered, 'search-results');
         });
+
+        function setFormRating(stars) {
+            selectedRatingValue = stars;
+            const elements = document.querySelectorAll('#stars-selector-wrap .star-clickable');
+            elements.forEach(el => {
+                const val = parseInt(el.getAttribute('data-star'));
+                if(val <= stars) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+        }
+
+        function openImageViewer(src) {
+            const viewer = document.getElementById('media-viewer');
+            const img = document.getElementById('media-viewer-img');
+            img.src = src;
+            viewer.classList.add('open');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('media-viewer').classList.remove('open');
+        }
     </script>
 </body>
 </html>
