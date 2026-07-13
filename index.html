@@ -87,7 +87,6 @@
         }
         .search-icon-inside { position: absolute; left: 15px; top: 15px; width: 18px; height: 18px; fill: var(--text-gray); }
 
-        /* Modernized Profile UI */
         .profile-wrapper { position: relative; }
         .profile-card {
             background-color: var(--card-bg); padding: 30px 20px;
@@ -119,7 +118,6 @@
         .history-badge { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 20px; font-size: 12px; color: var(--text-light); }
         .review-log-card { background: #1f2937; border-left: 4px solid var(--primary); padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; color: var(--text-gray); }
 
-        /* Form Inputs */
         .form-group { margin-bottom: 18px; text-align: left; }
         .form-label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; }
         .form-input, textarea {
@@ -128,7 +126,10 @@
         }
         .form-input:focus, textarea:focus { border-color: var(--primary); }
 
-        /* Detail Structural Changes */
+        .preview-box-wrapper { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .img-preview-bubble { width: 65px; height: 65px; border-radius: 8px; border: 1px solid var(--border-color); object-fit: cover; background: #0b0f19; }
+        .img-preview-bubble.screenshot-type { width: 70px; height: 120px; }
+
         .detail-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; text-align: left; }
         .detail-icon { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
         .screenshots-scroll { display: flex; gap: 12px; overflow-x: auto; margin: 20px 0; padding-bottom: 10px; }
@@ -137,7 +138,6 @@
         .detail-section { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 20px; text-align: left; }
         .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px; }
 
-        /* Premium Highlighted Review Architecture */
         .review-card-modern {
             background: linear-gradient(145deg, #161d2a, #111827);
             border: 1px solid var(--border-color);
@@ -153,13 +153,11 @@
         .review-author { font-size: 13px; font-weight: 600; color: #60a5fa; }
         .review-card-modern.developer-highlight .review-author { color: #3b82f6; display: flex; align-items: center; gap: 4px; }
 
-        /* Star Rating Controls */
         .rating-stars-input { display: flex; gap: 5px; margin-bottom: 12px; }
         .star-clickable { font-size: 24px; color: var(--border-color); cursor: pointer; transition: color 0.1s; }
         .star-clickable.active { color: var(--gold); }
         .static-stars { color: var(--gold); font-size: 13px; }
 
-        /* Full Screen Media Viewer Modal */
         .media-modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
             background: var(--overlay); z-index: 9999; display: none;
@@ -170,7 +168,6 @@
         .media-modal.open .media-modal-content { transform: scale(1); }
         .media-modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; fill: white; cursor: pointer; }
 
-        /* Bottom Tab Bar Navigation */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--card-bg); height: 65px;
@@ -260,22 +257,29 @@
                 <h3 style="margin-bottom: 20px; font-size: 18px; text-align: left;">Deploy Digital Application Package</h3>
                 <form id="upload-form" onsubmit="handleAppSubmit(event)">
                     <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
+                    
                     <div class="form-group">
                         <label class="form-label">App Icon (Select from Device Gallery)</label>
-                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required>
+                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required onchange="previewImagesField(this, 'wrapper-icon-preview', 'icon')">
+                        <div class="preview-box-wrapper" id="wrapper-icon-preview"></div>
                     </div>
+                    
                     <div class="form-group"><label class="form-label">Version String</label><input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4"></div>
                     <div class="form-group"><label class="form-label">Size Metric (MB)</label><input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB"></div>
                     <div class="form-group"><label class="form-label">Short Description</label><input type="text" id="form-short-desc" class="form-input" required placeholder="Brief introductory hook visible on lists..."></div>
                     <div class="form-group"><label class="form-label">Long Comprehensive Technical Description</label><textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea></div>
+                    
                     <div class="form-group">
-                        <label class="form-label">App UI Screenshot Image (Select from Device Gallery)</label>
-                        <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required>
+                        <label class="form-label">App UI Screenshots (Select Multiple Images together)</label>
+                        <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required multiple onchange="previewImagesField(this, 'wrapper-screens-preview', 'screenshot')">
+                        <div class="preview-box-wrapper" id="wrapper-screens-preview"></div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">APK Binary Package File (Select from local storage file manager)</label>
-                        <input type="file" id="form-apk-file" class="form-input" accept=".apk" required>
+                        <label class="form-label">GitHub Release Direct APK Link (URL)</label>
+                        <input type="url" id="form-apk-link" class="form-input" required placeholder="e.g., https://github.com/user/repo/releases/download/v1.0/app.apk">
                     </div>
+                    
                     <button type="submit" class="download-btn" style="margin-top: 20px;">Deploy to Production Architecture</button>
                 </form>
             </div>
@@ -420,14 +424,32 @@
 
         function confirmAndOpenUpload() {
             if(confirm("Are you sure you want to add your app?")) {
+                document.getElementById('wrapper-icon-preview').innerHTML = '';
+                document.getElementById('wrapper-screens-preview').innerHTML = '';
                 switchPage('upload', 'Deploy Application Package');
+            }
+        }
+
+        function previewImagesField(input, targetWrapperId, variant) {
+            const wrapper = document.getElementById(targetWrapperId);
+            wrapper.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = variant === 'icon' ? 'img-preview-bubble' : 'img-preview-bubble screenshot-type';
+                        wrapper.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                });
             }
         }
 
         function editProfileDetails() {
             const currentName = document.getElementById('user-name-display').innerText;
             const currentHandle = document.getElementById('user-handle-display').innerText;
-            
             const newName = prompt("Modify display designation title:", currentName);
             const newHandle = prompt("Modify user network identifier handle:", currentHandle);
             
@@ -524,53 +546,62 @@
             });
         }
 
+        function uploadToCatbox(file, statusText) {
+            return new Promise((resolve, reject) => {
+                if(statusText) document.getElementById('loading-text').innerText = statusText;
+                
+                const formData = new FormData();
+                formData.append('reqtype', 'fileupload');
+                formData.append('fileToUpload', file);
+
+                const proxyUrl = "https://api.allorigins.win/raw?url=";
+                const catboxUrl = "https://catbox.moe/user/api.php";
+
+                fetch(proxyUrl + encodeURIComponent(catboxUrl), {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) return response.text();
+                    throw new Error('Catbox API network connection aborted.');
+                })
+                .then(url => {
+                    const directUrl = url.trim().includes("https://") ? url.trim() : "https://files.catbox.moe/" + url.trim();
+                    resolve(directUrl);
+                })
+                .catch(error => reject(error));
+            });
+        }
+
         function handleAppSubmit(e) {
             e.preventDefault();
-            showSpinner(true, "Opening automatic Catbox network links...");
+            showSpinner(true, "Initializing application stream pipeline...");
 
             const iconFile = document.getElementById('form-icon-file').files[0];
-            const screenshotFile = document.getElementById('form-screenshot-file').files[0];
-            const apkFile = document.getElementById('form-apk-file').files[0];
+            const screenshotFiles = document.getElementById('form-screenshot-file').files;
+            // Fetches GitHub link value directly from text box input
+            const apkDirectUrl = document.getElementById('form-apk-link').value.trim();
 
-            function uploadToCatbox(file, statusText) {
-                return new Promise((resolve, reject) => {
-                    document.getElementById('loading-text').innerText = statusText;
-                    
-                    const formData = new FormData();
-                    formData.append('reqtype', 'fileupload');
-                    formData.append('fileToUpload', file);
+            let iconUploadedUrl = "";
+            let screenshotUrlsArray = [];
 
-                    const proxyUrl = "https://api.allorigins.win/raw?url=";
-                    const catboxUrl = "https://catbox.moe/user/api.php";
-
-                    fetch(proxyUrl + encodeURIComponent(catboxUrl), {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) return response.text();
-                        throw new Error('Catbox infrastructure rejected network pipe transmission parameters.');
-                    })
-                    .then(url => {
-                        const directUrl = url.trim().includes("https://") ? url.trim() : "https://files.catbox.moe/" + url.trim();
-                        resolve(directUrl);
-                    })
-                    .catch(error => reject(error));
-                });
-            }
-
-            uploadToCatbox(iconFile, "Uploading Application Graphic Icon automatically...")
+            uploadToCatbox(iconFile, "Uploading Application Icon artwork...")
             .then(iconUrl => {
-                return uploadToCatbox(screenshotFile, "Uploading Interface Screenshot Capture layout assets...")
-                .then(screenUrl => {
-                    return uploadToCatbox(apkFile, "Uploading Native Binary Package Object APK (Maintain connectivity)...")
-                    .then(apkUrl => {
-                        return { iconUrl, screenUrl, apkUrl };
+                iconUploadedUrl = iconUrl;
+                
+                let uploadChain = Promise.resolve();
+                Array.from(screenshotFiles).forEach((file, index) => {
+                    uploadChain = uploadChain.then(() => {
+                        return uploadToCatbox(file, `Uploading Interface Graphic Capture (${index + 1}/${screenshotFiles.length})...`)
+                        .then(url => {
+                            screenshotUrlsArray.push(url);
+                        });
                     });
                 });
+                return uploadChain;
             })
-            .then(urls => {
-                document.getElementById('loading-text').innerText = "Broadcasting metrics package data down to live infrastructure nodes...";
+            .then(() => {
+                document.getElementById('loading-text').innerText = "Syncing application variables database configuration node...";
                 
                 const finalPayload = {
                     name: document.getElementById('form-name').value,
@@ -578,9 +609,9 @@
                     size: document.getElementById('form-size').value,
                     shortDescription: document.getElementById('form-short-desc').value,
                     description: document.getElementById('form-long-desc').value,
-                    icon: urls.iconUrl,
-                    screenshot: urls.screenUrl,
-                    downloadUrl: urls.apkUrl,
+                    icon: iconUploadedUrl,
+                    screenshot: screenshotUrlsArray.join(','), 
+                    downloadUrl: apkDirectUrl, // GitHub direct link saved natively to Firebase node
                     downloadCount: 0
                 };
                 
@@ -589,6 +620,8 @@
             .then(() => {
                 showSpinner(false);
                 document.getElementById('upload-form').reset();
+                document.getElementById('wrapper-icon-preview').innerHTML = '';
+                document.getElementById('wrapper-screens-preview').innerHTML = '';
                 alert("Success Confirmation: Software infrastructure successfully pushed live.");
                 switchPage('home', 'Home');
             })
@@ -611,7 +644,22 @@
             document.getElementById('det-long-desc').innerText = app.description;
             
             const screenContainer = document.getElementById('det-screenshots');
-            screenContainer.innerHTML = app.screenshot ? `<img src="${app.screenshot}" class="screenshot-img" onclick="openImageViewer('${app.screenshot}')">` : '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+            screenContainer.innerHTML = '';
+            
+            if(app.screenshot) {
+                const images = app.screenshot.split(',');
+                images.forEach(imgUrl => {
+                    if(imgUrl.trim()) {
+                        const imgElem = document.createElement('img');
+                        imgElem.src = imgUrl.trim();
+                        imgElem.className = 'screenshot-img';
+                        imgElem.onclick = () => openImageViewer(imgUrl.trim());
+                        screenContainer.appendChild(imgElem);
+                    }
+                });
+            } else {
+                screenContainer.innerHTML = '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+            }
             
             document.getElementById('det-download-btn').onclick = () => executeBinaryDownload(app);
 
