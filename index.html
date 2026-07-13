@@ -15,6 +15,7 @@
             --text-gray: #9ca3af;
             --border-color: #374151;
             --overlay: rgba(0, 0, 0, 0.85);
+            --accent-success: #10b981;
         }
         
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,7 +46,6 @@
         .page { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .page.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* App Cards Grid Layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -77,7 +77,6 @@
 
         .full-page-view { background-color: var(--dark-bg); min-height: 90vh; }
         
-        /* Search Interface */
         .search-container { position: relative; width: 100%; margin-bottom: 25px; }
         .search-bar {
             width: 100%; padding: 14px 14px 14px 45px; border-radius: 10px;
@@ -86,7 +85,6 @@
         }
         .search-icon-inside { position: absolute; left: 15px; top: 15px; width: 18px; height: 18px; fill: var(--text-gray); }
 
-        /* Profile Panel Styles */
         .profile-wrapper { position: relative; }
         .profile-card {
             background-color: var(--card-bg); padding: 30px 20px;
@@ -113,16 +111,34 @@
         }
         .upload-trigger-btn svg { width: 20px; height: 20px; fill: var(--text-light); }
 
-        /* Form Inputs */
-        .form-group { margin-bottom: 18px; text-align: left; }
-        .form-label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; }
+        /* Professional Form Inputs UI Upgrade */
+        .form-group { margin-bottom: 22px; text-align: left; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-light); margin-bottom: 8px; }
         .form-input, textarea {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border-color);
             background-color: var(--input-bg); color: white; font-size: 14px; outline: none; box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .form-input:focus, textarea:focus { border-color: var(--primary); }
+        .form-input:focus, textarea:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
+        .file-upload-wrapper {
+            position: relative; overflow: hidden; display: inline-block; width: 100%;
+        }
 
-        /* App Details Layout */
+        /* Preview Display System */
+        .preview-box {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+        }
+        .img-preview-item {
+            width: 75px; height: 75px; border-radius: 8px; object-fit: cover;
+            border: 2px solid var(--border-color); background-color: var(--input-bg);
+        }
+        .img-preview-item.screenshot-preview {
+            width: 100px; height: 160px;
+        }
+
         .detail-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; text-align: left; }
         .detail-icon { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
         .screenshots-scroll { display: flex; gap: 12px; overflow-x: auto; margin: 20px 0; padding-bottom: 10px; }
@@ -130,7 +146,6 @@
         .detail-section { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 20px; text-align: left; }
         .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px; }
 
-        /* Bottom Tab Bar Navigation */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--card-bg); height: 65px;
@@ -216,27 +231,54 @@
         </div>
 
         <div id="page-upload" class="page full-page-view">
-            <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 14px; border: 1px solid var(--border-color);">
-                <h3 style="margin-bottom: 20px; font-size: 18px; text-align: left;">Deploy Digital Application Package</h3>
+            <div style="max-width: 650px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <h3 style="margin-bottom: 25px; font-size: 22px; font-weight:700; text-align: left; color:var(--text-light); border-bottom:2px dashed var(--border-color); padding-bottom:12px;">Deploy Digital Application Package</h3>
                 <form id="upload-form" onsubmit="handleAppSubmit(event)">
-                    <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
+                    
                     <div class="form-group">
-                        <label class="form-label">App Icon (Select from Device Gallery)</label>
-                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required>
+                        <label class="form-label">App/Game Name</label>
+                        <input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire">
                     </div>
-                    <div class="form-group"><label class="form-label">Version String</label><input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4"></div>
-                    <div class="form-group"><label class="form-label">Size Metric (MB)</label><input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB"></div>
-                    <div class="form-group"><label class="form-label">Short Description</label><input type="text" id="form-short-desc" class="form-input" required placeholder="Brief introductory hook visible on lists..."></div>
-                    <div class="form-group"><label class="form-label">Long Comprehensive Technical Description</label><textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea></div>
+                    
                     <div class="form-group">
-                        <label class="form-label">App UI Screenshot Image (Select from Device Gallery)</label>
-                        <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required>
+                        <label class="form-label">App Icon Graphic</label>
+                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required onchange="previewIcon(this)">
+                        <div class="preview-box" id="icon-preview-container"></div>
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">APK Binary Package File (Select from local storage file manager)</label>
-                        <input type="file" id="form-apk-file" class="form-input" accept=".apk" required>
+                        <label class="form-label">Version String</label>
+                        <input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4">
                     </div>
-                    <button type="submit" class="download-btn" style="margin-top: 20px;">Deploy to Production Architecture</button>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Size Metric (e.g., 42 MB)</label>
+                        <input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Short Description</label>
+                        <input type="text" id="form-short-desc" class="form-input" required placeholder="Brief introductory hook visible on lists...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Long Comprehensive Technical Description</label>
+                        <textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">App Interface Gallery Screenshots (Max 5 Images)</label>
+                        <input type="file" id="form-screenshot-files" class="form-input" accept="image/*" multiple required onchange="previewScreenshots(this)">
+                        <div class="preview-box" id="screenshot-preview-container"></div>
+                    </div>
+                    
+                    <div class="form-group" style="background: rgba(37, 99, 235, 0.05); padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
+                        <label class="form-label" style="color: var(--text-light); font-weight:600;">Cloud Package Storage Link (Google Drive / Dropbox / Direct Link)</label>
+                        <input type="url" id="form-apk-url" class="form-input" required placeholder="Paste shared public link here...">
+                        <span style="font-size:11px; color:var(--text-gray); margin-top:5px; display:block;">CORS issue se bachne ke liye Cloud public dynamic direct URL paste karein.</span>
+                    </div>
+                    
+                    <button type="submit" class="download-btn" style="margin-top: 30px; padding:15px; font-size:16px; background-color: var(--accent-success);">Deploy to Production Architecture</button>
                 </form>
             </div>
         </div>
@@ -253,7 +295,7 @@
             
             <button id="det-download-btn" class="download-btn" style="margin-bottom:25px; padding: 14px;">
                 <svg style="width:18px; height:18px; fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                Download Production APK Package
+                Download Production Package
             </button>
 
             <div class="detail-section">
@@ -320,6 +362,7 @@
         let allApps = [];
         let navigationHistory = ['home'];
         let activeAppId = null;
+        const IMGBB_API_KEY = "550a3bcd47c1b0a86a9f2ba7a41770b6";
 
         function switchPage(pageId, title, isBackNav = false) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -360,8 +403,34 @@
         }
 
         function confirmAndOpenUpload() {
-            if(confirm("Are you sure you want to add your app?")) {
-                switchPage('upload', 'Deploy Application Package');
+            switchPage('upload', 'Deploy Application Package');
+        }
+
+        /* Live Preview Modules */
+        function previewIcon(input) {
+            const container = document.getElementById('icon-preview-container');
+            container.innerHTML = '';
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    container.innerHTML = `<img src="${e.target.result}" class="img-preview-item">`;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewScreenshots(input) {
+            const container = document.getElementById('screenshot-preview-container');
+            container.innerHTML = '';
+            if (input.files) {
+                const filesArr = Array.from(input.files).slice(0, 5); // Limit 5
+                filesArr.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        container.innerHTML += `<img src="${e.target.result}" class="img-preview-item screenshot-preview">`;
+                    }
+                    reader.readAsDataURL(file);
+                });
             }
         }
 
@@ -387,13 +456,26 @@
             const file = input.files[0];
             showSpinner(true, "Synchronizing user display assets...");
             
-            const storageRef = storage.ref('profiles/' + Date.now() + '_' + file.name);
-            storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
-                document.getElementById('user-pfp').src = url;
-                localStorage.setItem('stardust_profile_pfp', url);
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    const url = data.data.url;
+                    document.getElementById('user-pfp').src = url;
+                    localStorage.setItem('stardust_profile_pfp', url);
+                } else {
+                    alert("ImgBB configuration rejected profile asset mapping.");
+                }
                 showSpinner(false);
-            }).catch(err => { 
-                alert("Profile image compression channel failed: " + err.message); 
+            })
+            .catch(err => { 
+                alert("Profile upload connection reset: " + err.message); 
                 showSpinner(false); 
             });
         }
@@ -425,6 +507,15 @@
                 const card = document.createElement('div');
                 card.className = 'app-card';
                 card.onclick = () => viewAppDetails(app.id);
+                
+                // Fallback rendering mechanics for unified array matching systems
+                let singleScreen = "https://img.icons8.com/color/144/android-os.png";
+                if(app.screenshots && app.screenshots.length > 0) {
+                    singleScreen = app.screenshots[0];
+                } else if(app.screenshot) {
+                    singleScreen = app.screenshot;
+                }
+
                 card.innerHTML = `
                     <div class="app-header">
                         <img src="${app.icon}" class="app-icon" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
@@ -440,79 +531,73 @@
             });
         }
 
-        function handleAppSubmit(e) {
+        /* Direct Upload Core Handler to ImgBB Engine without CORS Blockers */
+        function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            return fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.success) return resData.data.url;
+                throw new Error("ImgBB system structural payload transmission failure.");
+            });
+        }
+
+        async function handleAppSubmit(e) {
             e.preventDefault();
-            showSpinner(true, "Opening automatic Catbox network links...");
+            showSpinner(true, "Processing data asset buffers...");
 
             const iconFile = document.getElementById('form-icon-file').files[0];
-            const screenshotFile = document.getElementById('form-screenshot-file').files[0];
-            const apkFile = document.getElementById('form-apk-file').files[0];
+            const screenshotFiles = document.getElementById('form-screenshot-files').files;
+            const manualApkUrl = document.getElementById('form-apk-url').value;
 
-            function uploadToCatbox(file, statusText) {
-                return new Promise((resolve, reject) => {
-                    document.getElementById('loading-text').innerText = statusText;
-                    
-                    const formData = new FormData();
-                    formData.append('reqtype', 'fileupload');
-                    formData.append('fileToUpload', file);
+            try {
+                // 1. Upload Icon
+                showSpinner(true, "Uploading Application Icon to ImgBB...");
+                const iconUrl = await uploadToImgBB(iconFile);
 
-                    const proxyUrl = "https://api.allorigins.win/raw?url=";
-                    const catboxUrl = "https://catbox.moe/user/api.php";
-
-                    fetch(proxyUrl + encodeURIComponent(catboxUrl), {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) return response.text();
-                        throw new Error('Catbox infrastructure rejected network pipe transmission parameters.');
-                    })
-                    .then(url => {
-                        const directUrl = url.trim().includes("https://") ? url.trim() : "https://files.catbox.moe/" + url.trim();
-                        resolve(directUrl);
-                    })
-                    .catch(error => reject(error));
-                });
-            }
-
-            uploadToCatbox(iconFile, "Uploading Application Graphic Icon automatically...")
-            .then(iconUrl => {
-                return uploadToCatbox(screenshotFile, "Uploading Interface Screenshot Capture layout assets...")
-                .then(screenUrl => {
-                    return uploadToCatbox(apkFile, "Uploading Native Binary Package Object APK (Maintain connectivity)...")
-                    .then(apkUrl => {
-                        return { iconUrl, screenUrl, apkUrl };
-                    });
-                });
-            })
-            .then(urls => {
-                document.getElementById('loading-text').innerText = "Broadcasting metrics package data down to live infrastructure nodes...";
+                // 2. Upload Multi Screenshots Matrix
+                showSpinner(true, "Uploading Screenshots Group to ImgBB...");
+                let uploadedScreenshots = [];
+                const targetFiles = Array.from(screenshotFiles).slice(0, 5); // Strict cap 5
                 
+                for(let file of targetFiles) {
+                    const sUrl = await uploadToImgBB(file);
+                    uploadedScreenshots.push(sUrl);
+                }
+
+                // 3. Compile Production Payload Package Struct
+                showSpinner(true, "Connecting cluster to Firebase cloud storage node...");
                 const finalPayload = {
                     name: document.getElementById('form-name').value,
                     version: document.getElementById('form-version').value,
                     size: document.getElementById('form-size').value,
                     shortDescription: document.getElementById('form-short-desc').value,
                     description: document.getElementById('form-long-desc').value,
-                    icon: urls.iconUrl,
-                    screenshot: urls.screenUrl,
-                    downloadUrl: urls.apkUrl,
+                    icon: iconUrl,
+                    screenshot: uploadedScreenshots[0] || "", // Backward stability mapping
+                    screenshots: uploadedScreenshots,      // Ultra multi array setup
+                    downloadUrl: manualApkUrl,
                     downloadCount: 0
                 };
                 
-                return database.ref('apps').push(finalPayload);
-            })
-            .then(() => {
+                await database.ref('apps').push(finalPayload);
+                
                 showSpinner(false);
                 document.getElementById('upload-form').reset();
+                document.getElementById('icon-preview-container').innerHTML = '';
+                document.getElementById('screenshot-preview-container').innerHTML = '';
                 alert("Success Confirmation: Software infrastructure successfully pushed live.");
                 switchPage('home', 'Home');
-            })
-            .catch(err => {
+
+            } catch(err) {
                 showSpinner(false);
                 console.error(err);
                 alert("Deployment pipeline abort error: " + err.message);
-            });
+            }
         }
 
         function viewAppDetails(appId) {
@@ -527,7 +612,18 @@
             document.getElementById('det-long-desc').innerText = app.description;
             
             const screenContainer = document.getElementById('det-screenshots');
-            screenContainer.innerHTML = app.screenshot ? `<img src="${app.screenshot}" class="screenshot-img">` : '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+            screenContainer.innerHTML = '';
+            
+            // Check for modern multi-array or legacy system entries
+            if(app.screenshots && app.screenshots.length > 0) {
+                app.screenshots.forEach(src => {
+                    screenContainer.innerHTML += `<img src="${src}" class="screenshot-img">`;
+                });
+            } else if(app.screenshot) {
+                screenContainer.innerHTML = `<img src="${app.screenshot}" class="screenshot-img">`;
+            } else {
+                screenContainer.innerHTML = '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+            }
             
             document.getElementById('det-download-btn').onclick = () => executeBinaryDownload(app);
 
@@ -603,7 +699,6 @@
             }
         }
 
-        // Descending Order Downloads Sorterm
         function loadRankings() {
             const sorted = [...allApps].sort((a,b) => (b.downloadCount || 0) - (a.downloadCount || 0));
             renderApps(sorted, 'ranking-apps');
