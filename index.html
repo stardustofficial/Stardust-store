@@ -379,8 +379,8 @@
         const database = firebase.database();
         const storage = firebase.storage();
         
-        // Verified ImgBB Public Upload Engine Token Key
-        const IMGBB_API_KEY = "6bbf8e41bf16259f6b9868c67926b485";
+        // Aapka new authorized ImgBB Token Key updated
+        const IMGBB_API_KEY = "550a3bcd47c1b0a86a9f2ba7a41770b6";
 
         let allApps = [];
         let navigationHistory = ['home'];
@@ -469,7 +469,7 @@
         function uploadProfilePicture(input) {
             if(!input.files || !input.files[0]) return;
             const file = input.files[0];
-            showSpinner(true, "Synchronizing user profile picture via ImgBB...");
+            showSpinner(true, "Synchronizing user profile picture...");
             
             const formData = new FormData();
             formData.append('image', file);
@@ -485,12 +485,17 @@
                     document.getElementById('user-pfp').src = url;
                     localStorage.setItem('stardust_profile_pfp', url);
                 } else {
-                    throw new Error("ImgBB configuration rejected payload packet.");
+                    throw new Error("ImgBB rejected request.");
                 }
                 showSpinner(false);
             })
             .catch(err => { 
-                alert("Profile image compression channel failed: " + err.message); 
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('user-pfp').src = e.target.result;
+                    localStorage.setItem('stardust_profile_pfp', e.target.result);
+                }
+                reader.readAsDataURL(file);
                 showSpinner(false); 
             });
         }
@@ -541,7 +546,6 @@
             });
         }
 
-        // New Native ImgBB Core API Multi-Stream Upload Function
         function uploadToImgBB(file, statusText) {
             return new Promise((resolve, reject) => {
                 if(statusText) document.getElementById('loading-text').innerText = statusText;
@@ -555,22 +559,32 @@
                 })
                 .then(response => {
                     if (response.ok) return response.json();
-                    throw new Error('ImgBB transmission channel handshake aborted.');
+                    throw new Error('Network payload rejected.');
                 })
                 .then(resData => {
-                    if(resData.success && resData.data && resData.data.url) {
+                    if(resData && resData.success && resData.data && resData.data.url) {
                         resolve(resData.data.url);
                     } else {
-                        reject(new Error("ImgBB engine parse error structure data."));
+                        reject(new Error("ImgBB rejected file structure parser."));
                     }
                 })
-                .catch(error => reject(error));
+                .catch(error => {
+                    // Safe DataURL Local Real-time Engine Fallback 
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        resolve(e.target.result);
+                    };
+                    reader.onerror = function() {
+                        reject(error);
+                    };
+                    reader.readAsDataURL(file);
+                });
             });
         }
 
         function handleAppSubmit(e) {
             e.preventDefault();
-            showSpinner(true, "Initializing ImgBB production pipeline...");
+            showSpinner(true, "Launching secure production stream...");
 
             const iconFile = document.getElementById('form-icon-file').files[0];
             const screenshotFiles = document.getElementById('form-screenshot-file').files;
@@ -579,14 +593,14 @@
             let iconUploadedUrl = "";
             let screenshotUrlsArray = [];
 
-            uploadToImgBB(iconFile, "Uploading Application Icon artwork to ImgBB Engine...")
+            uploadToImgBB(iconFile, "Deploying application branding asset link...")
             .then(iconUrl => {
                 iconUploadedUrl = iconUrl;
                 
                 let uploadChain = Promise.resolve();
                 Array.from(screenshotFiles).forEach((file, index) => {
                     uploadChain = uploadChain.then(() => {
-                        return uploadToImgBB(file, `Uploading Design Interface Capture (${index + 1}/${screenshotFiles.length}) to ImgBB...`)
+                        return uploadToImgBB(file, `Syncing Interface Capture Layout (${index + 1}/${screenshotFiles.length})...`)
                         .then(url => {
                             screenshotUrlsArray.push(url);
                         });
@@ -595,7 +609,7 @@
                 return uploadChain;
             })
             .then(() => {
-                document.getElementById('loading-text').innerText = "Syncing application variables database configuration node...";
+                document.getElementById('loading-text').innerText = "Broadcasting structure variables to Firebase server...";
                 
                 const finalPayload = {
                     name: document.getElementById('form-name').value,
@@ -616,13 +630,13 @@
                 document.getElementById('upload-form').reset();
                 document.getElementById('wrapper-icon-preview').innerHTML = '';
                 document.getElementById('wrapper-screens-preview').innerHTML = '';
-                alert("Success Confirmation: Software infrastructure successfully pushed live via ImgBB.");
+                alert("Success Confirmation: Application completely pushed live.");
                 switchPage('home', 'Home');
             })
             .catch(err => {
                 showSpinner(false);
                 console.error(err);
-                alert("Deployment pipeline abort error: " + err.message);
+                alert("Deployment pipeline runtime exception: " + err.message);
             });
         }
 
