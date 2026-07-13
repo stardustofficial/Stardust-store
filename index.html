@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium App Store Pro</title>
+    <title>Stardust Store Pro</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -14,20 +14,19 @@
             --text-light: #f9fafb;
             --text-gray: #9ca3af;
             --border-color: #374151;
-            --overlay: rgba(0, 0, 0, 0.7);
+            --overlay: rgba(0, 0, 0, 0.85);
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--dark-bg);
             color: var(--text-light);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             padding-bottom: 75px;
             overflow-x: hidden;
         }
 
-        /* Smooth Top Header */
         .header {
             background-color: var(--card-bg);
             padding: 16px 20px;
@@ -36,19 +35,20 @@
             font-weight: 600;
             border-bottom: 1px solid var(--border-color);
             position: sticky; top: 0; z-index: 100;
-            letter-spacing: 0.5px;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .header-back { background: none; border: none; fill: white; cursor: pointer; display: none; }
+        .header-title { flex-grow: 1; text-align: center; }
 
         .container { max-width: 1000px; margin: 25px auto; padding: 0 20px; }
         
-        /* Smooth Dynamic Transitions */
         .page { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .page.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Modern Grid Architecture */
+        /* App Cards Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
         .app-card {
@@ -57,82 +57,80 @@
             border-radius: 14px;
             padding: 20px;
             display: flex; flex-direction: column; justify-content: space-between;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
-        .app-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        .app-card:hover { transform: translateY(-4px); }
         .app-header { display: flex; align-items: center; gap: 16px; }
         .app-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; border: 1px solid var(--border-color); }
         .app-title { font-size: 16px; font-weight: 600; margin: 0; color: var(--text-light); }
         .app-meta { font-size: 12px; color: var(--text-gray); margin-top: 4px; }
-        .app-desc { font-size: 13px; color: var(--text-gray); margin: 15px 0; height: 38px; overflow: hidden; }
+        .app-desc { font-size: 13px; color: var(--text-gray); margin: 15px 0; height: 38px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         
         .download-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background-color: var(--primary); color: white; text-decoration: none; 
             padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px; 
-            transition: background 0.2s; border: none; cursor: pointer;
+            transition: background 0.2s; border: none; cursor: pointer; width: 100%;
         }
         .download-btn:hover { background-color: var(--primary-hover); }
 
-        /* Search Section UI */
+        .full-page-view { background-color: var(--dark-bg); min-height: 90vh; }
+        
+        /* Search Interface */
         .search-container { position: relative; width: 100%; margin-bottom: 25px; }
         .search-bar {
             width: 100%; padding: 14px 14px 14px 45px; border-radius: 10px;
             border: 1px solid var(--border-color); background-color: var(--card-bg);
-            color: white; font-size: 15px; outline: none; transition: border-color 0.2s;
+            color: white; font-size: 15px; outline: none;
         }
-        .search-bar:focus { border-color: var(--primary); }
         .search-icon-inside { position: absolute; left: 15px; top: 15px; width: 18px; height: 18px; fill: var(--text-gray); }
 
-        /* Profile & Header Actions */
+        /* Profile Panel Styles */
         .profile-wrapper { position: relative; }
         .profile-card {
             background-color: var(--card-bg); padding: 30px 20px;
             border-radius: 14px; text-align: center; border: 1px solid var(--border-color);
         }
+        .pfp-container { position: relative; width: 96px; height: 96px; margin: 0 auto; }
         .pfp { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
-        .profile-name { font-size: 20px; font-weight: 600; margin-top: 12px; }
+        .pfp-edit-overlay { 
+            position: absolute; bottom: 0; right: 0; background: var(--primary); 
+            padding: 6px; border-radius: 50%; cursor: pointer; display: flex; 
+        }
+        .pfp-edit-overlay svg { width: 14px; height: 14px; fill: white; }
+        
+        .profile-name { font-size: 20px; font-weight: 600; margin-top: 12px; display: inline-block; }
         .profile-username { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
         
-        /* Floating Action Upload Plus Button */
+        .profile-actions { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        .btn-sec { background: var(--input-bg); border: 1px solid var(--border-color); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+
         .upload-trigger-btn {
             position: absolute; top: 0; right: 0; background: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 10px; padding: 10px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
+            cursor: pointer; display: flex;
         }
-        .upload-trigger-btn:hover { background: var(--border-color); }
         .upload-trigger-btn svg { width: 20px; height: 20px; fill: var(--text-light); }
 
-        /* Ultra-Smooth Upload Modal Window */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--overlay); display: flex; align-items: center;
-            justify-content: center; z-index: 2000; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
+        /* Form Inputs */
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; }
+        .form-input, textarea {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            background-color: var(--input-bg); color: white; font-size: 14px; outline: none; box-sizing: border-box;
         }
-        .modal.open { opacity: 1; pointer-events: auto; }
-        .modal-content {
-            background-color: var(--card-bg); border: 1px solid var(--border-color);
-            width: 90%; max-width: 500px; padding: 25px; border-radius: 16px;
-            transform: scale(0.9); transition: transform 0.3s ease;
-            max-height: 85vh; overflow-y: auto;
-        }
-        .modal.open .modal-content { transform: scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-title { font-size: 18px; font-weight: 600; }
-        .close-btn { background: none; border: none; cursor: pointer; fill: var(--text-gray); display: flex; }
-        
-        /* Form Styling */
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; font-weight: 500; }
-        .form-input {
-            width: 100%; padding: 11px; border-radius: 8px; border: 1px solid var(--border-color);
-            background-color: var(--input-bg); color: white; font-size: 14px; outline: none;
-        }
-        .form-input:focus { border-color: var(--primary); }
+        .form-input:focus, textarea:focus { border-color: var(--primary); }
 
-        /* Professional Bottom Navigation using SVGs */
+        /* App Details Layout */
+        .detail-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; text-align: left; }
+        .detail-icon { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
+        .screenshots-scroll { display: flex; gap: 12px; overflow-x: auto; margin: 20px 0; padding-bottom: 10px; }
+        .screenshot-img { height: 180px; border-radius: 8px; border: 1px solid var(--border-color); object-fit: cover; }
+        .detail-section { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 20px; text-align: left; }
+        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px; }
+
+        /* Bottom Tab Bar Navigation */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: var(--card-bg); height: 65px;
@@ -142,16 +140,28 @@
         .nav-item {
             color: var(--text-gray); text-decoration: none;
             font-size: 11px; font-weight: 500; display: flex; flex-direction: column;
-            align-items: center; gap: 4px; cursor: pointer; transition: color 0.2s;
+            align-items: center; gap: 4px; cursor: pointer;
         }
-        .nav-item svg { width: 22px; height: 22px; fill: var(--text-gray); transition: fill 0.2s; }
+        .nav-item svg { width: 22px; height: 22px; fill: var(--text-gray); }
         .nav-item.active { color: var(--primary); }
         .nav-item.active svg { fill: var(--primary); }
+
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            z-index: 5000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="header" id="header-title">Home</div>
+    <div class="header">
+        <button class="header-back" id="back-btn" onclick="goBack()">
+            <svg style="width:24px; height:24px;" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <div class="header-title" id="header-title">Home</div>
+        <div style="width:24px;"></div>
+    </div>
 
     <div class="container">
         <div id="page-home" class="page active">
@@ -172,174 +182,444 @@
 
         <div id="page-profile" class="page">
             <div class="profile-wrapper">
-                <button class="upload-trigger-btn" onclick="toggleModal(true)" title="Upload New APK">
+                <button class="upload-trigger-btn" onclick="confirmAndOpenUpload()" title="Add New Application">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 </button>
                 
                 <div class="profile-card">
-                    <img src="https://img.icons8.com/clouds/200/user.png" class="pfp" alt="User Avatar">
-                    <div class="profile-name">Developer Admin</div>
-                    <div class="profile-username">@marketadmin</div>
+                    <div class="pfp-container">
+                        <img src="https://img.icons8.com/clouds/200/user.png" class="pfp" id="user-pfp">
+                        <label for="pfp-picker" class="pfp-edit-overlay">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </label>
+                        <input type="file" id="pfp-picker" accept="image/*" style="display:none;" onchange="uploadProfilePicture(this)">
+                    </div>
+                    
+                    <div class="profile-name" id="user-name-display">Developer Admin</div>
+                    <div class="profile-username" id="user-handle-display">@marketadmin</div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn-sec" onclick="editProfileDetails()">Edit Profile Info</button>
+                    </div>
+                    
                     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+                    
                     <div style="text-align: left;">
-                        <h4 style="margin-bottom: 8px;">Uploaded Ecosystem Logs</h4>
-                        <p style="font-size: 13px; color: var(--text-gray);">Dashboard is directly synchronized with your Firebase node cluster.</p>
+                        <h4 style="margin-bottom: 12px; font-size: 15px;">Downloaded Apps History</h4>
+                        <div id="profile-downloads" style="color: var(--text-gray); font-size:13px; margin-bottom: 20px;">No downloaded software packages logged.</div>
+                        
+                        <h4 style="margin-bottom: 12px; font-size: 15px;">Submitted Reviews Logs</h4>
+                        <div id="profile-reviews" style="color: var(--text-gray); font-size:13px;">No public review logs submitted.</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal" id="upload-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Deploy New Application</div>
-                <button class="close-btn" onclick="toggleModal(false)">
-                    <svg style="width:24px; height:24px;" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></button>
+        <div id="page-upload" class="page full-page-view">
+            <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 14px; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 20px; font-size: 18px; text-align: left;">Deploy Digital Application Package</h3>
+                <form id="upload-form" onsubmit="handleAppSubmit(event)">
+                    <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
+                    <div class="form-group">
+                        <label class="form-label">App Icon (Select from Device Gallery)</label>
+                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required>
+                    </div>
+                    <div class="form-group"><label class="form-label">Version String</label><input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4"></div>
+                    <div class="form-group"><label class="form-label">Size Metric (MB)</label><input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB"></div>
+                    <div class="form-group"><label class="form-label">Short Description</label><input type="text" id="form-short-desc" class="form-input" required placeholder="Brief introductory hook visible on lists..."></div>
+                    <div class="form-group"><label class="form-label">Long Comprehensive Technical Description</label><textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea></div>
+                    <div class="form-group">
+                        <label class="form-label">App UI Screenshot Image (Select from Device Gallery)</label>
+                        <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">APK Binary Package File (Select from local storage file manager)</label>
+                        <input type="file" id="form-apk-file" class="form-input" accept=".apk" required>
+                    </div>
+                    <button type="submit" class="download-btn" style="margin-top: 20px;">Deploy to Production Architecture</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="page-details" class="page full-page-view">
+            <div class="detail-header">
+                <img src="" id="det-icon" class="detail-icon">
+                <div>
+                    <h2 id="det-title" style="margin:0; font-size:22px; color: var(--text-light);">App Title</h2>
+                    <div id="det-meta" class="app-meta">v1.0 • 0 MB</div>
+                    <div id="det-downloads" class="app-meta" style="color: var(--primary); font-weight:600; margin-top:2px;">Total Downloads Matrix: 0</div>
                 </div>
             </div>
-            <form id="upload-form" onsubmit="handleAppSubmit(event)">
-                <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
-                <div class="form-group"><label class="form-label">Icon URL</label><input type="url" id="form-icon" class="form-input" required placeholder="https://domain.com/icon.png"></div>
-                <div class="form-group"><label class="form-label">Version</label><input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4"></div>
-                <div class="form-group"><label class="form-label">Size (MB)</label><input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB"></div>
-                <div class="form-group"><label class="form-label">Description</label><input type="text" id="form-desc" class="form-input" required placeholder="Short application summary..."></div>
-                <div class="form-group"><label class="form-label">APK Download Link</label><input type="url" id="form-link" class="form-input" required placeholder="https://mediafire.com/file.apk"></div>
-                <button type="submit" class="download-btn" style="width: 100%; margin-top: 10px;">Publish Live Market</button>
-            </form>
+            
+            <button id="det-download-btn" class="download-btn" style="margin-bottom:25px; padding: 14px;">
+                <svg style="width:18px; height:18px; fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                Download Production APK Package
+            </button>
+
+            <div class="detail-section">
+                <div class="section-title">Ecosystem Interface Captures</div>
+                <div class="screenshots-scroll" id="det-screenshots"></div>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-title">Technical Description & Scope</div>
+                <p id="det-long-desc" style="font-size:14px; color:var(--text-gray); line-height:1.6; white-space:pre-wrap;"></p>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-title">Public App Evaluations</div>
+                <div id="det-reviews-list" style="margin-bottom: 15px; display:flex; flex-direction:column; gap:10px;"></div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <input type="text" id="review-input" class="form-input" placeholder="Compose verified submission review text here...">
+                    <button class="btn-sec" onclick="submitUserReview()" style="background:var(--primary); border:none; padding: 0 20px;">Submit Post</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home', 'Home')">
+    <div class="bottom-nav" id="main-navigation-bar">
+        <div class="nav-item active" id="nav-home" onclick="switchPage('home', 'Home')">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span>
         </div>
-        <div class="nav-item" onclick="switchPage('search', 'Search')">
+        <div class="nav-item" id="nav-search" onclick="switchPage('search', 'Search')">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span>Search</span>
         </div>
-        <div class="nav-item" onclick="switchPage('ranking', 'Ranking')">
+        <div class="nav-item" id="nav-ranking" onclick="switchPage('ranking', 'Top Downloads Chart')">
             <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg><span>Ranking</span>
         </div>
-        <div class="nav-item" onclick="switchPage('profile', 'Profile')">
+        <div class="nav-item" id="nav-profile" onclick="switchPage('profile', 'Ecosystem Profile')">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg><span>Profile</span>
         </div>
     </div>
 
+    <div class="loading-overlay" id="loading-spinner">
+        <div style="width: 45px; height: 45px; border: 4px solid #374151; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div id="loading-text" style="font-size: 14px; font-weight:500; tracking: 0.5px;">Uploading assets parameters...</div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
     <script>
-        // CONFIG REQUIREMENT: Replace with your original setup credentials
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDCOq720_5pxOsUYXovvi4DaUsryv1oPeA",
+            authDomain: "stardust-store.firebaseapp.com",
+            databaseURL: "https://stardust-store-default-rtdb.firebaseio.com",
+            projectId: "stardust-store",
+            storageBucket: "stardust-store.firebasestorage.app",
+            messagingSenderId: "979834482722",
+            appId: "1:979834482722:web:dabbc453543b7e03c91a7b",
+            measurementId: "G-YKYR514S87"
         };
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const storage = firebase.storage();
+        
         let allApps = [];
+        let navigationHistory = ['home'];
+        let activeAppId = null;
 
-        // 1. SYSTEM TAB PAGE NAVIGATION
-        function switchPage(pageId, title) {
+        function switchPage(pageId, title, isBackNav = false) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            const selectedPage = document.getElementById(`page-${pageId}`);
-            selectedPage.classList.add('active');
+            document.getElementById(`page-${pageId}`).classList.add('active');
             document.getElementById('header-title').innerText = title;
-            event.currentTarget.classList.add('active');
+            
+            const navBtn = document.getElementById(`nav-${pageId}`);
+            if(navBtn) navBtn.classList.add('active');
+
+            if(!isBackNav && navigationHistory[navigationHistory.length - 1] !== pageId) {
+                navigationHistory.push(pageId);
+            }
+
+            if(pageId === 'upload' || pageId === 'details') {
+                document.getElementById('back-btn').style.display = 'block';
+                document.getElementById('main-navigation-bar').style.display = 'none';
+            } else {
+                document.getElementById('back-btn').style.display = 'none';
+                document.getElementById('main-navigation-bar').style.display = 'flex';
+            }
 
             if(pageId === 'ranking') loadRankings();
             if(pageId === 'search') renderApps(allApps, 'search-results');
         }
 
-        // 2. MODAL WINDOW INTERACTION LOGIC
-        function toggleModal(open) {
-            const modal = document.getElementById('upload-modal');
-            if(open) modal.classList.add('open');
-            else modal.classList.remove('open');
+        function goBack() {
+            if(navigationHistory.length > 1) {
+                navigationHistory.pop(); 
+                const prevPage = navigationHistory[navigationHistory.length - 1];
+                let title = "Home";
+                if(prevPage === 'search') title = "Search";
+                if(prevPage === 'ranking') title = "Top Downloads Chart";
+                if(prevPage === 'profile') title = "Ecosystem Profile";
+                switchPage(prevPage, title, true);
+            }
         }
 
-        // 3. BACKEND CORE READ OPERATION
+        function confirmAndOpenUpload() {
+            if(confirm("Are you sure you want to add your app?")) {
+                switchPage('upload', 'Deploy Application Package');
+            }
+        }
+
+        function editProfileDetails() {
+            const currentName = document.getElementById('user-name-display').innerText;
+            const currentHandle = document.getElementById('user-handle-display').innerText;
+            
+            const newName = prompt("Modify display designation title:", currentName);
+            const newHandle = prompt("Modify user network identifier handle:", currentHandle);
+            
+            if(newName !== null && newName.trim() !== "") {
+                document.getElementById('user-name-display').innerText = newName.trim();
+                localStorage.setItem('stardust_profile_name', newName.trim());
+            }
+            if(newHandle !== null && newHandle.trim() !== "") {
+                document.getElementById('user-handle-display').innerText = newHandle.trim();
+                localStorage.setItem('stardust_profile_handle', newHandle.trim());
+            }
+        }
+
+        function uploadProfilePicture(input) {
+            if(!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            showSpinner(true, "Synchronizing user display assets...");
+            
+            const storageRef = storage.ref('profiles/' + Date.now() + '_' + file.name);
+            storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
+                document.getElementById('user-pfp').src = url;
+                localStorage.setItem('stardust_profile_pfp', url);
+                showSpinner(false);
+            }).catch(err => { 
+                alert("Profile image compression channel failed: " + err.message); 
+                showSpinner(false); 
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if(localStorage.getItem('stardust_profile_name')) document.getElementById('user-name-display').innerText = localStorage.getItem('stardust_profile_name');
+            if(localStorage.getItem('stardust_profile_handle')) document.getElementById('user-handle-display').innerText = localStorage.getItem('stardust_profile_handle');
+            if(localStorage.getItem('stardust_profile_pfp')) document.getElementById('user-pfp').src = localStorage.getItem('stardust_profile_pfp');
+            loadProfileEcosystem();
+        });
+
         database.ref('apps').on('value', (snapshot) => {
             const data = snapshot.val();
             allApps = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
             renderApps(allApps, 'home-apps');
+            if(document.getElementById('page-ranking').classList.contains('active')) {
+                loadRankings();
+            }
         });
 
         function renderApps(appsList, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             if(appsList.length === 0) {
-                container.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:var(--text-gray);">No applications synced.</p>';
+                container.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:var(--text-gray);padding-top:40px;">No application packages found on server storage.</p>';
                 return;
             }
             appsList.forEach(app => {
-                container.innerHTML += `
-                    <div class="app-card">
-                        <div class="app-header">
-                            <img src="${app.icon}" class="app-icon" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
-                            <div>
-                                <h3 class="app-title">${app.name}</h3>
-                                <div class="app-meta">${app.version} • ${app.size}</div>
-                                <div class="app-meta" style="color:var(--primary); font-weight:500;">Downloads: ${app.downloadCount || 0}</div>
-                            </div>
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.onclick = () => viewAppDetails(app.id);
+                card.innerHTML = `
+                    <div class="app-header">
+                        <img src="${app.icon}" class="app-icon" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                        <div>
+                            <h3 class="app-title">${app.name}</h3>
+                            <div class="app-meta">${app.version} • ${app.size}</div>
                         </div>
-                        <p class="app-desc">${app.description}</p>
-                        <a href="${app.downloadUrl}" target="_blank" onclick="registerDownload('${app.id}')" class="download-btn">
-                            <svg style="width:16px; height:16px; fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                            Get APK
-                        </a>
                     </div>
+                    <p class="app-desc">${app.shortDescription || app.description}</p>
+                    <div style="font-size:12px; color:var(--primary); font-weight:600; text-align: left;">Downloads Logged: ${app.downloadCount || 0}</div>
                 `;
+                container.appendChild(card);
             });
         }
 
-        // 4. CLIENT SIDE BACKEND WRITE (NO GITHUB RE-DEPLOY)
         function handleAppSubmit(e) {
             e.preventDefault();
-            const newApp = {
-                name: document.getElementById('form-name').value,
-                icon: document.getElementById('form-icon').value,
-                version: document.getElementById('form-version').value,
-                size: document.getElementById('form-size').value,
-                description: document.getElementById('form-desc').value,
-                downloadUrl: document.getElementById('form-link').value,
-                downloadCount: 0
+            showSpinner(true, "Opening automatic Catbox network links...");
+
+            const iconFile = document.getElementById('form-icon-file').files[0];
+            const screenshotFile = document.getElementById('form-screenshot-file').files[0];
+            const apkFile = document.getElementById('form-apk-file').files[0];
+
+            function uploadToCatbox(file, statusText) {
+                return new Promise((resolve, reject) => {
+                    document.getElementById('loading-text').innerText = statusText;
+                    
+                    const formData = new FormData();
+                    formData.append('reqtype', 'fileupload');
+                    formData.append('fileToUpload', file);
+
+                    const proxyUrl = "https://api.allorigins.win/raw?url=";
+                    const catboxUrl = "https://catbox.moe/user/api.php";
+
+                    fetch(proxyUrl + encodeURIComponent(catboxUrl), {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) return response.text();
+                        throw new Error('Catbox infrastructure rejected network pipe transmission parameters.');
+                    })
+                    .then(url => {
+                        const directUrl = url.trim().includes("https://") ? url.trim() : "https://files.catbox.moe/" + url.trim();
+                        resolve(directUrl);
+                    })
+                    .catch(error => reject(error));
+                });
+            }
+
+            uploadToCatbox(iconFile, "Uploading Application Graphic Icon automatically...")
+            .then(iconUrl => {
+                return uploadToCatbox(screenshotFile, "Uploading Interface Screenshot Capture layout assets...")
+                .then(screenUrl => {
+                    return uploadToCatbox(apkFile, "Uploading Native Binary Package Object APK (Maintain connectivity)...")
+                    .then(apkUrl => {
+                        return { iconUrl, screenUrl, apkUrl };
+                    });
+                });
+            })
+            .then(urls => {
+                document.getElementById('loading-text').innerText = "Broadcasting metrics package data down to live infrastructure nodes...";
+                
+                const finalPayload = {
+                    name: document.getElementById('form-name').value,
+                    version: document.getElementById('form-version').value,
+                    size: document.getElementById('form-size').value,
+                    shortDescription: document.getElementById('form-short-desc').value,
+                    description: document.getElementById('form-long-desc').value,
+                    icon: urls.iconUrl,
+                    screenshot: urls.screenUrl,
+                    downloadUrl: urls.apkUrl,
+                    downloadCount: 0
+                };
+                
+                return database.ref('apps').push(finalPayload);
+            })
+            .then(() => {
+                showSpinner(false);
+                document.getElementById('upload-form').reset();
+                alert("Success Confirmation: Software infrastructure successfully pushed live.");
+                switchPage('home', 'Home');
+            })
+            .catch(err => {
+                showSpinner(false);
+                console.error(err);
+                alert("Deployment pipeline abort error: " + err.message);
+            });
+        }
+
+        function viewAppDetails(appId) {
+            activeAppId = appId;
+            const app = allApps.find(a => a.id === appId);
+            if(!app) return;
+
+            document.getElementById('det-icon').src = app.icon;
+            document.getElementById('det-title').innerText = app.name;
+            document.getElementById('det-meta').innerText = `${app.version} • ${app.size}`;
+            document.getElementById('det-downloads').innerText = `Total Downloads Matrix: ${app.downloadCount || 0}`;
+            document.getElementById('det-long-desc').innerText = app.description;
+            
+            const screenContainer = document.getElementById('det-screenshots');
+            screenContainer.innerHTML = app.screenshot ? `<img src="${app.screenshot}" class="screenshot-img">` : '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+            
+            document.getElementById('det-download-btn').onclick = () => executeBinaryDownload(app);
+
+            syncAppReviewsList(appId);
+            switchPage('details', app.name);
+        }
+
+        function executeBinaryDownload(app) {
+            database.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
+            
+            let dynamicLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+            if(!dynamicLogs.includes(app.name)) dynamicLogs.push(app.name);
+            localStorage.setItem('stardust_download_logs', JSON.stringify(dynamicLogs));
+            loadProfileEcosystem();
+
+            window.open(app.downloadUrl, '_blank');
+        }
+
+        function syncAppReviewsList(appId) {
+            database.ref(`reviews/${appId}`).on('value', snapshot => {
+                const logs = snapshot.val();
+                const renderTarget = document.getElementById('det-reviews-list');
+                renderTarget.innerHTML = '';
+                if(!logs) {
+                    renderTarget.innerHTML = '<p style="color:var(--text-gray); font-size:13px;">No public evaluation submissions posted under this system node.</p>';
+                    return;
+                }
+                Object.values(logs).forEach(r => {
+                    renderTarget.innerHTML += `
+                        <div style="background:var(--input-bg); padding:12px; border-radius:8px; border:1px solid var(--border-color); text-align: left;">
+                            <div style="font-size:12px; font-weight:600; color:var(--primary); margin-bottom:4px;">${r.author} (${r.handle})</div>
+                            <div style="font-size:13px; color:var(--text-light);">${r.text}</div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function submitUserReview() {
+            const field = document.getElementById('review-input');
+            if(!field.value.trim() || !activeAppId) return;
+
+            const targetAppName = allApps.find(a => a.id === activeAppId)?.name || "Application";
+            const reviewPayload = {
+                author: document.getElementById('user-name-display').innerText,
+                handle: document.getElementById('user-handle-display').innerText,
+                text: field.value.trim()
             };
 
-            // Push object dynamically into Firebase cluster node
-            database.ref('apps').push(newApp)
-                .then(() => {
-                    document.getElementById('upload-form').reset();
-                    toggleModal(false);
-                    alert("Application status: Live on Market!");
-                })
-                .catch((error) => alert("Write error: " + error.message));
+            database.ref(`reviews/${activeAppId}`).push(reviewPayload).then(() => {
+                let storedReviews = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+                storedReviews.push(`Reviewed application package [${targetAppName}]: "${field.value.trim()}"`);
+                localStorage.setItem('stardust_reviews_logs', JSON.stringify(storedReviews));
+                
+                field.value = '';
+                loadProfileEcosystem();
+            });
         }
 
-        // 5. LIVE SEARCH QUERY ARCHITECTURE
+        function loadProfileEcosystem() {
+            const dLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+            const rLogs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+
+            document.getElementById('profile-downloads').innerText = dLogs.length > 0 ? dLogs.join(', ') : "No downloaded software packages logged.";
+            
+            const revTarget = document.getElementById('profile-reviews');
+            revTarget.innerHTML = '';
+            if(rLogs.length === 0) revTarget.innerText = "No public review logs submitted.";
+            else {
+                rLogs.forEach(log => {
+                    revTarget.innerHTML += `<div style="margin-bottom:8px; border-bottom:1px solid #1f2937; padding-bottom:6px; font-size:13px; color:var(--text-gray);">Log Entry: ${log}</div>`;
+                });
+            }
+        }
+
+        // Descending Order Downloads Sorterm
+        function loadRankings() {
+            const sorted = [...allApps].sort((a,b) => (b.downloadCount || 0) - (a.downloadCount || 0));
+            renderApps(sorted, 'ranking-apps');
+        }
+
+        function showSpinner(show, text = "") {
+            const overlay = document.getElementById('loading-spinner');
+            if(text) document.getElementById('loading-text').innerText = text;
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
         document.getElementById('search-input').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = allApps.filter(app => app.name.toLowerCase().includes(query));
+            const q = e.target.value.toLowerCase();
+            const filtered = allApps.filter(a => a.name.toLowerCase().includes(q));
             renderApps(filtered, 'search-results');
         });
-
-        // 6. RANKING DYNAMIC CHART CALCULATION
-        function loadRankings() {
-            const sortedApps = [...allApps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0));
-            renderApps(sortedApps, 'ranking-apps');
-        }
-
-        // 7. DOWNLOAD COUNT AGGREGATION TRANSACTION
-        function registerDownload(appId) {
-            database.ref(`apps/${appId}/downloadCount`).transaction((count) => (count || 0) + 1);
-        }
     </script>
 </body>
 </html>
