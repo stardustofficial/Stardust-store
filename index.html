@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Stardust Store Pro</title>
     <style>
-        /* ===== CSS VARIABLES ===== */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -20,13 +19,11 @@
             --gold: #f59e0b;
             --green: #22c55e;
             --red: #ef4444;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             --radius: 16px;
             --radius-sm: 10px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* ===== RESET ===== */
         *,
         *::before,
         *::after {
@@ -57,8 +54,6 @@
             display: block;
             max-width: 100%;
         }
-
-        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -71,7 +66,6 @@
             border-radius: 10px;
         }
 
-        /* ===== HEADER ===== */
         .header {
             background: var(--bg-card);
             padding: 14px 20px;
@@ -137,14 +131,11 @@
             border: 2px solid var(--bg-card);
         }
 
-        /* ===== CONTAINER ===== */
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 0 16px;
         }
-
-        /* ===== PAGES ===== */
         .page {
             display: none;
             opacity: 0;
@@ -158,7 +149,6 @@
             transform: translateY(0);
         }
 
-        /* ===== BANNER SLIDER ===== */
         .banner-slider {
             position: relative;
             border-radius: var(--radius);
@@ -234,7 +224,6 @@
             border-radius: 4px;
         }
 
-        /* ===== SECTION TITLE ===== */
         .section-header {
             display: flex;
             align-items: center;
@@ -252,7 +241,6 @@
             cursor: pointer;
         }
 
-        /* ===== HORIZONTAL SCROLL ===== */
         .scroll-horizontal {
             display: flex;
             gap: 14px;
@@ -296,7 +284,6 @@
             color: var(--text-gray);
         }
 
-        /* ===== CATEGORY GRID ===== */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -324,7 +311,6 @@
             margin-bottom: 4px;
         }
 
-        /* ===== APP CARD (GRID) ===== */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -375,7 +361,6 @@
             color: var(--gold);
         }
 
-        /* ===== SEARCH ===== */
         .search-container {
             position: relative;
             margin-bottom: 20px;
@@ -456,8 +441,38 @@
             border-color: var(--primary);
             color: var(--primary);
         }
+        .search-advanced {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .search-advanced.open {
+            display: block;
+        }
+        .search-advanced .adv-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .search-advanced .adv-row select,
+        .search-advanced .adv-row input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-light);
+            font-size: 13px;
+            flex: 1;
+            min-width: 120px;
+        }
+        .search-advanced .adv-row select option {
+            background: var(--bg-dark);
+        }
 
-        /* ===== DETAILS PAGE ===== */
         .detail-header {
             display: flex;
             gap: 18px;
@@ -631,7 +646,6 @@
             text-overflow: ellipsis;
         }
 
-        /* ===== REVIEWS ===== */
         .rating-graph {
             display: flex;
             flex-direction: column;
@@ -715,13 +729,13 @@
             color: var(--primary-light);
         }
 
-        /* ===== PROFILE ===== */
         .profile-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 24px 20px;
             text-align: center;
+            position: relative;
         }
         .profile-card .pfp {
             width: 90px;
@@ -757,8 +771,44 @@
             font-size: 11px;
             color: var(--text-gray);
         }
+        .profile-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .profile-actions-grid .pa-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .profile-actions-grid .pa-btn:hover {
+            border-color: var(--primary);
+            background: var(--border-color);
+        }
+        .profile-actions-grid .pa-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-light);
+        }
+        .profile-actions-grid .pa-btn.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .profile-actions-grid .pa-btn.primary:hover {
+            background: var(--primary-dark);
+        }
 
-        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -814,7 +864,6 @@
             justify-content: center;
         }
 
-        /* ===== BUTTONS ===== */
         .btn-primary {
             background: var(--primary);
             color: white;
@@ -828,6 +877,8 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
         .btn-primary:hover {
             background: var(--primary-dark);
@@ -835,6 +886,15 @@
         }
         .btn-primary:active {
             transform: scale(0.98);
+        }
+        .btn-primary .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--green);
+            transition: width 0.3s ease;
+            width: 0%;
         }
         .btn-outline {
             background: transparent;
@@ -850,27 +910,11 @@
             border-color: var(--primary);
             color: var(--primary);
         }
-
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg-input);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        .btn-icon:hover {
-            background: var(--border-color);
-        }
-        .btn-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-light);
+        .btn-outline.danger:hover {
+            border-color: var(--red);
+            color: var(--red);
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -936,7 +980,6 @@
             color: var(--red);
         }
 
-        /* ===== LOADING ===== */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -965,59 +1008,57 @@
             }
         }
 
-        /* ===== SKELETON ===== */
-        .skeleton {
-            background: linear-gradient(90deg, var(--bg-input) 25%, var(--border-color) 50%, var(--bg-input) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
             border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-light);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
         }
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
         }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .banner-slider {
-                height: 150px;
-            }
-            .banner-slide {
-                padding: 16px 20px;
-            }
-            .banner-slide .banner-icon {
-                width: 56px;
-                height: 56px;
-            }
-            .banner-slide .banner-info h3 {
-                font-size: 15px;
-            }
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 12px;
-            }
-            .category-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .detail-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-            .detail-icon {
-                width: 72px;
-                height: 72px;
-            }
-            .profile-stats {
-                gap: 14px;
-            }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group .preview-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .form-group .preview-box img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+        .form-group .preview-box img.screenshot-preview {
+            width: 50px;
+            height: 90px;
         }
 
-        /* ===== GLASS EFFECT ===== */
         .glass {
             background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(12px);
@@ -1025,7 +1066,6 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        /* ===== MISC ===== */
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -1070,11 +1110,61 @@
         .items-center {
             align-items: center;
         }
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--green);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .verified-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--green);
+        }
+
+        @media (max-width: 480px) {
+            .banner-slider {
+                height: 150px;
+            }
+            .banner-slide {
+                padding: 16px 20px;
+            }
+            .banner-slide .banner-icon {
+                width: 56px;
+                height: 56px;
+            }
+            .banner-slide .banner-info h3 {
+                font-size: 15px;
+            }
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .detail-icon {
+                width: 72px;
+                height: 72px;
+            }
+            .profile-stats {
+                gap: 14px;
+            }
+            .profile-actions-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
     <header class="header" id="appHeader">
         <button class="header-back" id="backBtn" onclick="goBack()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
@@ -1091,19 +1181,17 @@
         </div>
     </header>
 
-    <!-- ===== CONTAINER ===== -->
     <div class="container">
 
-        <!-- ===== HOME ===== -->
+        <!-- HOME -->
         <div id="page-home" class="page active">
-            <!-- Banner Slider -->
             <div class="banner-slider" id="bannerSlider">
                 <div class="banner-slide active" data-index="0">
                     <img src="" class="banner-icon" id="bannerIcon0" alt="">
                     <div class="banner-info">
                         <h3 id="bannerTitle0">Featured App</h3>
                         <p id="bannerDesc0">Top pick of the day</p>
-                        <span class="banner-tag" id="bannerTag0">★ Editor's Choice</span>
+                        <span class="banner-tag" id="bannerTag0">Editor's Choice</span>
                     </div>
                 </div>
                 <div class="banner-slide" data-index="1">
@@ -1111,7 +1199,7 @@
                     <div class="banner-info">
                         <h3 id="bannerTitle1">Trending Now</h3>
                         <p id="bannerDesc1">Most downloaded today</p>
-                        <span class="banner-tag" id="bannerTag1">🔥 Trending</span>
+                        <span class="banner-tag" id="bannerTag1">Trending</span>
                     </div>
                 </div>
                 <div class="banner-slide" data-index="2">
@@ -1119,7 +1207,7 @@
                     <div class="banner-info">
                         <h3 id="bannerTitle2">New Release</h3>
                         <p id="bannerDesc2">Fresh from developer</p>
-                        <span class="banner-tag" id="bannerTag2">✨ New</span>
+                        <span class="banner-tag" id="bannerTag2">New</span>
                     </div>
                 </div>
                 <div class="banner-dots" id="bannerDots">
@@ -1129,30 +1217,26 @@
                 </div>
             </div>
 
-            <!-- Editor's Choice -->
             <div class="section-header">
-                <h4>⭐ Editor's Choice</h4>
+                <h4>Editor's Choice</h4>
                 <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
             </div>
             <div class="scroll-horizontal" id="editorsChoice"></div>
 
-            <!-- Trending Today -->
             <div class="section-header">
-                <h4>🔥 Trending Today</h4>
+                <h4>Trending Today</h4>
                 <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
             </div>
             <div class="scroll-horizontal" id="trendingApps"></div>
 
-            <!-- New Releases -->
             <div class="section-header">
-                <h4>✨ New Releases</h4>
+                <h4>New Releases</h4>
                 <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
             </div>
             <div class="scroll-horizontal" id="newReleases"></div>
 
-            <!-- Categories -->
             <div class="section-header">
-                <h4>📂 Categories</h4>
+                <h4>Categories</h4>
             </div>
             <div class="category-grid" id="categoryGrid">
                 <div class="cat-item" onclick="filterByCategory('Games')"><span class="cat-icon">🎮</span>Games</div>
@@ -1169,19 +1253,13 @@
                 <div class="cat-item" onclick="filterByCategory('Travel')"><span class="cat-icon">✈️</span>Travel</div>
             </div>
 
-            <!-- Popular Games & Apps -->
-            <div class="section-header">
-                <h4>🎮 Popular Games</h4>
-            </div>
+            <div class="section-header"><h4>Popular Games</h4></div>
             <div class="scroll-horizontal" id="popularGames"></div>
-
-            <div class="section-header">
-                <h4>📱 Popular Apps</h4>
-            </div>
+            <div class="section-header"><h4>Popular Apps</h4></div>
             <div class="scroll-horizontal" id="popularApps"></div>
         </div>
 
-        <!-- ===== SEARCH ===== -->
+        <!-- SEARCH -->
         <div id="page-search" class="page">
             <div class="search-container">
                 <svg class="search-icon-inside" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -1197,40 +1275,69 @@
                 <span onclick="searchQuery('AI')">AI Tools</span>
             </div>
 
-            <div class="search-filters" id="searchFilters">
+            <div class="search-filters">
                 <button class="active" data-filter="all" onclick="setSearchFilter('all')">All</button>
                 <button data-filter="name" onclick="setSearchFilter('name')">Name</button>
                 <button data-filter="developer" onclick="setSearchFilter('developer')">Developer</button>
                 <button data-filter="category" onclick="setSearchFilter('category')">Category</button>
                 <button data-filter="tags" onclick="setSearchFilter('tags')">Tags</button>
+                <button onclick="toggleAdvancedSearch()">Advanced</button>
+            </div>
+
+            <div class="search-advanced" id="advancedSearch">
+                <div class="adv-row">
+                    <select id="advCategory"><option value="">Category</option>
+                        <option>Games</option><option>Social</option><option>AI</option>
+                        <option>Entertainment</option><option>Tools</option><option>Shopping</option>
+                        <option>Music</option><option>Education</option><option>Health</option>
+                        <option>Photography</option><option>Finance</option><option>Travel</option>
+                    </select>
+                    <select id="advRating"><option value="">Min Rating</option>
+                        <option value="1">1</option><option value="2">2</option>
+                        <option value="3">3</option><option value="4">4</option>
+                        <option value="4.5">4.5</option>
+                    </select>
+                    <select id="advSize"><option value="">Size</option>
+                        <option value="10">Under 10 MB</option>
+                        <option value="50">Under 50 MB</option>
+                        <option value="100">Under 100 MB</option>
+                        <option value="200">Under 200 MB</option>
+                    </select>
+                    <select id="advUpdate"><option value="">Updated</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                    <button class="btn-outline" onclick="applyAdvancedSearch()" style="padding:8px 16px;">Apply</button>
+                </div>
             </div>
 
             <div id="searchResults" class="grid"></div>
         </div>
 
-        <!-- ===== RANKING ===== -->
+        <!-- RANKING -->
         <div id="page-ranking" class="page">
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-                <button class="btn-outline active" onclick="setRankingFilter('top-free')" id="rankTopFree">🏆 Top Free</button>
-                <button class="btn-outline" onclick="setRankingFilter('top-paid')" id="rankTopPaid">💎 Top Paid</button>
-                <button class="btn-outline" onclick="setRankingFilter('top-grossing')" id="rankTopGrossing">📈 Top Grossing</button>
-                <button class="btn-outline" onclick="setRankingFilter('trending')" id="rankTrending">🔥 Trending</button>
-                <button class="btn-outline" onclick="setRankingFilter('top-rated')" id="rankTopRated">⭐ Top Rated</button>
+                <button class="btn-outline active" onclick="setRankingFilter('top-free')" id="rankTopFree">Top Free</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-paid')" id="rankTopPaid">Top Paid</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-grossing')" id="rankTopGrossing">Top Grossing</button>
+                <button class="btn-outline" onclick="setRankingFilter('trending')" id="rankTrending">Trending</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-rated')" id="rankTopRated">Top Rated</button>
             </div>
             <div id="rankingApps" class="grid"></div>
         </div>
 
-        <!-- ===== WISHLIST ===== -->
+        <!-- WISHLIST -->
         <div id="page-wishlist" class="page">
-            <h4 style="margin-bottom:16px;">❤️ My Wishlist</h4>
+            <h4 style="margin-bottom:16px;">My Wishlist</h4>
             <div id="wishlistGrid" class="grid"></div>
         </div>
 
-        <!-- ===== PROFILE ===== -->
+        <!-- PROFILE (with Upload & Admin integrated) -->
         <div id="page-profile" class="page">
             <div class="profile-card">
                 <img src="https://img.icons8.com/clouds/200/user.png" class="pfp" id="profilePfp" alt="Profile">
-                <div class="prof-name" id="profileName">Developer Admin</div>
+                <div class="prof-name" id="profileName">Developer Admin <span class="verified-badge" id="profileVerifiedBadge" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified</span></div>
                 <div class="prof-handle" id="profileHandle">@marketadmin</div>
                 <div class="profile-stats">
                     <div class="stat"><div class="num" id="statApps">0</div><div class="label">Apps</div></div>
@@ -1238,28 +1345,44 @@
                     <div class="stat"><div class="num" id="statReviews">0</div><div class="label">Reviews</div></div>
                     <div class="stat"><div class="num" id="statWishlist">0</div><div class="label">Wishlist</div></div>
                 </div>
-                <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn-outline" onclick="editProfile()">✏️ Edit Profile</button>
-                    <button class="btn-outline" onclick="document.getElementById('pfpUpload').click()">📷 Change Photo</button>
+
+                <div class="profile-actions-grid">
+                    <button class="pa-btn" onclick="editProfile()">
+                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        Edit Profile
+                    </button>
+                    <button class="pa-btn" onclick="document.getElementById('pfpUpload').click()">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        Change Photo
+                    </button>
                     <input type="file" id="pfpUpload" accept="image/*" style="display:none;" onchange="uploadPFP(this)">
+                    <button class="pa-btn primary" onclick="openUploadModal()">
+                        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        Upload App
+                    </button>
+                    <button class="pa-btn" onclick="openAdminPanel()">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        Admin Panel
+                    </button>
                 </div>
+
                 <hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;">
                 <div style="text-align:left;">
-                    <h4 style="font-size:14px;margin-bottom:8px;">📥 Download History</h4>
+                    <h4 style="font-size:14px;margin-bottom:8px;">Download History</h4>
                     <div id="downloadHistory" class="flex flex-wrap gap-8"></div>
-                    <h4 style="font-size:14px;margin:16px 0 8px;">📝 Review Logs</h4>
+                    <h4 style="font-size:14px;margin:16px 0 8px;">Review Logs</h4>
                     <div id="reviewLogs"></div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== NOTIFICATIONS ===== -->
+        <!-- NOTIFICATIONS -->
         <div id="page-notifications" class="page">
-            <h4 style="margin-bottom:16px;">🔔 Notifications</h4>
+            <h4 style="margin-bottom:16px;">Notifications</h4>
             <div id="notificationList"></div>
         </div>
 
-        <!-- ===== DETAILS ===== -->
+        <!-- DETAILS -->
         <div id="page-details" class="page">
             <div class="detail-header">
                 <img src="" class="detail-icon" id="detIcon" alt="">
@@ -1267,7 +1390,8 @@
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <h2 id="detTitle">App Name</h2>
                         <span class="wishlist-heart" id="detWishlist" onclick="toggleWishlist()">♡</span>
-                        <span class="badge-verified" id="detVerified">✓ Verified</span>
+                        <span class="verified-badge" id="detVerified" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified</span>
+                        <button class="btn-outline" onclick="reportApp()" style="padding:2px 10px;font-size:11px;color:var(--red);border-color:var(--red);">Report</button>
                     </div>
                     <div class="dev" id="detDeveloper">by Developer</div>
                     <div class="meta-row">
@@ -1284,49 +1408,37 @@
             </div>
 
             <button class="btn-primary" id="detInstallBtn" onclick="installApp()">
-                <svg style="width:20px;height:20px;fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                Install APK
+                <span id="installBtnText">Install APK</span>
+                <span class="progress-bar" id="installProgress"></span>
             </button>
 
-            <!-- Screenshots -->
             <div class="detail-section">
-                <div class="section-title">📸 Screenshots</div>
+                <div class="section-title">Screenshots</div>
                 <div class="screenshots-scroll" id="detScreenshots"></div>
             </div>
 
-            <!-- Video Preview -->
-            <div class="detail-section" id="detVideoSection" style="display:none;">
-                <div class="section-title">🎬 Video Preview</div>
-                <div id="detVideo"></div>
-            </div>
-
-            <!-- Description -->
             <div class="detail-section">
-                <div class="section-title">📄 Description</div>
+                <div class="section-title">Description</div>
                 <p id="detDescription" style="font-size:14px;color:var(--text-gray);line-height:1.7;white-space:pre-wrap;"></p>
             </div>
 
-            <!-- What's New -->
             <div class="detail-section">
-                <div class="section-title">🆕 What's New</div>
+                <div class="section-title">What's New</div>
                 <div id="detWhatsNew"></div>
             </div>
 
-            <!-- Version History -->
             <div class="detail-section">
-                <div class="section-title">📜 Version History</div>
+                <div class="section-title">Version History</div>
                 <div class="version-history" id="detVersionHistory"></div>
             </div>
 
-            <!-- Permissions -->
             <div class="detail-section">
-                <div class="section-title">🔐 Permissions</div>
+                <div class="section-title">Permissions</div>
                 <div class="permission-list" id="detPermissions"></div>
             </div>
 
-            <!-- App Info -->
             <div class="detail-section">
-                <div class="section-title">ℹ️ App Information</div>
+                <div class="section-title">App Information</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;color:var(--text-gray);">
                     <span><strong>Package:</strong> <span id="detPackage">com.example.app</span></span>
                     <span><strong>Version:</strong> <span id="detVersionInfo">1.0.0</span></span>
@@ -1338,27 +1450,24 @@
                 </div>
             </div>
 
-            <!-- Virus Scan -->
             <div class="detail-section">
-                <div class="section-title">🛡️ Virus Scan</div>
+                <div class="section-title">Virus Scan</div>
                 <div class="virus-scan">
                     <span style="font-size:24px;">✅</span>
                     <div>
-                        <div class="safe">✓ Safe — VirusTotal Passed</div>
+                        <div class="safe">Safe — VirusTotal Passed</div>
                         <div class="hash">SHA256: <span id="detSHA256">a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0</span></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Related Apps -->
             <div class="detail-section">
-                <div class="section-title">🔗 Related Apps</div>
+                <div class="section-title">Related Apps</div>
                 <div class="related-apps" id="detRelatedApps"></div>
             </div>
 
-            <!-- Reviews -->
             <div class="detail-section">
-                <div class="section-title">⭐ Reviews</div>
+                <div class="section-title">Reviews</div>
                 <div id="detReviewsList"></div>
 
                 <div style="margin-top:16px;background:var(--bg-input);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);">
@@ -1373,53 +1482,140 @@
                         <input type="text" class="search-bar" id="reviewInput" placeholder="Write your review..." style="flex:1;padding:10px 14px;">
                         <button class="btn-primary" onclick="submitReview()" style="width:auto;padding:10px 24px;font-size:13px;">Post</button>
                     </div>
-                    <div style="margin-top:8px;">
+                    <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">
                         <label style="font-size:12px;color:var(--text-gray);cursor:pointer;">
                             <input type="file" accept="image/*" multiple id="reviewImageInput" style="display:none;" onchange="uploadReviewImages(this)">
-                            📷 Attach Screenshots
+                            Attach Screenshots
                         </label>
-                        <div id="reviewImagePreviews" class="flex gap-8 mt-12" style="flex-wrap:wrap;"></div>
+                        <button class="btn-outline" onclick="reportReview()" style="padding:2px 12px;font-size:11px;color:var(--red);border-color:var(--red);">Report Review</button>
+                    </div>
+                    <div id="reviewImagePreviews" class="flex gap-8 mt-12" style="flex-wrap:wrap;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- UPLOAD MODAL -->
+    <div class="modal-overlay" id="uploadModal" onclick="if(event.target===this)closeUploadModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeUploadModal()">✕</button>
+            <h4 style="margin-bottom:16px;">Upload Application</h4>
+            <form id="uploadForm" onsubmit="handleAppSubmit(event)">
+                <div class="form-group">
+                    <label>App/Game Name</label>
+                    <input type="text" id="formName" required placeholder="e.g., Cyber Crossfire">
+                </div>
+                <div class="form-group">
+                    <label>App Icon</label>
+                    <input type="file" id="formIcon" accept="image/*" required onchange="previewUploadIcon(this)">
+                    <div class="preview-box" id="uploadIconPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Package Name (com.example.app)</label>
+                    <input type="text" id="formPackage" required placeholder="com.example.app">
+                </div>
+                <div class="form-group">
+                    <label>Version</label>
+                    <input type="text" id="formVersion" required placeholder="v1.0.4">
+                </div>
+                <div class="form-group">
+                    <label>Size (MB)</label>
+                    <input type="text" id="formSize" required placeholder="42 MB">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="formCategory">
+                        <option>Games</option><option>Social</option><option>AI</option>
+                        <option>Entertainment</option><option>Tools</option><option>Shopping</option>
+                        <option>Music</option><option>Education</option><option>Health</option>
+                        <option>Photography</option><option>Finance</option><option>Travel</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Short Description</label>
+                    <input type="text" id="formShortDesc" required placeholder="Brief intro...">
+                </div>
+                <div class="form-group">
+                    <label>Full Description</label>
+                    <textarea id="formLongDesc" rows="4" required placeholder="Detailed description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Screenshots (select multiple)</label>
+                    <input type="file" id="formScreenshots" accept="image/*" multiple required onchange="previewUploadScreens(this)">
+                    <div class="preview-box" id="uploadScreensPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label>APK Download URL</label>
+                    <input type="url" id="formApkUrl" required placeholder="https://github.com/.../app.apk">
+                </div>
+                <div class="form-group">
+                    <label>What's New (one per line)</label>
+                    <textarea id="formWhatsNew" rows="3" placeholder="Bug fixes&#10;Dark mode&#10;Performance improvements"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Permissions (comma separated)</label>
+                    <input type="text" id="formPermissions" placeholder="Storage, Camera, Microphone">
+                </div>
+                <button type="submit" class="btn-primary">Upload App</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL -->
+    <div class="modal-overlay" id="adminModal" onclick="if(event.target===this)closeAdminPanel()">
+        <div class="modal-content" style="max-width:600px;">
+            <button class="modal-close" onclick="closeAdminPanel()">✕</button>
+            <h4 style="margin-bottom:16px;">Admin Panel</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+                <div style="background:var(--bg-input);padding:12px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border-color);">
+                    <div style="font-size:20px;font-weight:700;" id="adminTotalApps">0</div>
+                    <div style="font-size:11px;color:var(--text-gray);">Apps</div>
+                </div>
+                <div style="background:var(--bg-input);padding:12px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border-color);">
+                    <div style="font-size:20px;font-weight:700;" id="adminTotalDownloads">0</div>
+                    <div style="font-size:11px;color:var(--text-gray);">Downloads</div>
+                </div>
+                <div style="background:var(--bg-input);padding:12px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border-color);">
+                    <div style="font-size:20px;font-weight:700;" id="adminTotalReviews">0</div>
+                    <div style="font-size:11px;color:var(--text-gray);">Reviews</div>
+                </div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <h5 style="font-size:14px;margin-bottom:8px;">Manage Apps</h5>
+                <div id="adminAppList"></div>
+            </div>
+            <div>
+                <h5 style="font-size:14px;margin-bottom:8px;">Verify Developer</h5>
+                <button class="btn-primary" onclick="verifyDeveloper()" style="width:auto;padding:10px 20px;font-size:13px;">Verify My Account</button>
+                <p style="font-size:12px;color:var(--text-gray);margin-top:4px;">Admin approval required for verified badge.</p>
+            </div>
+            <div style="margin-top:16px;border-top:1px solid var(--border-color);padding-top:16px;">
+                <h5 style="font-size:14px;margin-bottom:8px;">Analytics</h5>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div style="background:var(--bg-input);padding:10px;border-radius:8px;text-align:center;">
+                        <div style="font-size:16px;font-weight:700;" id="analyticsToday">0</div>
+                        <div style="font-size:11px;color:var(--text-gray);">Downloads Today</div>
+                    </div>
+                    <div style="background:var(--bg-input);padding:10px;border-radius:8px;text-align:center;">
+                        <div style="font-size:16px;font-weight:700;" id="analyticsWeek">0</div>
+                        <div style="font-size:11px;color:var(--text-gray);">Downloads This Week</div>
+                    </div>
+                    <div style="background:var(--bg-input);padding:10px;border-radius:8px;text-align:center;grid-column:span 2;">
+                        <div style="font-size:16px;font-weight:700;" id="analyticsTopApp">-</div>
+                        <div style="font-size:11px;color:var(--text-gray);">Top Downloaded App</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- ===== ADMIN ===== -->
-        <div id="page-admin" class="page">
-            <h4 style="margin-bottom:16px;">👮 Admin Panel</h4>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
-                    <div style="font-size:24px;font-weight:700;" id="adminTotalApps">0</div>
-                    <div style="font-size:12px;color:var(--text-gray);">Total Apps</div>
-                </div>
-                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
-                    <div style="font-size:24px;font-weight:700;" id="adminTotalUsers">0</div>
-                    <div style="font-size:12px;color:var(--text-gray);">Total Users</div>
-                </div>
-                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
-                    <div style="font-size:24px;font-weight:700;" id="adminTotalDownloads">0</div>
-                    <div style="font-size:12px;color:var(--text-gray);">Total Downloads</div>
-                </div>
-                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
-                    <div style="font-size:24px;font-weight:700;" id="adminTotalReviews">0</div>
-                    <div style="font-size:12px;color:var(--text-gray);">Total Reviews</div>
-                </div>
-            </div>
-
-            <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;">
-                <h5 style="margin-bottom:12px;">📋 Manage Apps</h5>
-                <div id="adminAppList"></div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- ===== IMAGE VIEWER MODAL ===== -->
+    <!-- IMAGE VIEWER -->
     <div class="modal-overlay" id="imageViewer" onclick="closeImageViewer()">
         <img src="" class="modal-content" id="viewerImage" style="max-width:90%;max-height:85vh;object-fit:contain;padding:0;background:transparent;border:none;">
     </div>
 
-    <!-- ===== BOTTOM NAV ===== -->
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('home','Stardust Store')" id="navHome">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -1441,25 +1637,18 @@
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             <span>Profile</span>
         </div>
-        <div class="nav-item" onclick="switchPage('admin','Admin')" id="navAdmin">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            <span>Admin</span>
-        </div>
     </nav>
 
-    <!-- ===== LOADING ===== -->
+    <!-- LOADING -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <div id="loadingText" style="font-size:14px;color:var(--text-gray);">Loading...</div>
     </div>
 
-    <!-- ===== FIREBASE ===== -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js">
-    </script>
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
     <script>
         // ============================================
@@ -1477,7 +1666,6 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const storageRef = firebase.storage().ref();
 
         // ============================================
         // STATE
@@ -1491,15 +1679,11 @@
         let wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
         let notifications = JSON.parse(localStorage.getItem('stardust_notifications') || '[]');
         let reviewImages = [];
+        let downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+        let isVerified = localStorage.getItem('stardust_verified') === 'true';
+        let isAdmin = true; // For demo, admin is true
 
-        // ============================================
-        // IMGBB API KEY
-        // ============================================
         const IMGBB_KEY = "550a3bcd47c1b0a86a9f2ba7a41770b6";
-
-        // ============================================
-        // DOM REFS
-        // ============================================
         const $ = id => document.getElementById(id);
         const headerTitle = $('headerTitle');
         const backBtn = $('backBtn');
@@ -1509,151 +1693,80 @@
         // ============================================
         function showLoading(show, text = 'Loading...') {
             const overlay = $('loadingOverlay');
-            if (show) {
-                $('loadingText').textContent = text;
-                overlay.classList.add('show');
-            } else {
-                overlay.classList.remove('show');
-            }
+            if (show) { $('loadingText').textContent = text;
+                overlay.classList.add('show'); } else overlay.classList.remove('show');
         }
 
         // ============================================
         // NAVIGATION
         // ============================================
-        const pageTitles = {
-            home: 'Stardust Store',
-            search: 'Search',
-            ranking: 'Ranking',
-            wishlist: 'Wishlist',
-            profile: 'Profile',
-            notifications: 'Notifications',
-            details: 'App Details',
-            admin: 'Admin Panel'
-        };
+        const pageTitles = { home: 'Stardust Store', search: 'Search', ranking: 'Ranking', wishlist: 'Wishlist',
+            profile: 'Profile', notifications: 'Notifications', details: 'App Details' };
 
         function switchPage(pageId, title) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Show target
             const target = $(`page-${pageId}`);
             if (target) target.classList.add('active');
-
-            // Update header
             headerTitle.textContent = title || pageTitles[pageId] || pageId;
-
-            // Update nav
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             const navBtn = $(`nav${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`);
             if (navBtn) navBtn.classList.add('active');
-
-            // Back button
-            const isRoot = ['home', 'search', 'ranking', 'wishlist', 'profile', 'notifications', 'admin'].includes(pageId);
+            const isRoot = ['home', 'search', 'ranking', 'wishlist', 'profile', 'notifications'].includes(pageId);
             backBtn.style.display = isRoot ? 'none' : 'flex';
-
-            // Bottom nav
-            const bottomNav = document.querySelector('.bottom-nav');
-            bottomNav.style.display = isRoot ? 'flex' : 'none';
-
-            // History
-            if (navigationHistory[navigationHistory.length - 1] !== pageId) {
-                navigationHistory.push(pageId);
-            }
-
-            // Page specific
+            document.querySelector('.bottom-nav').style.display = isRoot ? 'flex' : 'none';
+            if (navigationHistory[navigationHistory.length - 1] !== pageId) navigationHistory.push(pageId);
             if (pageId === 'ranking') loadRankings();
             if (pageId === 'wishlist') renderWishlist();
             if (pageId === 'profile') loadProfile();
-            if (pageId === 'admin') loadAdmin();
             if (pageId === 'notifications') renderNotifications();
         }
 
         function goBack() {
-            if (navigationHistory.length > 1) {
-                navigationHistory.pop();
-                const prev = navigationHistory[navigationHistory.length - 1];
-                switchPage(prev);
-            }
+            if (navigationHistory.length > 1) { navigationHistory.pop();
+                switchPage(navigationHistory[navigationHistory.length - 1]); }
         }
 
         // ============================================
-        // BANNER SLIDER
+        // BANNER
         // ============================================
-        let bannerIndex = 0;
-        let bannerInterval;
+        let bannerIndex = 0,
+            bannerInterval;
 
         function initBanner(apps) {
-            const slides = document.querySelectorAll('.banner-slide');
-            const dots = document.querySelectorAll('#bannerDots span');
-            if (apps.length < 3) {
-                // Fill with dummy if not enough apps
-                while (apps.length < 3) {
-                    apps.push({
-                        name: 'Featured App',
-                        icon: 'https://img.icons8.com/color/144/android-os.png',
-                        shortDescription: 'Top pick of the day',
-                        downloadCount: 0,
-                        id: 'dummy'
-                    });
-                }
-            }
-            // Use first 3 apps
             const featured = apps.slice(0, 3);
+            while (featured.length < 3) featured.push({ name: 'Featured App', icon: 'https://img.icons8.com/color/144/android-os.png',
+                shortDescription: 'Top pick', id: 'dummy' });
             featured.forEach((app, i) => {
                 $(`bannerIcon${i}`).src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
                 $(`bannerTitle${i}`).textContent = app.name || 'App';
                 $(`bannerDesc${i}`).textContent = app.shortDescription || app.description || 'Awesome app';
-                $(`bannerTag${i}`).textContent = i === 0 ? '⭐ Editor\'s Choice' : i === 1 ? '🔥 Trending' : '✨ New Release';
-                // Click to open
-                document.querySelectorAll('.banner-slide')[i].onclick = () => {
-                    if (app.id && app.id !== 'dummy') viewAppDetails(app.id);
-                };
+                $(`bannerTag${i}`).textContent = i === 0 ? 'Editor\'s Choice' : i === 1 ? 'Trending' : 'New Release';
+                document.querySelectorAll('.banner-slide')[i].onclick = () => { if (app.id && app.id !== 'dummy')
+                        viewAppDetails(app.id); };
             });
-
-            // Dots
-            dots.forEach((dot, i) => {
-                dot.onclick = () => goToBanner(i);
-            });
-
-            // Start auto-slide
+            document.querySelectorAll('#bannerDots span').forEach((dot, i) => { dot.onclick = () => goToBanner(i); });
             clearInterval(bannerInterval);
-            bannerInterval = setInterval(() => {
-                goToBanner((bannerIndex + 1) % 3);
-            }, 5000);
+            bannerInterval = setInterval(() => goToBanner((bannerIndex + 1) % 3), 5000);
         }
 
         function goToBanner(index) {
             bannerIndex = index;
-            document.querySelectorAll('.banner-slide').forEach((el, i) => {
-                el.classList.toggle('active', i === index);
-            });
-            document.querySelectorAll('#bannerDots span').forEach((el, i) => {
-                el.classList.toggle('active', i === index);
-            });
+            document.querySelectorAll('.banner-slide').forEach((el, i) => el.classList.toggle('active', i === index));
+            document.querySelectorAll('#bannerDots span').forEach((el, i) => el.classList.toggle('active', i === index));
         }
 
         // ============================================
-        // RENDER HOME SECTIONS
+        // RENDER HOME
         // ============================================
         function renderHomeSections(apps) {
-            // Sort helpers
             const sortedByDownloads = [...apps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0));
             const sortedByDate = [...apps].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             const games = apps.filter(a => (a.category || '').toLowerCase() === 'games');
             const nonGames = apps.filter(a => (a.category || '').toLowerCase() !== 'games');
-
-            // Editor's Choice - top 5
             renderHorizontal('editorsChoice', sortedByDownloads.slice(0, 5));
-
-            // Trending - next 5
             renderHorizontal('trendingApps', sortedByDownloads.slice(5, 10));
-
-            // New Releases - latest 5
             renderHorizontal('newReleases', sortedByDate.slice(0, 5));
-
-            // Popular Games
             renderHorizontal('popularGames', games.slice(0, 6));
-
-            // Popular Apps
             renderHorizontal('popularApps', nonGames.slice(0, 6));
         }
 
@@ -1661,22 +1774,17 @@
             const container = $(containerId);
             if (!container) return;
             container.innerHTML = '';
-            if (apps.length === 0) {
-                container.innerHTML =
-                '<div style="color:var(--text-gray);font-size:13px;padding:10px 0;">No apps available</div>';
-                return;
-            }
+            if (apps.length === 0) { container.innerHTML =
+                    '<div style="color:var(--text-gray);font-size:13px;padding:10px 0;">No apps available</div>'; return; }
             apps.forEach(app => {
                 const div = document.createElement('div');
                 div.className = 'mini-card';
                 div.innerHTML = `
-                    <img src="${app.icon || 'https://img.icons8.com/color/144/android-os.png'}" alt="${app.name}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                    <img src="${app.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
                     <div class="name">${app.name || 'App'}</div>
                     <div class="sub">${app.downloadCount || 0} downloads</div>
                 `;
-                div.onclick = () => {
-                    if (app.id) viewAppDetails(app.id);
-                };
+                div.onclick = () => { if (app.id) viewAppDetails(app.id); };
                 container.appendChild(div);
             });
         }
@@ -1688,18 +1796,15 @@
             const filtered = allApps.filter(a => (a.category || '').toLowerCase() === cat.toLowerCase());
             const container = $('searchResults');
             container.innerHTML = '';
-            if (filtered.length === 0) {
-                container.innerHTML =
+            if (filtered.length === 0) container.innerHTML =
                 `<p style="grid-column:1/-1;color:var(--text-gray);text-align:center;padding:40px 0;">No apps in ${cat} category</p>`;
-            } else {
-                renderAppGrid(filtered, container);
-            }
-            switchPage('search', `${cat}`);
+            else renderAppGrid(filtered, container);
+            switchPage('search', cat);
             $('searchInput').value = cat;
         }
 
         // ============================================
-        // APP GRID RENDER
+        // APP GRID
         // ============================================
         function renderAppGrid(apps, container) {
             container.innerHTML = '';
@@ -1713,9 +1818,7 @@
                     <div class="app-rating">${'★'.repeat(Math.min(5, Math.round(app.rating || 4.5)))}</div>
                     <div class="app-downloads">${app.downloadCount || 0} downloads</div>
                 `;
-                card.onclick = () => {
-                    if (app.id) viewAppDetails(app.id);
-                };
+                card.onclick = () => { if (app.id) viewAppDetails(app.id); };
                 container.appendChild(card);
             });
         }
@@ -1725,17 +1828,13 @@
         // ============================================
         function handleSearch() {
             const query = $('searchInput').value.toLowerCase().trim();
-            if (!query) {
-                $('searchResults').innerHTML = '';
-                return;
-            }
+            if (!query) { $('searchResults').innerHTML = ''; return; }
             let results = allApps.filter(app => {
-                const name = (app.name || '').toLowerCase();
-                const dev = (app.developer || '').toLowerCase();
-                const cat = (app.category || '').toLowerCase();
-                const tags = (app.tags || '').toLowerCase();
-                const desc = (app.description || '').toLowerCase();
-
+                const name = (app.name || '').toLowerCase(),
+                    dev = (app.developer || '').toLowerCase(),
+                    cat = (app.category || '').toLowerCase(),
+                    tags = (app.tags || '').toLowerCase(),
+                    desc = (app.description || '').toLowerCase();
                 switch (currentSearchFilter) {
                     case 'name':
                         return name.includes(query);
@@ -1753,10 +1852,8 @@
             renderAppGrid(results, $('searchResults'));
         }
 
-        function searchQuery(q) {
-            $('searchInput').value = q;
-            handleSearch();
-        }
+        function searchQuery(q) { $('searchInput').value = q;
+            handleSearch(); }
 
         function setSearchFilter(filter) {
             currentSearchFilter = filter;
@@ -1765,19 +1862,38 @@
             handleSearch();
         }
 
+        function toggleAdvancedSearch() { $('advancedSearch').classList.toggle('open'); }
+
+        function applyAdvancedSearch() {
+            const cat = $('advCategory').value.toLowerCase();
+            const rating = parseFloat($('advRating').value) || 0;
+            const size = parseInt($('advSize').value) || 9999;
+            const days = parseInt($('advUpdate').value) || 9999;
+
+            let results = allApps.filter(app => {
+                if (cat && (app.category || '').toLowerCase() !== cat) return false;
+                if (rating && (app.rating || 0) < rating) return false;
+                const appSize = parseInt(app.size) || 0;
+                if (size && appSize > size) return false;
+                if (days) {
+                    const updated = new Date(app.updatedDate || app.timestamp || Date.now());
+                    const diff = (Date.now() - updated.getTime()) / (1000 * 60 * 60 * 24);
+                    if (diff > days) return false;
+                }
+                return true;
+            });
+            renderAppGrid(results, $('searchResults'));
+            $('advancedSearch').classList.remove('open');
+        }
+
         function startVoiceSearch() {
             if ('webkitSpeechRecognition' in window) {
                 const recognition = new webkitSpeechRecognition();
                 recognition.lang = 'en-US';
                 recognition.start();
-                recognition.onresult = (e) => {
-                    const transcript = e.results[0][0].transcript;
-                    $('searchInput').value = transcript;
-                    handleSearch();
-                };
-            } else {
-                alert('Voice search is not supported in this browser.');
-            }
+                recognition.onresult = (e) => { $('searchInput').value = e.results[0][0].transcript;
+                    handleSearch(); };
+            } else alert('Voice search not supported.');
         }
 
         // ============================================
@@ -1802,7 +1918,7 @@
                     break;
                 case 'top-grossing':
                     sorted.sort((a, b) => ((b.downloadCount || 0) * (b.price || 0)) - ((a.downloadCount || 0) * (a.price ||
-                    0)));
+                        0)));
                     break;
                 case 'trending':
                     sorted.sort((a, b) => (b.trendingScore || 0) - (a.trendingScore || 0));
@@ -1821,49 +1937,32 @@
         // ============================================
         function toggleWishlist() {
             if (!activeAppId) return;
-            const index = wishlist.indexOf(activeAppId);
-            if (index > -1) {
-                wishlist.splice(index, 1);
-                $('detWishlist').textContent = '♡';
-            } else {
-                wishlist.push(activeAppId);
+            const idx = wishlist.indexOf(activeAppId);
+            if (idx > -1) { wishlist.splice(idx, 1);
+                $('detWishlist').textContent = '♡'; } else { wishlist.push(activeAppId);
                 $('detWishlist').textContent = '❤️';
-                addNotification(`${getAppName(activeAppId)} added to wishlist`);
-            }
+                addNotification(`${getAppName(activeAppId)} added to wishlist`); }
             localStorage.setItem('stardust_wishlist', JSON.stringify(wishlist));
             updateWishlistBadge();
         }
 
-        function getAppName(id) {
-            const app = allApps.find(a => a.id === id);
-            return app ? app.name : 'App';
-        }
+        function getAppName(id) { const app = allApps.find(a => a.id === id); return app ? app.name : 'App'; }
 
         function updateWishlistBadge() {
             const count = wishlist.length;
-            // Update nav badge
             const navWishlist = $('navWishlist');
             let badge = navWishlist.querySelector('.nav-badge');
-            if (count > 0) {
-                if (!badge) {
-                    badge = document.createElement('span');
+            if (count > 0) { if (!badge) { badge = document.createElement('span');
                     badge.className = 'nav-badge';
-                    navWishlist.appendChild(badge);
-                }
-                badge.textContent = count;
-            } else if (badge) {
-                badge.remove();
-            }
+                    navWishlist.appendChild(badge); } badge.textContent = count; } else if (badge) badge.remove();
         }
 
         function renderWishlist() {
             const container = $('wishlistGrid');
             const wishApps = allApps.filter(a => wishlist.includes(a.id));
             renderAppGrid(wishApps, container);
-            if (wishApps.length === 0) {
-                container.innerHTML =
-                    `<p style="grid-column:1/-1;color:var(--text-gray);text-align:center;padding:40px 0;">Your wishlist is empty. ❤️</p>`;
-            }
+            if (wishApps.length === 0) container.innerHTML =
+                `<p style="grid-column:1/-1;color:var(--text-gray);text-align:center;padding:40px 0;">Your wishlist is empty.</p>`;
         }
 
         // ============================================
@@ -1876,35 +1975,20 @@
             updateNotifBadge();
         }
 
-        function updateNotifBadge() {
-            const dot = $('notifDot');
-            if (notifications.length > 0) {
-                dot.style.display = 'block';
-            } else {
-                dot.style.display = 'none';
-            }
-        }
+        function updateNotifBadge() { $('notifDot').style.display = notifications.length > 0 ? 'block' : 'none'; }
 
         function renderNotifications() {
             const container = $('notificationList');
             container.innerHTML = '';
-            if (notifications.length === 0) {
-                container.innerHTML =
-                    '<p style="color:var(--text-gray);text-align:center;padding:40px 0;">No notifications yet.</p>';
-                return;
-            }
-            notifications.forEach((n, i) => {
+            if (notifications.length === 0) { container.innerHTML =
+                    '<p style="color:var(--text-gray);text-align:center;padding:40px 0;">No notifications yet.</p>'; return; }
+            notifications.forEach(n => {
                 const div = document.createElement('div');
                 div.className = 'review-card';
-                div.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <span>${n.text}</span>
-                        <span style="font-size:11px;color:var(--text-muted);">${new Date(n.timestamp).toLocaleDateString()}</span>
-                    </div>
-                `;
+                div.innerHTML =
+                    `<div style="display:flex;justify-content:space-between;align-items:center;"><span>${n.text}</span><span style="font-size:11px;color:var(--text-muted);">${new Date(n.timestamp).toLocaleDateString()}</span></div>`;
                 container.appendChild(div);
             });
-            // Mark as read
             $('notifDot').style.display = 'none';
         }
 
@@ -1915,117 +1999,234 @@
             const name = localStorage.getItem('stardust_profile_name') || 'Developer Admin';
             const handle = localStorage.getItem('stardust_profile_handle') || '@marketadmin';
             const pfp = localStorage.getItem('stardust_profile_pfp') || 'https://img.icons8.com/clouds/200/user.png';
-
             $('profileName').textContent = name;
             $('profileHandle').textContent = handle;
             $('profilePfp').src = pfp;
 
-            // Stats
-            const appCount = allApps.length;
-            const totalDownloads = allApps.reduce((sum, a) => sum + (a.downloadCount || 0), 0);
-            const totalReviews = allApps.reduce((sum, a) => sum + (a.reviewCount || 0), 0);
+            // Verified badge
+            isVerified = localStorage.getItem('stardust_verified') === 'true';
+            $('profileVerifiedBadge').style.display = isVerified ? 'inline-flex' : 'none';
 
+            const appCount = allApps.length;
+            const totalDownloads = allApps.reduce((s, a) => s + (a.downloadCount || 0), 0);
+            const totalReviews = allApps.reduce((s, a) => s + (a.reviewCount || 0), 0);
             $('statApps').textContent = appCount;
             $('statDownloads').textContent = totalDownloads.toLocaleString();
             $('statReviews').textContent = totalReviews;
             $('statWishlist').textContent = wishlist.length;
 
-            // Download history
-            const history = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+            downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
             const container = $('downloadHistory');
             container.innerHTML = '';
-            if (history.length === 0) {
-                container.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No downloads yet</span>';
-            } else {
-                history.slice(0, 10).forEach(name => {
-                    const span = document.createElement('span');
-                    span.className = 'history-badge';
-                    span.style.cssText =
-                        'background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:20px;font-size:12px;';
-                    span.textContent = name;
-                    container.appendChild(span);
-                });
-            }
+            if (downloadLogs.length === 0) container.innerHTML =
+                '<span style="color:var(--text-gray);font-size:13px;">No downloads yet</span>';
+            else downloadLogs.slice(0, 10).forEach(name => {
+                const span = document.createElement('span');
+                span.style.cssText =
+                    'background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:20px;font-size:12px;';
+                span.textContent = name;
+                container.appendChild(span);
+            });
 
-            // Review logs
             const revLogs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
             const revContainer = $('reviewLogs');
             revContainer.innerHTML = '';
-            if (revLogs.length === 0) {
-                revContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No reviews yet</p>';
-            } else {
-                revLogs.slice(0, 10).forEach(log => {
-                    const div = document.createElement('div');
-                    div.className = 'review-log-card';
-                    div.style.cssText =
-                        'background:#1f2937;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--text-gray);margin-bottom:6px;';
-                    div.textContent = log;
-                    revContainer.appendChild(div);
-                });
-            }
+            if (revLogs.length === 0) revContainer.innerHTML =
+            '<p style="color:var(--text-gray);font-size:13px;">No reviews yet</p>';
+            else revLogs.slice(0, 10).forEach(log => {
+                const div = document.createElement('div');
+                div.style.cssText =
+                    'background:#1f2937;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--text-gray);margin-bottom:6px;';
+                div.textContent = log;
+                revContainer.appendChild(div);
+            });
         }
 
         function editProfile() {
             const name = prompt('Display Name:', $('profileName').textContent);
-            if (name && name.trim()) {
-                localStorage.setItem('stardust_profile_name', name.trim());
-                $('profileName').textContent = name.trim();
-            }
+            if (name && name.trim()) { localStorage.setItem('stardust_profile_name', name.trim());
+                $('profileName').textContent = name.trim(); }
             const handle = prompt('Handle:', $('profileHandle').textContent);
-            if (handle && handle.trim()) {
-                localStorage.setItem('stardust_profile_handle', handle.trim());
-                $('profileHandle').textContent = handle.trim();
-            }
+            if (handle && handle.trim()) { localStorage.setItem('stardust_profile_handle', handle.trim());
+                $('profileHandle').textContent = handle.trim(); }
         }
 
         function uploadPFP(input) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
             showLoading(true, 'Uploading profile picture...');
-
             const formData = new FormData();
             formData.append('image', file);
-
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const url = data.data.url;
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData })
+                .then(res => res.json()).then(data => {
+                    if (data.success) { const url = data.data.url;
                         $('profilePfp').src = url;
-                        localStorage.setItem('stardust_profile_pfp', url);
-                    } else {
-                        // Fallback to local
-                        const reader = new FileReader();
-                        reader.onload = e => {
-                            $('profilePfp').src = e.target.result;
-                            localStorage.setItem('stardust_profile_pfp', e.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
+                        localStorage.setItem('stardust_profile_pfp', url); } else fallbackPFP(file);
                     showLoading(false);
-                })
-                .catch(() => {
+                }).catch(() => fallbackPFP(file));
+        }
+
+        function fallbackPFP(file) {
+            const reader = new FileReader();
+            reader.onload = e => { $('profilePfp').src = e.target.result;
+                localStorage.setItem('stardust_profile_pfp', e.target.result);
+                showLoading(false); };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================
+        // UPLOAD MODAL
+        // ============================================
+        function openUploadModal() { $('uploadModal').classList.add('open'); }
+
+        function closeUploadModal() { $('uploadModal').classList.remove('open'); }
+
+        function previewUploadIcon(input) {
+            const container = $('uploadIconPreview');
+            container.innerHTML = '';
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => { const img = document.createElement('img');
+                    img.src = e.target.result;
+                    container.appendChild(img); };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewUploadScreens(input) {
+            const container = $('uploadScreensPreview');
+            container.innerHTML = '';
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
                     const reader = new FileReader();
-                    reader.onload = e => {
-                        $('profilePfp').src = e.target.result;
-                        localStorage.setItem('stardust_profile_pfp', e.target.result);
-                        showLoading(false);
-                    };
+                    reader.onload = e => { const img = document.createElement('img');
+                        img.className = 'screenshot-preview';
+                        img.src = e.target.result;
+                        container.appendChild(img); };
                     reader.readAsDataURL(file);
                 });
+            }
+        }
+
+        function uploadToImgBB(file) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('image', file);
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData })
+                    .then(res => res.json()).then(data => {
+                        if (data.success) resolve(data.data.url);
+                        else {
+                            const reader = new FileReader();
+                            reader.onload = e => resolve(e.target.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        }
+                    }).catch(() => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+            });
+        }
+
+        function handleAppSubmit(e) {
+            e.preventDefault();
+            showLoading(true, 'Uploading app...');
+
+            const iconFile = $('formIcon').files[0];
+            const screenshotFiles = $('formScreenshots').files;
+            const packageName = $('formPackage').value.trim();
+
+            // Check duplicate package
+            const exists = allApps.some(a => a.package === packageName);
+            if (exists) { showLoading(false);
+                alert('Package name already exists. Please use a unique package name.'); return; }
+
+            // Validate APK URL
+            const apkUrl = $('formApkUrl').value.trim();
+            if (!apkUrl.startsWith('https://') && !apkUrl.startsWith('http://')) {
+                showLoading(false);
+                alert('Please enter a valid APK download URL starting with http:// or https://');
+                return;
+            }
+
+            let iconUrl = '',
+                screenshotUrls = [];
+
+            uploadToImgBB(iconFile).then(url => {
+                iconUrl = url;
+                let chain = Promise.resolve();
+                Array.from(screenshotFiles).forEach((file, i) => {
+                    chain = chain.then(() => uploadToImgBB(file).then(url => { screenshotUrls.push(url); }));
+                });
+                return chain;
+            }).then(() => {
+                const payload = {
+                    name: $('formName').value,
+                    package: packageName,
+                    version: $('formVersion').value,
+                    size: $('formSize').value,
+                    category: $('formCategory').value,
+                    shortDescription: $('formShortDesc').value,
+                    description: $('formLongDesc').value,
+                    icon: iconUrl,
+                    screenshot: screenshotUrls.join(','),
+                    downloadUrl: apkUrl,
+                    whatsNew: $('formWhatsNew').value,
+                    permissions: $('formPermissions').value,
+                    developer: localStorage.getItem('stardust_profile_name') || 'Developer Admin',
+                    downloadCount: 0,
+                    reviewCount: 0,
+                    rating: 4.5,
+                    timestamp: Date.now(),
+                    updatedDate: new Date().toISOString().split('T')[0],
+                    verified: false
+                };
+                return db.ref('apps').push(payload);
+            }).then(() => {
+                showLoading(false);
+                closeUploadModal();
+                $('uploadForm').reset();
+                $('uploadIconPreview').innerHTML = '';
+                $('uploadScreensPreview').innerHTML = '';
+                addNotification('New app uploaded successfully!');
+                alert('App uploaded successfully!');
+            }).catch(err => { showLoading(false);
+                console.error(err);
+                alert('Upload failed: ' + err.message); });
         }
 
         // ============================================
         // ADMIN PANEL
         // ============================================
-        function loadAdmin() {
+        function openAdminPanel() {
+            loadAdminStats();
+            $('adminModal').classList.add('open');
+        }
+
+        function closeAdminPanel() { $('adminModal').classList.remove('open'); }
+
+        function loadAdminStats() {
             $('adminTotalApps').textContent = allApps.length;
             $('adminTotalDownloads').textContent = allApps.reduce((s, a) => s + (a.downloadCount || 0), 0).toLocaleString();
             $('adminTotalReviews').textContent = allApps.reduce((s, a) => s + (a.reviewCount || 0), 0);
-            $('adminTotalUsers').textContent = '1'; // Simulated
+
+            // Analytics
+            const today = new Date().toISOString().split('T')[0];
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            let todayDownloads = 0,
+                weekDownloads = 0;
+            allApps.forEach(a => {
+                if (a.downloadDate === today) todayDownloads += a.downloadCount || 0;
+                if (a.downloadDate && new Date(a.downloadDate) > weekAgo) weekDownloads += a.downloadCount || 0;
+            });
+            $('analyticsToday').textContent = todayDownloads;
+            $('analyticsWeek').textContent = weekDownloads;
+
+            const topApp = [...allApps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))[0];
+            $('analyticsTopApp').textContent = topApp ? `${topApp.name} (${topApp.downloadCount || 0} downloads)` : '-';
 
             const container = $('adminAppList');
             container.innerHTML = '';
@@ -2036,27 +2237,39 @@
                 div.innerHTML = `
                     <span style="font-size:13px;">${app.name} <span style="color:var(--text-gray);font-size:11px;">${app.downloadCount || 0} downloads</span></span>
                     <div style="display:flex;gap:6px;">
-                        <button onclick="featureApp('${app.id}')" style="background:var(--primary);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">⭐ Feature</button>
-                        <button onclick="deleteApp('${app.id}')" style="background:var(--red);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">🗑️</button>
+                        <button onclick="verifyApp('${app.id}')" style="background:var(--green);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">Verify</button>
+                        <button onclick="deleteApp('${app.id}')" style="background:var(--red);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">Delete</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function featureApp(id) {
-            const app = allApps.find(a => a.id === id);
-            if (app) {
-                addNotification(`${app.name} has been featured! ⭐`);
-                alert(`${app.name} featured!`);
-            }
+        function verifyApp(id) {
+            db.ref(`apps/${id}/verified`).set(true).then(() => {
+                addNotification('App verified successfully!');
+                loadAdminStats();
+            });
         }
 
         function deleteApp(id) {
-            if (confirm('Are you sure you want to delete this app?')) {
+            if (confirm('Delete this app permanently?')) {
                 db.ref(`apps/${id}`).remove().then(() => {
-                    addNotification('App deleted from store');
+                    addNotification('App deleted');
+                    loadAdminStats();
                 });
+            }
+        }
+
+        function verifyDeveloper() {
+            if (isVerified) { alert('Your account is already verified!'); return; }
+            if (confirm('Request developer verification? Admin will approve.')) {
+                // Simulate admin approval
+                isVerified = true;
+                localStorage.setItem('stardust_verified', 'true');
+                $('profileVerifiedBadge').style.display = 'inline-flex';
+                addNotification('Your account has been verified!');
+                alert('Account verified successfully!');
             }
         }
 
@@ -2068,7 +2281,6 @@
             const app = allApps.find(a => a.id === appId);
             if (!app) return;
 
-            // Basic info
             $('detIcon').src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
             $('detTitle').textContent = app.name || 'App';
             $('detDeveloper').textContent = `by ${app.developer || 'Unknown Developer'}`;
@@ -2082,20 +2294,31 @@
             $('detReviewCount').textContent = `(${app.reviewCount || 0} reviews)`;
 
             // Verified badge
-            $('detVerified').textContent = app.verified ? '✓ Verified' : '';
+            $('detVerified').style.display = app.verified ? 'inline-flex' : 'none';
 
-            // Wishlist
+            // Check if already installed (simulated)
+            const isInstalled = downloadLogs.includes(app.name);
+            const btnText = $('installBtnText');
+            const progress = $('installProgress');
+            if (isInstalled && app.version) {
+                const installedVer = localStorage.getItem(`installed_${app.package}_version`) || 'v1.0';
+                if (installedVer !== app.version) {
+                    btnText.textContent = 'Update APK';
+                } else {
+                    btnText.textContent = 'Open App';
+                }
+            } else {
+                btnText.textContent = 'Install APK';
+            }
+            progress.style.width = '0%';
+
             $('detWishlist').textContent = wishlist.includes(appId) ? '❤️' : '♡';
-
-            // Description
             $('detDescription').textContent = app.description || 'No description available.';
 
-            // Screenshots
             const screenContainer = $('detScreenshots');
             screenContainer.innerHTML = '';
             if (app.screenshot) {
-                const imgs = app.screenshot.split(',');
-                imgs.forEach(url => {
+                app.screenshot.split(',').forEach(url => {
                     if (url.trim()) {
                         const img = document.createElement('img');
                         img.src = url.trim();
@@ -2103,16 +2326,12 @@
                         screenContainer.appendChild(img);
                     }
                 });
-            } else {
-                screenContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No screenshots available.</p>';
-            }
+            } else screenContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No screenshots available.</p>';
 
-            // What's New
             const wnContainer = $('detWhatsNew');
             wnContainer.innerHTML = '';
             if (app.whatsNew) {
-                const items = app.whatsNew.split('\n');
-                items.forEach(item => {
+                app.whatsNew.split('\n').forEach(item => {
                     if (item.trim()) {
                         const div = document.createElement('div');
                         div.className = 'whats-new-item';
@@ -2120,45 +2339,30 @@
                         wnContainer.appendChild(div);
                     }
                 });
-            } else {
-                wnContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No update notes available.</p>';
-            }
+            } else wnContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No update notes available.</p>';
 
-            // Version History
             const vhContainer = $('detVersionHistory');
             vhContainer.innerHTML = '';
             if (app.versionHistory) {
-                const versions = app.versionHistory.split(',');
-                versions.forEach(v => {
-                    if (v.trim()) {
-                        const span = document.createElement('span');
+                app.versionHistory.split(',').forEach(v => {
+                    if (v.trim()) { const span = document.createElement('span');
                         span.className = 'vh-item';
                         span.textContent = v.trim();
-                        vhContainer.appendChild(span);
-                    }
+                        vhContainer.appendChild(span); }
                 });
-            } else {
-                vhContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">v1.0</span>';
-            }
+            } else vhContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">v1.0</span>';
 
-            // Permissions
             const permContainer = $('detPermissions');
             permContainer.innerHTML = '';
             if (app.permissions) {
-                const perms = app.permissions.split(',');
-                perms.forEach(p => {
-                    if (p.trim()) {
-                        const span = document.createElement('span');
+                app.permissions.split(',').forEach(p => {
+                    if (p.trim()) { const span = document.createElement('span');
                         span.className = 'perm';
                         span.textContent = p.trim();
-                        permContainer.appendChild(span);
-                    }
+                        permContainer.appendChild(span); }
                 });
-            } else {
-                permContainer.innerHTML = '<span class="perm">No permissions listed</span>';
-            }
+            } else permContainer.innerHTML = '<span class="perm">No permissions listed</span>';
 
-            // App Info
             $('detPackage').textContent = app.package || 'com.example.app';
             $('detVersionInfo').textContent = app.version || '1.0.0';
             $('detSizeInfo').textContent = app.size || '0 MB';
@@ -2166,64 +2370,71 @@
             $('detUpdatedDate').textContent = app.updatedDate || '2024-01-01';
             $('detAndroidVer').textContent = app.androidVer || '5.0+';
             $('detLanguage').textContent = app.language || 'English';
-
-            // SHA256
             $('detSHA256').textContent = app.sha256 || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0';
 
-            // Related Apps
             const relContainer = $('detRelatedApps');
             relContainer.innerHTML = '';
-            const related = allApps.filter(a => a.id !== appId && (a.category === app.category || a.id !== appId)).slice(0,
-            6);
-            if (related.length === 0) {
-                relContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No related apps found.</span>';
-            } else {
-                related.forEach(a => {
-                    const div = document.createElement('div');
-                    div.className = 'rel-item';
-                    div.innerHTML = `
-                        <img src="${a.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
-                        <div class="rn">${a.name || 'App'}</div>
-                    `;
-                    div.onclick = () => viewAppDetails(a.id);
-                    relContainer.appendChild(div);
-                });
-            }
+            const related = allApps.filter(a => a.id !== appId && (a.category === app.category)).slice(0, 6);
+            if (related.length === 0) relContainer.innerHTML =
+                '<span style="color:var(--text-gray);font-size:13px;">No related apps found.</span>';
+            else related.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'rel-item';
+                div.innerHTML =
+                    `<img src="${a.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'"><div class="rn">${a.name || 'App'}</div>`;
+                div.onclick = () => viewAppDetails(a.id);
+                relContainer.appendChild(div);
+            });
 
-            // Reviews
             loadReviews(appId);
-
-            // Install button
             $('detInstallBtn').onclick = () => installApp();
-
-            // Switch page
             switchPage('details', app.name);
         }
 
         // ============================================
-        // INSTALL
+        // INSTALL with Progress
         // ============================================
         function installApp() {
             const app = allApps.find(a => a.id === activeAppId);
             if (!app) return;
 
-            // Increment download count
-            db.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
-            db.ref(`apps/${app.id}/reviewCount`).transaction(c => (c || 0) + 0);
+            const btnText = $('installBtnText');
+            const progress = $('installProgress');
 
-            // Log download
-            const logs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
-            if (!logs.includes(app.name)) logs.push(app.name);
-            localStorage.setItem('stardust_download_logs', JSON.stringify(logs));
-
-            addNotification(`Downloaded ${app.name}`);
-
-            // Open APK URL
-            if (app.downloadUrl) {
+            if (btnText.textContent === 'Open App') {
                 window.open(app.downloadUrl, '_blank');
-            } else {
-                alert(`Downloading ${app.name}... (Demo)`);
+                return;
             }
+
+            // Simulate download progress
+            btnText.textContent = 'Downloading...';
+            let pct = 0;
+            const interval = setInterval(() => {
+                pct += Math.random() * 15 + 5;
+                if (pct >= 100) {
+                    pct = 100;
+                    clearInterval(interval);
+                    progress.style.width = '100%';
+                    btnText.textContent = 'Installing...';
+                    setTimeout(() => {
+                        // Complete installation
+                        db.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
+                        db.ref(`apps/${app.id}/downloadDate`).set(new Date().toISOString().split('T')[0]);
+
+                        if (!downloadLogs.includes(app.name)) downloadLogs.push(app.name);
+                        localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
+                        localStorage.setItem(`installed_${app.package}_version`, app.version);
+
+                        addNotification(`Downloaded ${app.name}`);
+                        btnText.textContent = 'Open App';
+                        progress.style.width = '0%';
+
+                        if (app.downloadUrl) window.open(app.downloadUrl, '_blank');
+                        else alert(`Downloading ${app.name}... (Demo)`);
+                    }, 800);
+                }
+                progress.style.width = `${Math.min(pct, 100)}%`;
+            }, 300);
         }
 
         // ============================================
@@ -2232,15 +2443,13 @@
         function setReviewRating(stars) {
             reviewRating = stars;
             document.querySelectorAll('#reviewStars span').forEach(el => {
-                const val = parseInt(el.dataset.star);
-                el.style.color = val <= stars ? 'var(--gold)' : 'var(--border-color)';
+                el.style.color = parseInt(el.dataset.star) <= stars ? 'var(--gold)' : 'var(--border-color)';
             });
         }
 
         function submitReview() {
             const input = $('reviewInput');
             if (!input.value.trim() || !activeAppId) return;
-
             const app = allApps.find(a => a.id === activeAppId);
             const reviewData = {
                 author: localStorage.getItem('stardust_profile_name') || 'Developer Admin',
@@ -2250,16 +2459,11 @@
                 timestamp: Date.now(),
                 images: reviewImages.join(',')
             };
-
             db.ref(`reviews/${activeAppId}`).push(reviewData).then(() => {
-                // Increment review count
                 db.ref(`apps/${activeAppId}/reviewCount`).transaction(c => (c || 0) + 1);
-
-                // Log review
                 const logs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
                 logs.push(`[${reviewRating}★] ${app ? app.name : 'App'}: "${input.value.trim()}"`);
                 localStorage.setItem('stardust_reviews_logs', JSON.stringify(logs));
-
                 input.value = '';
                 reviewImages = [];
                 $('reviewImagePreviews').innerHTML = '';
@@ -2273,71 +2477,44 @@
                 const data = snapshot.val();
                 const container = $('detReviewsList');
                 container.innerHTML = '';
-
-                if (!data) {
-                    container.innerHTML =
-                        '<p style="color:var(--text-gray);text-align:center;padding:20px 0;">No reviews yet. Be the first!</p>';
-                    return;
-                }
-
+                if (!data) { container.innerHTML =
+                        '<p style="color:var(--text-gray);text-align:center;padding:20px 0;">No reviews yet. Be the first!</p>'; return; }
                 const reviews = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                // Rating graph
                 let ratings = [0, 0, 0, 0, 0];
-                reviews.forEach(r => {
-                    const star = Math.min(5, Math.max(1, Math.round(r.rating || 5)));
-                    ratings[star - 1]++;
-                });
+                reviews.forEach(r => { const star = Math.min(5, Math.max(1, Math.round(r.rating || 5)));
+                    ratings[star - 1]++; });
                 const total = reviews.length;
-
                 let graphHtml = `<div class="rating-graph">`;
                 for (let i = 5; i >= 1; i--) {
                     const count = ratings[i - 1] || 0;
                     const pct = total > 0 ? (count / total) * 100 : 0;
-                    graphHtml += `
-                        <div class="rg-row">
-                            <span>${i}★</span>
-                            <div class="rg-bar"><div class="rg-fill" style="width:${pct}%;"></div></div>
-                            <span>${count}</span>
-                        </div>
-                    `;
+                    graphHtml +=
+                        `<div class="rg-row"><span>${i}★</span><div class="rg-bar"><div class="rg-fill" style="width:${pct}%;"></div></div><span>${count}</span></div>`;
                 }
                 graphHtml += `</div>`;
                 container.innerHTML = graphHtml;
-
-                // Reviews list
                 reviews.forEach(r => {
                     const div = document.createElement('div');
                     div.className = 'review-card';
                     let stars = '';
-                    for (let i = 0; i < 5; i++) {
-                        stars += i < Math.round(r.rating || 5) ? '★' : '☆';
-                    }
-
+                    for (let i = 0; i < 5; i++) stars += i < Math.round(r.rating || 5) ? '★' : '☆';
                     let imagesHtml = '';
                     if (r.images) {
-                        const imgs = r.images.split(',');
-                        imgs.forEach(url => {
-                            if (url.trim()) {
-                                imagesHtml +=
-                                    `<img src="${url.trim()}" style="height:50px;border-radius:6px;object-fit:cover;cursor:pointer;" onclick="openImageViewer('${url.trim()}')">`;
-                            }
+                        r.images.split(',').forEach(url => {
+                            if (url.trim()) imagesHtml +=
+                                `<img src="${url.trim()}" style="height:50px;border-radius:6px;object-fit:cover;cursor:pointer;" onclick="openImageViewer('${url.trim()}')">`;
                         });
                     }
-
                     const isDev = r.handle === '@marketadmin' || r.author.toLowerCase() === 'developer admin';
-
                     div.innerHTML = `
-                        <div class="rev-head">
-                            <span class="rev-author">${r.author || 'Anonymous'} ${isDev ? '⭐' : ''}</span>
-                            <span class="rev-stars">${stars}</span>
-                        </div>
+                        <div class="rev-head"><span class="rev-author">${r.author || 'Anonymous'} ${isDev ? '⭐' : ''}</span><span class="rev-stars">${stars}</span></div>
                         <div class="rev-text">${r.text || ''}</div>
                         ${imagesHtml ? `<div class="flex gap-8 mt-12" style="flex-wrap:wrap;">${imagesHtml}</div>` : ''}
                         <div class="rev-actions">
                             <button onclick="helpfulReview(this)">👍 Helpful</button>
                             <button onclick="notHelpfulReview(this)">👎 Not Helpful</button>
                             <span style="color:var(--text-muted);font-size:11px;">${new Date(r.timestamp).toLocaleDateString()}</span>
+                            <button onclick="reportReview()" style="color:var(--red);">Report</button>
                         </div>
                         ${isDev ? `<div class="dev-reply"><strong>Developer:</strong> Thanks for your feedback! We appreciate it.</div>` : ''}
                     `;
@@ -2346,30 +2523,24 @@
             });
         }
 
-        function helpfulReview(btn) {
-            btn.textContent = '👍 Helpful ✓';
-            btn.style.color = 'var(--green)';
-        }
+        function helpfulReview(btn) { btn.textContent = '👍 Helpful ✓';
+            btn.style.color = 'var(--green)'; }
 
-        function notHelpfulReview(btn) {
-            btn.textContent = '👎 Not Helpful ✓';
-            btn.style.color = 'var(--red)';
-        }
+        function notHelpfulReview(btn) { btn.textContent = '👎 Not Helpful ✓';
+            btn.style.color = 'var(--red)'; }
+
+        function reportReview() { alert('Review reported to admin for moderation.'); }
+
+        function reportApp() { alert('App reported to admin for review.'); }
 
         function uploadReviewImages(input) {
             const files = Array.from(input.files);
-            const previewContainer = $('reviewImagePreviews');
-
+            const container = $('reviewImagePreviews');
             files.forEach(file => {
                 const formData = new FormData();
                 formData.append('image', file);
-
-                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(data => {
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData })
+                    .then(res => res.json()).then(data => {
                         if (data.success) {
                             const url = data.data.url;
                             reviewImages.push(url);
@@ -2377,11 +2548,9 @@
                             img.src = url;
                             img.style.cssText =
                                 'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
-                            previewContainer.appendChild(img);
+                            container.appendChild(img);
                         }
-                    })
-                    .catch(() => {
-                        // Fallback
+                    }).catch(() => {
                         const reader = new FileReader();
                         reader.onload = e => {
                             reviewImages.push(e.target.result);
@@ -2389,7 +2558,7 @@
                             img.src = e.target.result;
                             img.style.cssText =
                                 'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
-                            previewContainer.appendChild(img);
+                            container.appendChild(img);
                         };
                         reader.readAsDataURL(file);
                     });
@@ -2399,18 +2568,13 @@
         // ============================================
         // IMAGE VIEWER
         // ============================================
-        function openImageViewer(src) {
-            const viewer = $('imageViewer');
-            $('viewerImage').src = src;
-            viewer.classList.add('open');
-        }
+        function openImageViewer(src) { $('imageViewer').classList.add('open');
+            $('viewerImage').src = src; }
 
-        function closeImageViewer() {
-            $('imageViewer').classList.remove('open');
-        }
+        function closeImageViewer() { $('imageViewer').classList.remove('open'); }
 
         // ============================================
-        // THEME TOGGLE
+        // THEME
         // ============================================
         let darkMode = true;
 
@@ -2424,7 +2588,8 @@
                 root.style.setProperty('--text-light', '#f9fafb');
                 root.style.setProperty('--text-gray', '#9ca3af');
                 root.style.setProperty('--border-color', '#374151');
-                $('themeIcon').innerHTML = '<path d="M9 2c-3.87 3.87-4.38 9.39-1.5 13.5C6.5 12.5 8.5 6.5 14 4c-1.58-1.29-3.86-2-5-2zm0 0c-3.87 3.87-4.38 9.39-1.5 13.5-1.5-2-3-4-3-6.5s1.5-4.5 3-6.5z"/>';
+                $('themeIcon').innerHTML =
+                '<path d="M9 2c-3.87 3.87-4.38 9.39-1.5 13.5C6.5 12.5 8.5 6.5 14 4c-1.58-1.29-3.86-2-5-2zm0 0c-3.87 3.87-4.38 9.39-1.5 13.5-1.5-2-3-4-3-6.5s1.5-4.5 3-6.5z"/>';
             } else {
                 root.style.setProperty('--bg-dark', '#f1f5f9');
                 root.style.setProperty('--bg-card', '#ffffff');
@@ -2444,91 +2609,57 @@
         db.ref('apps').on('value', snapshot => {
             const data = snapshot.val();
             allApps = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-
-            // Update UI
             if (allApps.length > 0) {
                 initBanner(allApps);
                 renderHomeSections(allApps);
-
-                // Update home grid
                 const homeGrid = $('home-apps');
                 if (homeGrid) {
-                    const topApps = [...allApps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0)).slice(0, 8);
+                    const topApps = [...allApps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0)).slice(0,
+                    8);
                     renderAppGrid(topApps, homeGrid);
                 }
             }
-
-            // Refresh current page if needed
             const activePage = document.querySelector('.page.active');
             if (activePage) {
                 const id = activePage.id.replace('page-', '');
                 if (id === 'ranking') loadRankings();
                 if (id === 'wishlist') renderWishlist();
                 if (id === 'profile') loadProfile();
-                if (id === 'admin') loadAdmin();
                 if (id === 'details' && activeAppId) {
-                    const stillExists = allApps.some(a => a.id === activeAppId);
-                    if (stillExists) {
-                        viewAppDetails(activeAppId);
-                    } else {
-                        switchPage('home', 'Stardust Store');
-                    }
+                    const exists = allApps.some(a => a.id === activeAppId);
+                    if (exists) viewAppDetails(activeAppId);
+                    else switchPage('home', 'Stardust Store');
                 }
             }
-
             showLoading(false);
-        }, error => {
-            showLoading(false);
-            console.error('Firebase error:', error);
-        });
+        }, error => { showLoading(false);
+            console.error(error); });
 
         // ============================================
         // INIT
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Restore theme
             const savedTheme = localStorage.getItem('stardust_theme');
-            if (savedTheme === 'light') {
-                darkMode = false;
-                toggleTheme();
-            }
-
-            // Restore wishlist
+            if (savedTheme === 'light') { darkMode = false;
+                toggleTheme(); }
             wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
             updateWishlistBadge();
-
-            // Restore notifications
             notifications = JSON.parse(localStorage.getItem('stardust_notifications') || '[]');
             updateNotifBadge();
-
-            // Restore profile
-            if (localStorage.getItem('stardust_profile_name')) {
-                $('profileName').textContent = localStorage.getItem('stardust_profile_name');
-            }
-            if (localStorage.getItem('stardust_profile_handle')) {
-                $('profileHandle').textContent = localStorage.getItem('stardust_profile_handle');
-            }
-            if (localStorage.getItem('stardust_profile_pfp')) {
-                $('profilePfp').src = localStorage.getItem('stardust_profile_pfp');
-            }
-
-            // Set default review rating
+            if (localStorage.getItem('stardust_profile_name')) $('profileName').textContent = localStorage.getItem(
+                'stardust_profile_name');
+            if (localStorage.getItem('stardust_profile_handle')) $('profileHandle').textContent = localStorage.getItem(
+                'stardust_profile_handle');
+            if (localStorage.getItem('stardust_profile_pfp')) $('profilePfp').src = localStorage.getItem(
+                'stardust_profile_pfp');
+            isVerified = localStorage.getItem('stardust_verified') === 'true';
+            if (isVerified) $('profileVerifiedBadge').style.display = 'inline-flex';
             setReviewRating(5);
-
             showLoading(true, 'Loading Stardust Store...');
         });
 
-        // ============================================
-        // SEARCH SUGGESTIONS - Click to search
-        // ============================================
-        function searchQuery(q) {
-            $('searchInput').value = q;
-            handleSearch();
-            switchPage('search', 'Search');
-        }
-
-        console.log('🚀 Stardust Store Pro V2 loaded successfully!');
-        console.log('📦 Features: Home Banner | Editor\'s Choice | Trending | Categories | Search with filters | Wishlist | Notifications | Admin Panel | Ratings | Reviews with images | Version history | Permissions | Virus scan | Related apps | Dark/Light theme | Voice search | And more!');
+        console.log('🚀 Stardust Store Pro V2 - All features integrated!');
+        console.log('📦 Features: Upload in Profile | Admin in Profile | Verified System | Update Detection | Download Progress | Report System | Developer Profile | Advanced Search | Real Analytics | Push Notifications | Security Validations');
     </script>
 </body>
 </html>
