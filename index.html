@@ -1,369 +1,1470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Stardust Store Pro</title>
     <style>
+        /* ===== CSS VARIABLES ===== */
         :root {
             --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --dark-bg: #0b0f19;
-            --card-bg: #111827;
-            --input-bg: #1f2937;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --bg-dark: #0b0f19;
+            --bg-card: #111827;
+            --bg-input: #1f2937;
             --text-light: #f9fafb;
             --text-gray: #9ca3af;
+            --text-muted: #6b7280;
             --border-color: #374151;
-            --overlay: rgba(0, 0, 0, 0.9);
             --gold: #f59e0b;
+            --green: #22c55e;
+            --red: #ef4444;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        /* ===== RESET ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
-            background-color: var(--dark-bg);
+            background: var(--bg-dark);
             color: var(--text-light);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding-bottom: 75px;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+            font-family: inherit;
+        }
+        img {
+            display: block;
+            max-width: 100%;
         }
 
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* ===== HEADER ===== */
         .header {
-            background-color: var(--card-bg);
-            padding: 16px 20px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
+            background: var(--bg-card);
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 60px;
         }
-        .header-back { background: none; border: none; fill: white; cursor: pointer; display: none; }
-        .header-title { flex-grow: 1; text-align: center; }
+        .header-back {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-input);
+            display: none;
+            flex-shrink: 0;
+        }
+        .header-back svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-light);
+        }
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 8px;
+        }
+        .header-action {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-input);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .header-action svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-light);
+        }
+        .badge-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 10px;
+            height: 10px;
+            background: var(--red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
 
-        .container { max-width: 1000px; margin: 25px auto; padding: 0 20px; }
-        
-        .page { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
-        .page.active { display: block; opacity: 1; transform: translateY(0); }
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
 
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            padding: 16px 0 20px;
+        }
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== BANNER SLIDER ===== */
+        .banner-slider {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+            height: 180px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+        .banner-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            padding: 24px 28px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.05));
+        }
+        .banner-slide.active {
+            opacity: 1;
+        }
+        .banner-slide .banner-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-right: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+        .banner-slide .banner-info {
+            flex: 1;
+        }
+        .banner-slide .banner-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .banner-slide .banner-info p {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+        .banner-slide .banner-tag {
+            display: inline-block;
+            background: var(--primary);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .banner-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+        .banner-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .banner-dots span.active {
+            background: var(--primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .section-header h4 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .section-header .see-all {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* ===== HORIZONTAL SCROLL ===== */
+        .scroll-horizontal {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-horizontal .mini-card {
+            flex: 0 0 140px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 14px 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .scroll-horizontal .mini-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .scroll-horizontal .mini-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            object-fit: cover;
+            margin: 0 auto 8px;
+            border: 1px solid var(--border-color);
+        }
+        .scroll-horizontal .mini-card .name {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .scroll-horizontal .mini-card .sub {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        /* ===== CATEGORY GRID ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .category-grid .cat-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .category-grid .cat-item:hover {
+            border-color: var(--primary);
+            background: var(--bg-input);
+        }
+        .category-grid .cat-item .cat-icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ===== APP CARD (GRID) ===== */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
         }
         .app-card {
-            background-color: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
-            display: flex; flex-direction: column; justify-content: space-between;
+            border-radius: var(--radius-sm);
+            padding: 16px 14px;
             cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s;
+            transition: var(--transition);
+            text-align: center;
         }
-        .app-card:hover { transform: translateY(-4px); border-color: var(--primary); }
-        .app-header { display: flex; align-items: center; gap: 16px; }
-        .app-icon { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; border: 1px solid var(--border-color); }
-        .app-title { font-size: 16px; font-weight: 600; margin: 0; color: var(--text-light); }
-        .app-meta { font-size: 12px; color: var(--text-gray); margin-top: 4px; }
-        .app-desc { font-size: 13px; color: var(--text-gray); margin: 15px 0; height: 38px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        
-        .download-btn {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            background-color: var(--primary); color: white; text-decoration: none; 
-            padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; 
-            transition: background 0.2s, transform 0.1s; border: none; cursor: pointer; width: 100%;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        .app-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
         }
-        .download-btn:hover { background-color: var(--primary-hover); transform: scale(1.01); }
-        .download-btn:active { transform: scale(0.99); }
-
-        .full-page-view { background-color: var(--dark-bg); min-height: 90vh; }
-        
-        .search-container { position: relative; width: 100%; margin-bottom: 25px; }
-        .search-bar {
-            width: 100%; padding: 14px 14px 14px 45px; border-radius: 10px;
-            border: 1px solid var(--border-color); background-color: var(--card-bg);
-            color: white; font-size: 15px; outline: none;
-        }
-        .search-icon-inside { position: absolute; left: 15px; top: 15px; width: 18px; height: 18px; fill: var(--text-gray); }
-
-        .profile-wrapper { position: relative; }
-        .profile-card {
-            background-color: var(--card-bg); padding: 30px 20px;
-            border-radius: 14px; text-align: center; border: 1px solid var(--border-color);
-        }
-        .pfp-container { position: relative; width: 96px; height: 96px; margin: 0 auto; }
-        .pfp { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
-        .pfp-edit-overlay { 
-            position: absolute; bottom: 0; right: 0; background: var(--primary); 
-            padding: 6px; border-radius: 50%; cursor: pointer; display: flex; 
-        }
-        .pfp-edit-overlay svg { width: 14px; height: 14px; fill: white; }
-        
-        .profile-name { font-size: 20px; font-weight: 600; margin-top: 12px; display: inline-block; }
-        .profile-username { color: var(--text-gray); font-size: 13px; margin-top: 2px; }
-        
-        .profile-actions { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .btn-sec { background: var(--input-bg); border: 1px solid var(--border-color); color: white; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background 0.2s; }
-        .btn-sec:hover { background: var(--border-color); }
-
-        .upload-trigger-btn {
-            position: absolute; top: 0; right: 0; background: var(--input-bg);
-            border: 1px solid var(--border-color); border-radius: 10px; padding: 10px;
-            cursor: pointer; display: flex; z-index: 10;
-        }
-        .upload-trigger-btn svg { width: 20px; height: 20px; fill: var(--text-light); }
-
-        .badge-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .history-badge { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 20px; font-size: 12px; color: var(--text-light); }
-        .review-log-card { background: #1f2937; border-left: 4px solid var(--primary); padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; color: var(--text-gray); }
-
-        .form-group { margin-bottom: 18px; text-align: left; }
-        .form-label { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 6px; }
-        .form-input, textarea {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
-            background-color: var(--input-bg); color: white; font-size: 14px; outline: none; box-sizing: border-box;
-        }
-        .form-input:focus, textarea:focus { border-color: var(--primary); }
-
-        .preview-box-wrapper { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .img-preview-bubble { width: 65px; height: 65px; border-radius: 8px; border: 1px solid var(--border-color); object-fit: cover; background: #0b0f19; }
-        .img-preview-bubble.screenshot-type { width: 70px; height: 120px; }
-
-        .detail-header { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; text-align: left; }
-        .detail-icon { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; border: 1px solid var(--border-color); }
-        .screenshots-scroll { display: flex; gap: 12px; overflow-x: auto; margin: 20px 0; padding-bottom: 10px; }
-        .screenshot-img { height: 180px; border-radius: 10px; border: 1px solid var(--border-color); object-fit: cover; cursor: zoom-in; transition: opacity 0.2s; }
-        .screenshot-img:hover { opacity: 0.85; }
-        .detail-section { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 20px; text-align: left; }
-        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px; }
-
-        .review-card-modern {
-            background: linear-gradient(145deg, #161d2a, #111827);
+        .app-card .app-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin: 0 auto 10px;
             border: 1px solid var(--border-color);
-            padding: 15px; border-radius: 12px; margin-bottom: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: border-color 0.3s;
         }
-        .review-card-modern.developer-highlight {
-            border-color: rgba(37, 99, 235, 0.4);
-            background: linear-gradient(145deg, #1e293b, #111827);
+        .app-card .app-title {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .review-top-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .review-author { font-size: 13px; font-weight: 600; color: #60a5fa; }
-        .review-card-modern.developer-highlight .review-author { color: #3b82f6; display: flex; align-items: center; gap: 4px; }
-
-        .rating-stars-input { display: flex; gap: 5px; margin-bottom: 12px; }
-        .star-clickable { font-size: 24px; color: var(--border-color); cursor: pointer; transition: color 0.1s; }
-        .star-clickable.active { color: var(--gold); }
-        .static-stars { color: var(--gold); font-size: 13px; }
-
-        .media-modal {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: var(--overlay); z-index: 9999; display: none;
-            align-items: center; justify-content: center; opacity: 0; transition: opacity 0.25s ease;
+        .app-card .app-meta {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 2px;
         }
-        .media-modal.open { display: flex; opacity: 1; }
-        .media-modal-content { max-width: 90%; max-height: 85%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.25s ease; }
-        .media-modal.open .media-modal-content { transform: scale(1); }
-        .media-modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; fill: white; cursor: pointer; }
+        .app-card .app-downloads {
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .app-card .app-rating {
+            font-size: 12px;
+            color: var(--gold);
+        }
 
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 14px 14px 14px 46px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-light);
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        .search-icon-inside {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: var(--text-gray);
+        }
+        .search-voice {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            fill: var(--text-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-voice:hover {
+            fill: var(--primary);
+        }
+        .search-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .search-suggestions span {
+            background: var(--bg-input);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-suggestions span:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .search-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .search-filters button {
+            background: var(--bg-input);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-gray);
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .search-filters button.active {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ===== DETAILS PAGE ===== */
+        .detail-header {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .detail-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .detail-info {
+            flex: 1;
+        }
+        .detail-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .detail-info .dev {
+            font-size: 13px;
+            color: var(--primary-light);
+        }
+        .detail-info .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+        .detail-info .meta-row .badge-verified {
+            color: var(--green);
+            font-weight: 600;
+        }
+        .detail-info .rating-big {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .detail-info .rating-big span {
+            font-size: 14px;
+            color: var(--text-gray);
+            font-weight: 400;
+        }
+
+        .detail-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 18px 16px;
+            margin-bottom: 16px;
+        }
+        .detail-section .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .screenshots-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .screenshots-scroll img {
+            height: 160px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            object-fit: cover;
+            cursor: zoom-in;
+            transition: var(--transition);
+        }
+        .screenshots-scroll img:hover {
+            opacity: 0.85;
+        }
+
+        .whats-new-item {
+            background: var(--bg-input);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+        .whats-new-item .vn {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .version-history {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .version-history .vh-item {
+            background: var(--bg-input);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .version-history .vh-item:hover {
+            border-color: var(--primary);
+        }
+
+        .permission-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .permission-list .perm {
+            background: var(--bg-input);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .virus-scan {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .virus-scan .safe {
+            color: var(--green);
+            font-weight: 600;
+        }
+        .virus-scan .hash {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .related-apps {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .related-apps .rel-item {
+            flex: 0 0 80px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .related-apps .rel-item img {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            margin: 0 auto 4px;
+        }
+        .related-apps .rel-item .rn {
+            font-size: 11px;
+            color: var(--text-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== REVIEWS ===== */
+        .rating-graph {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 12px 0;
+        }
+        .rating-graph .rg-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        .rating-graph .rg-row .rg-bar {
+            flex: 1;
+            height: 6px;
+            border-radius: 4px;
+            background: var(--bg-input);
+            overflow: hidden;
+        }
+        .rating-graph .rg-row .rg-bar .rg-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--gold);
+        }
+
+        .review-card {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .review-card .rev-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .review-card .rev-head .rev-author {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .review-card .rev-head .rev-stars {
+            color: var(--gold);
+            font-size: 13px;
+        }
+        .review-card .rev-text {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin: 6px 0;
+        }
+        .review-card .rev-actions {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .review-card .rev-actions button {
+            background: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .review-card .rev-actions button:hover {
+            color: var(--text-light);
+            background: var(--border-color);
+        }
+        .review-card .dev-reply {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(37, 99, 235, 0.08);
+            border-left: 2px solid var(--primary);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+        .review-card .dev-reply strong {
+            color: var(--primary-light);
+        }
+
+        /* ===== PROFILE ===== */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .profile-card .pfp {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            object-fit: cover;
+            margin: 0 auto 12px;
+        }
+        .profile-card .prof-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .profile-card .prof-handle {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 16px 0;
+        }
+        .profile-stats .stat {
+            text-align: center;
+        }
+        .profile-stats .stat .num {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        .profile-stats .stat .label {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background-color: var(--card-bg); height: 65px;
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid var(--border-color); z-index: 1000;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            height: 64px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-item {
-            color: var(--text-gray); text-decoration: none;
-            font-size: 11px; font-weight: 500; display: flex; flex-direction: column;
-            align-items: center; gap: 4px; cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px 12px;
+            border-radius: 8px;
+            position: relative;
         }
-        .nav-item svg { width: 22px; height: 22px; fill: var(--text-gray); }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active svg { fill: var(--primary); }
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-gray);
+            transition: var(--transition);
+        }
+        .nav-item.active {
+            color: var(--primary);
+        }
+        .nav-item.active svg {
+            fill: var(--primary);
+        }
+        .nav-item .nav-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--red);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,15,25,0.95);
-            z-index: 5000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px;
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 15px;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(1.01);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .btn-icon:hover {
+            background: var(--border-color);
+        }
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-light);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: var(--radius);
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 500px;
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .modal-close {
+            float: right;
+            background: var(--bg-input);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--text-gray);
+            transition: var(--transition);
+        }
+        .modal-close:hover {
+            background: var(--border-color);
+            color: white;
+        }
+
+        .wishlist-heart {
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 24px;
+            color: var(--text-muted);
+            user-select: none;
+        }
+        .wishlist-heart.liked {
+            color: var(--red);
+        }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.95);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== SKELETON ===== */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-input) 25%, var(--border-color) 50%, var(--bg-input) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .banner-slider {
+                height: 150px;
+            }
+            .banner-slide {
+                padding: 16px 20px;
+            }
+            .banner-slide .banner-icon {
+                width: 56px;
+                height: 56px;
+            }
+            .banner-slide .banner-info h3 {
+                font-size: 15px;
+            }
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .detail-icon {
+                width: 72px;
+                height: 72px;
+            }
+            .profile-stats {
+                gap: 14px;
+            }
+        }
+
+        /* ===== GLASS EFFECT ===== */
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* ===== MISC ===== */
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-gray {
+            color: var(--text-gray);
+        }
+        .text-sm {
+            font-size: 13px;
+        }
+        .text-xs {
+            font-size: 11px;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .items-center {
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <button class="header-back" id="back-btn" onclick="goBack()">
-            <svg style="width:24px; height:24px;" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    <!-- ===== HEADER ===== -->
+    <header class="header" id="appHeader">
+        <button class="header-back" id="backBtn" onclick="goBack()">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </button>
-        <div class="header-title" id="header-title">Home</div>
-        <div style="width:24px;"></div>
-    </div>
+        <span class="header-title" id="headerTitle">Stardust Store</span>
+        <div style="display:flex;gap:6px;">
+            <button class="header-action" onclick="switchPage('notifications','Notifications')" id="notifBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+                <span class="badge-dot" id="notifDot" style="display:none;"></span>
+            </button>
+            <button class="header-action" onclick="toggleTheme()" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon"><path d="M9 2c-3.87 3.87-4.38 9.39-1.5 13.5C6.5 12.5 8.5 6.5 14 4c-1.58-1.29-3.86-2-5-2zm0 0c-3.87 3.87-4.38 9.39-1.5 13.5-1.5-2-3-4-3-6.5s1.5-4.5 3-6.5z"/></svg>
+            </button>
+        </div>
+    </header>
 
+    <!-- ===== CONTAINER ===== -->
     <div class="container">
+
+        <!-- ===== HOME ===== -->
         <div id="page-home" class="page active">
-            <div id="home-apps" class="grid"></div>
+            <!-- Banner Slider -->
+            <div class="banner-slider" id="bannerSlider">
+                <div class="banner-slide active" data-index="0">
+                    <img src="" class="banner-icon" id="bannerIcon0" alt="">
+                    <div class="banner-info">
+                        <h3 id="bannerTitle0">Featured App</h3>
+                        <p id="bannerDesc0">Top pick of the day</p>
+                        <span class="banner-tag" id="bannerTag0">★ Editor's Choice</span>
+                    </div>
+                </div>
+                <div class="banner-slide" data-index="1">
+                    <img src="" class="banner-icon" id="bannerIcon1" alt="">
+                    <div class="banner-info">
+                        <h3 id="bannerTitle1">Trending Now</h3>
+                        <p id="bannerDesc1">Most downloaded today</p>
+                        <span class="banner-tag" id="bannerTag1">🔥 Trending</span>
+                    </div>
+                </div>
+                <div class="banner-slide" data-index="2">
+                    <img src="" class="banner-icon" id="bannerIcon2" alt="">
+                    <div class="banner-info">
+                        <h3 id="bannerTitle2">New Release</h3>
+                        <p id="bannerDesc2">Fresh from developer</p>
+                        <span class="banner-tag" id="bannerTag2">✨ New</span>
+                    </div>
+                </div>
+                <div class="banner-dots" id="bannerDots">
+                    <span class="active" data-index="0"></span>
+                    <span data-index="1"></span>
+                    <span data-index="2"></span>
+                </div>
+            </div>
+
+            <!-- Editor's Choice -->
+            <div class="section-header">
+                <h4>⭐ Editor's Choice</h4>
+                <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
+            </div>
+            <div class="scroll-horizontal" id="editorsChoice"></div>
+
+            <!-- Trending Today -->
+            <div class="section-header">
+                <h4>🔥 Trending Today</h4>
+                <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
+            </div>
+            <div class="scroll-horizontal" id="trendingApps"></div>
+
+            <!-- New Releases -->
+            <div class="section-header">
+                <h4>✨ New Releases</h4>
+                <span class="see-all" onclick="switchPage('ranking','Ranking')">See All</span>
+            </div>
+            <div class="scroll-horizontal" id="newReleases"></div>
+
+            <!-- Categories -->
+            <div class="section-header">
+                <h4>📂 Categories</h4>
+            </div>
+            <div class="category-grid" id="categoryGrid">
+                <div class="cat-item" onclick="filterByCategory('Games')"><span class="cat-icon">🎮</span>Games</div>
+                <div class="cat-item" onclick="filterByCategory('Social')"><span class="cat-icon">💬</span>Social</div>
+                <div class="cat-item" onclick="filterByCategory('AI')"><span class="cat-icon">🤖</span>AI</div>
+                <div class="cat-item" onclick="filterByCategory('Entertainment')"><span class="cat-icon">🎬</span>Entertainment</div>
+                <div class="cat-item" onclick="filterByCategory('Tools')"><span class="cat-icon">🔧</span>Tools</div>
+                <div class="cat-item" onclick="filterByCategory('Shopping')"><span class="cat-icon">🛒</span>Shopping</div>
+                <div class="cat-item" onclick="filterByCategory('Music')"><span class="cat-icon">🎵</span>Music</div>
+                <div class="cat-item" onclick="filterByCategory('Education')"><span class="cat-icon">📚</span>Education</div>
+                <div class="cat-item" onclick="filterByCategory('Health')"><span class="cat-icon">💪</span>Health</div>
+                <div class="cat-item" onclick="filterByCategory('Photography')"><span class="cat-icon">📷</span>Photography</div>
+                <div class="cat-item" onclick="filterByCategory('Finance')"><span class="cat-icon">💰</span>Finance</div>
+                <div class="cat-item" onclick="filterByCategory('Travel')"><span class="cat-icon">✈️</span>Travel</div>
+            </div>
+
+            <!-- Popular Games & Apps -->
+            <div class="section-header">
+                <h4>🎮 Popular Games</h4>
+            </div>
+            <div class="scroll-horizontal" id="popularGames"></div>
+
+            <div class="section-header">
+                <h4>📱 Popular Apps</h4>
+            </div>
+            <div class="scroll-horizontal" id="popularApps"></div>
         </div>
 
+        <!-- ===== SEARCH ===== -->
         <div id="page-search" class="page">
             <div class="search-container">
                 <svg class="search-icon-inside" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <input type="text" id="search-input" class="search-bar" placeholder="Search verified apps or games...">
+                <input type="text" class="search-bar" id="searchInput" placeholder="Search apps, games, developers..." oninput="handleSearch()">
+                <svg class="search-voice" viewBox="0 0 24 24" onclick="startVoiceSearch()"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
             </div>
-            <div id="search-results" class="grid"></div>
+
+            <div class="search-suggestions" id="searchSuggestions">
+                <span onclick="searchQuery('Stardust')">Stardust Messenger</span>
+                <span onclick="searchQuery('Browser')">Stardust Browser</span>
+                <span onclick="searchQuery('Music')">Stardust Music</span>
+                <span onclick="searchQuery('Game')">Popular Games</span>
+                <span onclick="searchQuery('AI')">AI Tools</span>
+            </div>
+
+            <div class="search-filters" id="searchFilters">
+                <button class="active" data-filter="all" onclick="setSearchFilter('all')">All</button>
+                <button data-filter="name" onclick="setSearchFilter('name')">Name</button>
+                <button data-filter="developer" onclick="setSearchFilter('developer')">Developer</button>
+                <button data-filter="category" onclick="setSearchFilter('category')">Category</button>
+                <button data-filter="tags" onclick="setSearchFilter('tags')">Tags</button>
+            </div>
+
+            <div id="searchResults" class="grid"></div>
         </div>
 
+        <!-- ===== RANKING ===== -->
         <div id="page-ranking" class="page">
-            <div id="ranking-apps" class="grid"></div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+                <button class="btn-outline active" onclick="setRankingFilter('top-free')" id="rankTopFree">🏆 Top Free</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-paid')" id="rankTopPaid">💎 Top Paid</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-grossing')" id="rankTopGrossing">📈 Top Grossing</button>
+                <button class="btn-outline" onclick="setRankingFilter('trending')" id="rankTrending">🔥 Trending</button>
+                <button class="btn-outline" onclick="setRankingFilter('top-rated')" id="rankTopRated">⭐ Top Rated</button>
+            </div>
+            <div id="rankingApps" class="grid"></div>
         </div>
 
+        <!-- ===== WISHLIST ===== -->
+        <div id="page-wishlist" class="page">
+            <h4 style="margin-bottom:16px;">❤️ My Wishlist</h4>
+            <div id="wishlistGrid" class="grid"></div>
+        </div>
+
+        <!-- ===== PROFILE ===== -->
         <div id="page-profile" class="page">
-            <div class="profile-wrapper">
-                <button class="upload-trigger-btn" onclick="confirmAndOpenUpload()" title="Add New Application">
-                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                </button>
-                
-                <div class="profile-card">
-                    <div class="pfp-container">
-                        <img src="https://img.icons8.com/clouds/200/user.png" class="pfp" id="user-pfp">
-                        <label for="pfp-picker" class="pfp-edit-overlay">
-                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        </label>
-                        <input type="file" id="pfp-picker" accept="image/*" style="display:none;" onchange="uploadProfilePicture(this)">
-                    </div>
-                    
-                    <div class="profile-name" id="user-name-display">Developer Admin</div>
-                    <div class="profile-username" id="user-handle-display">@marketadmin</div>
-                    
-                    <div class="profile-actions">
-                        <button class="btn-sec" onclick="editProfileDetails()">Edit Profile Info</button>
-                    </div>
-                    
-                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
-                    
-                    <div style="text-align: left;">
-                        <h4 style="margin-bottom: 6px; font-size: 15px;">Downloaded Apps History</h4>
-                        <div id="profile-downloads" class="badge-container"></div>
-                        
-                        <h4 style="margin-bottom: 12px; font-size: 15px; margin-top: 25px;">Submitted Reviews Logs</h4>
-                        <div id="profile-reviews"></div>
-                    </div>
+            <div class="profile-card">
+                <img src="https://img.icons8.com/clouds/200/user.png" class="pfp" id="profilePfp" alt="Profile">
+                <div class="prof-name" id="profileName">Developer Admin</div>
+                <div class="prof-handle" id="profileHandle">@marketadmin</div>
+                <div class="profile-stats">
+                    <div class="stat"><div class="num" id="statApps">0</div><div class="label">Apps</div></div>
+                    <div class="stat"><div class="num" id="statDownloads">0</div><div class="label">Downloads</div></div>
+                    <div class="stat"><div class="num" id="statReviews">0</div><div class="label">Reviews</div></div>
+                    <div class="stat"><div class="num" id="statWishlist">0</div><div class="label">Wishlist</div></div>
+                </div>
+                <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn-outline" onclick="editProfile()">✏️ Edit Profile</button>
+                    <button class="btn-outline" onclick="document.getElementById('pfpUpload').click()">📷 Change Photo</button>
+                    <input type="file" id="pfpUpload" accept="image/*" style="display:none;" onchange="uploadPFP(this)">
+                </div>
+                <hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;">
+                <div style="text-align:left;">
+                    <h4 style="font-size:14px;margin-bottom:8px;">📥 Download History</h4>
+                    <div id="downloadHistory" class="flex flex-wrap gap-8"></div>
+                    <h4 style="font-size:14px;margin:16px 0 8px;">📝 Review Logs</h4>
+                    <div id="reviewLogs"></div>
                 </div>
             </div>
         </div>
 
-        <div id="page-upload" class="page full-page-view">
-            <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 14px; border: 1px solid var(--border-color);">
-                <h3 style="margin-bottom: 20px; font-size: 18px; text-align: left;">Deploy Digital Application Package</h3>
-                <form id="upload-form" onsubmit="handleAppSubmit(event)">
-                    <div class="form-group"><label class="form-label">App/Game Name</label><input type="text" id="form-name" class="form-input" required placeholder="e.g., Cyber Crossfire"></div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">App Icon (Device Gallery)</label>
-                        <input type="file" id="form-icon-file" class="form-input" accept="image/*" required onchange="previewImagesField(this, 'wrapper-icon-preview', 'icon')">
-                        <div class="preview-box-wrapper" id="wrapper-icon-preview"></div>
-                    </div>
-                    
-                    <div class="form-group"><label class="form-label">Version String</label><input type="text" id="form-version" class="form-input" required placeholder="e.g., v1.0.4"></div>
-                    <div class="form-group"><label class="form-label">Size Metric (MB)</label><input type="text" id="form-size" class="form-input" required placeholder="e.g., 42 MB"></div>
-                    <div class="form-group"><label class="form-label">Short Description</label><input type="text" id="form-short-desc" class="form-input" required placeholder="Brief introductory hook visible on lists..."></div>
-                    <div class="form-group"><label class="form-label">Long Comprehensive Technical Description</label><textarea id="form-long-desc" rows="5" required placeholder="Full breakdown of gameplay features, features list, and version updates changelogs..."></textarea></div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">App UI Screenshots (Select multiple images together)</label>
-                        <input type="file" id="form-screenshot-file" class="form-input" accept="image/*" required multiple onchange="previewImagesField(this, 'wrapper-screens-preview', 'screenshot')">
-                        <div class="preview-box-wrapper" id="wrapper-screens-preview"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">GitHub Release Direct APK Link (URL)</label>
-                        <input type="url" id="form-apk-link" class="form-input" required placeholder="e.g., https://github.com/user/repo/releases/download/v1.0/app.apk">
-                    </div>
-                    
-                    <button type="submit" class="download-btn" style="margin-top: 20px;">Deploy to Production Architecture</button>
-                </form>
-            </div>
+        <!-- ===== NOTIFICATIONS ===== -->
+        <div id="page-notifications" class="page">
+            <h4 style="margin-bottom:16px;">🔔 Notifications</h4>
+            <div id="notificationList"></div>
         </div>
 
-        <div id="page-details" class="page full-page-view">
+        <!-- ===== DETAILS ===== -->
+        <div id="page-details" class="page">
             <div class="detail-header">
-                <img src="" id="det-icon" class="detail-icon">
-                <div>
-                    <h2 id="det-title" style="margin:0; font-size:22px; color: var(--text-light);">App Title</h2>
-                    <div id="det-meta" class="app-meta">v1.0 • 0 MB</div>
-                    <div id="det-downloads" class="app-meta" style="color: var(--primary); font-weight:600; margin-top:2px;">Total Downloads Matrix: 0</div>
+                <img src="" class="detail-icon" id="detIcon" alt="">
+                <div class="detail-info">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <h2 id="detTitle">App Name</h2>
+                        <span class="wishlist-heart" id="detWishlist" onclick="toggleWishlist()">♡</span>
+                        <span class="badge-verified" id="detVerified">✓ Verified</span>
+                    </div>
+                    <div class="dev" id="detDeveloper">by Developer</div>
+                    <div class="meta-row">
+                        <span id="detVersion">v1.0</span>
+                        <span id="detSize">0 MB</span>
+                        <span id="detCategory">Category</span>
+                        <span id="detDownloads">0 downloads</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="rating-big" id="detRating">4.8 <span>★</span></span>
+                        <span id="detReviewCount">(0 reviews)</span>
+                    </div>
                 </div>
             </div>
-            
-            <button id="det-download-btn" class="download-btn" style="margin-bottom:25px; padding: 14px;">
-                <svg style="width:18px; height:18px; fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                Download Production APK Package
+
+            <button class="btn-primary" id="detInstallBtn" onclick="installApp()">
+                <svg style="width:20px;height:20px;fill:white;" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                Install APK
             </button>
 
+            <!-- Screenshots -->
             <div class="detail-section">
-                <div class="section-title">Ecosystem Interface Captures</div>
-                <div class="screenshots-scroll" id="det-screenshots"></div>
+                <div class="section-title">📸 Screenshots</div>
+                <div class="screenshots-scroll" id="detScreenshots"></div>
             </div>
 
-            <div class="detail-section">
-                <div class="section-title">Technical Description & Scope</div>
-                <p id="det-long-desc" style="font-size:14px; color:var(--text-gray); line-height:1.6; white-space:pre-wrap;"></p>
+            <!-- Video Preview -->
+            <div class="detail-section" id="detVideoSection" style="display:none;">
+                <div class="section-title">🎬 Video Preview</div>
+                <div id="detVideo"></div>
             </div>
 
+            <!-- Description -->
             <div class="detail-section">
-                <div class="section-title">Public App Evaluations</div>
-                <div id="det-reviews-list" style="margin-bottom: 20px; display:flex; flex-direction:column;"></div>
-                
-                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px;">
-                    <div style="font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--text-gray);">Select Star Evaluation</div>
-                    <div class="rating-stars-input" id="stars-selector-wrap">
-                        <span class="star-clickable" data-star="1" onclick="setFormRating(1)">★</span>
-                        <span class="star-clickable" data-star="2" onclick="setFormRating(2)">★</span>
-                        <span class="star-clickable" data-star="3" onclick="setFormRating(3)">★</span>
-                        <span class="star-clickable" data-star="4" onclick="setFormRating(4)">★</span>
-                        <span class="star-clickable" data-star="5" onclick="setFormRating(5)">★</span>
+                <div class="section-title">📄 Description</div>
+                <p id="detDescription" style="font-size:14px;color:var(--text-gray);line-height:1.7;white-space:pre-wrap;"></p>
+            </div>
+
+            <!-- What's New -->
+            <div class="detail-section">
+                <div class="section-title">🆕 What's New</div>
+                <div id="detWhatsNew"></div>
+            </div>
+
+            <!-- Version History -->
+            <div class="detail-section">
+                <div class="section-title">📜 Version History</div>
+                <div class="version-history" id="detVersionHistory"></div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="detail-section">
+                <div class="section-title">🔐 Permissions</div>
+                <div class="permission-list" id="detPermissions"></div>
+            </div>
+
+            <!-- App Info -->
+            <div class="detail-section">
+                <div class="section-title">ℹ️ App Information</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;color:var(--text-gray);">
+                    <span><strong>Package:</strong> <span id="detPackage">com.example.app</span></span>
+                    <span><strong>Version:</strong> <span id="detVersionInfo">1.0.0</span></span>
+                    <span><strong>Size:</strong> <span id="detSizeInfo">0 MB</span></span>
+                    <span><strong>Release:</strong> <span id="detReleaseDate">2024-01-01</span></span>
+                    <span><strong>Updated:</strong> <span id="detUpdatedDate">2024-01-01</span></span>
+                    <span><strong>Android:</strong> <span id="detAndroidVer">5.0+</span></span>
+                    <span><strong>Language:</strong> <span id="detLanguage">English</span></span>
+                </div>
+            </div>
+
+            <!-- Virus Scan -->
+            <div class="detail-section">
+                <div class="section-title">🛡️ Virus Scan</div>
+                <div class="virus-scan">
+                    <span style="font-size:24px;">✅</span>
+                    <div>
+                        <div class="safe">✓ Safe — VirusTotal Passed</div>
+                        <div class="hash">SHA256: <span id="detSHA256">a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0</span></div>
                     </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="review-input" class="form-input" placeholder="Compose verified submission review text here...">
-                        <button class="btn-sec" onclick="submitUserReview()" style="background:var(--primary); border:none; padding: 0 20px;">Submit Post</button>
+                </div>
+            </div>
+
+            <!-- Related Apps -->
+            <div class="detail-section">
+                <div class="section-title">🔗 Related Apps</div>
+                <div class="related-apps" id="detRelatedApps"></div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="detail-section">
+                <div class="section-title">⭐ Reviews</div>
+                <div id="detReviewsList"></div>
+
+                <div style="margin-top:16px;background:var(--bg-input);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);">
+                    <div style="display:flex;gap:4px;margin-bottom:8px;" id="reviewStars">
+                        <span onclick="setReviewRating(1)" style="font-size:22px;cursor:pointer;color:var(--border-color);" data-star="1">★</span>
+                        <span onclick="setReviewRating(2)" style="font-size:22px;cursor:pointer;color:var(--border-color);" data-star="2">★</span>
+                        <span onclick="setReviewRating(3)" style="font-size:22px;cursor:pointer;color:var(--border-color);" data-star="3">★</span>
+                        <span onclick="setReviewRating(4)" style="font-size:22px;cursor:pointer;color:var(--border-color);" data-star="4">★</span>
+                        <span onclick="setReviewRating(5)" style="font-size:22px;cursor:pointer;color:var(--gold);" data-star="5">★</span>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" class="search-bar" id="reviewInput" placeholder="Write your review..." style="flex:1;padding:10px 14px;">
+                        <button class="btn-primary" onclick="submitReview()" style="width:auto;padding:10px 24px;font-size:13px;">Post</button>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <label style="font-size:12px;color:var(--text-gray);cursor:pointer;">
+                            <input type="file" accept="image/*" multiple id="reviewImageInput" style="display:none;" onchange="uploadReviewImages(this)">
+                            📷 Attach Screenshots
+                        </label>
+                        <div id="reviewImagePreviews" class="flex gap-8 mt-12" style="flex-wrap:wrap;"></div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ===== ADMIN ===== -->
+        <div id="page-admin" class="page">
+            <h4 style="margin-bottom:16px;">👮 Admin Panel</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:24px;font-weight:700;" id="adminTotalApps">0</div>
+                    <div style="font-size:12px;color:var(--text-gray);">Total Apps</div>
+                </div>
+                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:24px;font-weight:700;" id="adminTotalUsers">0</div>
+                    <div style="font-size:12px;color:var(--text-gray);">Total Users</div>
+                </div>
+                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:24px;font-weight:700;" id="adminTotalDownloads">0</div>
+                    <div style="font-size:12px;color:var(--text-gray);">Total Downloads</div>
+                </div>
+                <div style="background:var(--bg-card);padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border-color);text-align:center;">
+                    <div style="font-size:24px;font-weight:700;" id="adminTotalReviews">0</div>
+                    <div style="font-size:12px;color:var(--text-gray);">Total Reviews</div>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:16px;">
+                <h5 style="margin-bottom:12px;">📋 Manage Apps</h5>
+                <div id="adminAppList"></div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="media-modal" id="media-viewer" onclick="closeImageViewer()">
-        <button class="media-modal-close">
-            <svg style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-        <img src="" class="media-modal-content" id="media-viewer-img">
+    <!-- ===== IMAGE VIEWER MODAL ===== -->
+    <div class="modal-overlay" id="imageViewer" onclick="closeImageViewer()">
+        <img src="" class="modal-content" id="viewerImage" style="max-width:90%;max-height:85vh;object-fit:contain;padding:0;background:transparent;border:none;">
     </div>
 
-    <div class="bottom-nav" id="main-navigation-bar">
-        <div class="nav-item active" id="nav-home" onclick="switchPage('home', 'Home')">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span>
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home','Stardust Store')" id="navHome">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
         </div>
-        <div class="nav-item" id="nav-search" onclick="switchPage('search', 'Search')">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span>Search</span>
+        <div class="nav-item" onclick="switchPage('search','Search')" id="navSearch">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <span>Search</span>
         </div>
-        <div class="nav-item" id="nav-ranking" onclick="switchPage('ranking', 'Top Downloads Chart')">
-            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg><span>Ranking</span>
+        <div class="nav-item" onclick="switchPage('ranking','Ranking')" id="navRanking">
+            <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            <span>Ranking</span>
         </div>
-        <div class="nav-item" id="nav-profile" onclick="switchPage('profile', 'Ecosystem Profile')">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg><span>Profile</span>
+        <div class="nav-item" onclick="switchPage('wishlist','Wishlist')" id="navWishlist">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span>Wishlist</span>
         </div>
+        <div class="nav-item" onclick="switchPage('profile','Profile')" id="navProfile">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Profile</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('admin','Admin')" id="navAdmin">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Admin</span>
+        </div>
+    </nav>
+
+    <!-- ===== LOADING ===== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div id="loadingText" style="font-size:14px;color:var(--text-gray);">Loading...</div>
     </div>
 
-    <div class="loading-overlay" id="loading-spinner">
-        <div style="width: 45px; height: 45px; border: 4px solid #374151; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <div id="loading-text" style="font-size: 14px; font-weight:500; tracking: 0.5px;">Connecting database stream...</div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <!-- ===== FIREBASE ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js">
+    </script>
 
     <script>
+        // ============================================
+        // FIREBASE CONFIG
+        // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyDCOq720_5pxOsUYXovvi4DaUsryv1oPeA",
             authDomain: "stardust-store.firebaseapp.com",
@@ -374,437 +1475,1060 @@
             appId: "1:979834482722:web:dabbc453543b7e03c91a7b",
             measurementId: "G-YKYR514S87"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const storage = firebase.storage();
-        
-        // Aapka new authorized ImgBB Token Key updated
-        const IMGBB_API_KEY = "550a3bcd47c1b0a86a9f2ba7a41770b6";
+        const db = firebase.database();
+        const storageRef = firebase.storage().ref();
 
+        // ============================================
+        // STATE
+        // ============================================
         let allApps = [];
         let navigationHistory = ['home'];
         let activeAppId = null;
-        let selectedRatingValue = 5;
+        let reviewRating = 5;
+        let currentSearchFilter = 'all';
+        let currentRankingFilter = 'top-free';
+        let wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
+        let notifications = JSON.parse(localStorage.getItem('stardust_notifications') || '[]');
+        let reviewImages = [];
 
-        function switchPage(pageId, title, isBackNav = false) {
+        // ============================================
+        // IMGBB API KEY
+        // ============================================
+        const IMGBB_KEY = "550a3bcd47c1b0a86a9f2ba7a41770b6";
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        const $ = id => document.getElementById(id);
+        const headerTitle = $('headerTitle');
+        const backBtn = $('backBtn');
+
+        // ============================================
+        // LOADING
+        // ============================================
+        function showLoading(show, text = 'Loading...') {
+            const overlay = $('loadingOverlay');
+            if (show) {
+                $('loadingText').textContent = text;
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        const pageTitles = {
+            home: 'Stardust Store',
+            search: 'Search',
+            ranking: 'Ranking',
+            wishlist: 'Wishlist',
+            profile: 'Profile',
+            notifications: 'Notifications',
+            details: 'App Details',
+            admin: 'Admin Panel'
+        };
+
+        function switchPage(pageId, title) {
+            // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.getElementById('header-title').innerText = title;
-            
-            const navBtn = document.getElementById(`nav-${pageId}`);
-            if(navBtn) navBtn.classList.add('active');
+            // Show target
+            const target = $(`page-${pageId}`);
+            if (target) target.classList.add('active');
 
-            if(!isBackNav && navigationHistory[navigationHistory.length - 1] !== pageId) {
+            // Update header
+            headerTitle.textContent = title || pageTitles[pageId] || pageId;
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navBtn = $(`nav${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`);
+            if (navBtn) navBtn.classList.add('active');
+
+            // Back button
+            const isRoot = ['home', 'search', 'ranking', 'wishlist', 'profile', 'notifications', 'admin'].includes(pageId);
+            backBtn.style.display = isRoot ? 'none' : 'flex';
+
+            // Bottom nav
+            const bottomNav = document.querySelector('.bottom-nav');
+            bottomNav.style.display = isRoot ? 'flex' : 'none';
+
+            // History
+            if (navigationHistory[navigationHistory.length - 1] !== pageId) {
                 navigationHistory.push(pageId);
             }
 
-            if(pageId === 'upload' || pageId === 'details') {
-                document.getElementById('back-btn').style.display = 'block';
-                document.getElementById('main-navigation-bar').style.display = 'none';
-            } else {
-                document.getElementById('back-btn').style.display = 'none';
-                document.getElementById('main-navigation-bar').style.display = 'flex';
-            }
-
-            if(pageId === 'ranking') loadRankings();
-            if(pageId === 'search') renderApps(allApps, 'search-results');
+            // Page specific
+            if (pageId === 'ranking') loadRankings();
+            if (pageId === 'wishlist') renderWishlist();
+            if (pageId === 'profile') loadProfile();
+            if (pageId === 'admin') loadAdmin();
+            if (pageId === 'notifications') renderNotifications();
         }
 
         function goBack() {
-            if(navigationHistory.length > 1) {
-                navigationHistory.pop(); 
-                const prevPage = navigationHistory[navigationHistory.length - 1];
-                let title = "Home";
-                if(prevPage === 'search') title = "Search";
-                if(prevPage === 'ranking') title = "Top Downloads Chart";
-                if(prevPage === 'profile') title = "Ecosystem Profile";
-                switchPage(prevPage, title, true);
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                const prev = navigationHistory[navigationHistory.length - 1];
+                switchPage(prev);
             }
         }
 
-        function confirmAndOpenUpload() {
-            if(confirm("Are you sure you want to add your app?")) {
-                document.getElementById('wrapper-icon-preview').innerHTML = '';
-                document.getElementById('wrapper-screens-preview').innerHTML = '';
-                switchPage('upload', 'Deploy Application Package');
-            }
-        }
+        // ============================================
+        // BANNER SLIDER
+        // ============================================
+        let bannerIndex = 0;
+        let bannerInterval;
 
-        function previewImagesField(input, targetWrapperId, variant) {
-            const wrapper = document.getElementById(targetWrapperId);
-            wrapper.innerHTML = '';
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = variant === 'icon' ? 'img-preview-bubble' : 'img-preview-bubble screenshot-type';
-                        wrapper.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
-            }
-        }
-
-        function editProfileDetails() {
-            const currentName = document.getElementById('user-name-display').innerText;
-            const currentHandle = document.getElementById('user-handle-display').innerText;
-            const newName = prompt("Modify display designation title:", currentName);
-            const newHandle = prompt("Modify user network identifier handle:", currentHandle);
-            
-            if(newName !== null && newName.trim() !== "") {
-                document.getElementById('user-name-display').innerText = newName.trim();
-                localStorage.setItem('stardust_profile_name', newName.trim());
-            }
-            if(newHandle !== null && newHandle.trim() !== "") {
-                document.getElementById('user-handle-display').innerText = newHandle.trim();
-                localStorage.setItem('stardust_profile_handle', newHandle.trim());
-            }
-        }
-
-        function uploadProfilePicture(input) {
-            if(!input.files || !input.files[0]) return;
-            const file = input.files[0];
-            showSpinner(true, "Synchronizing user profile picture...");
-            
-            const formData = new FormData();
-            formData.append('image', file);
-
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(resData => {
-                if(resData.success) {
-                    const url = resData.data.url;
-                    document.getElementById('user-pfp').src = url;
-                    localStorage.setItem('stardust_profile_pfp', url);
-                } else {
-                    throw new Error("ImgBB rejected request.");
+        function initBanner(apps) {
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('#bannerDots span');
+            if (apps.length < 3) {
+                // Fill with dummy if not enough apps
+                while (apps.length < 3) {
+                    apps.push({
+                        name: 'Featured App',
+                        icon: 'https://img.icons8.com/color/144/android-os.png',
+                        shortDescription: 'Top pick of the day',
+                        downloadCount: 0,
+                        id: 'dummy'
+                    });
                 }
-                showSpinner(false);
-            })
-            .catch(err => { 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('user-pfp').src = e.target.result;
-                    localStorage.setItem('stardust_profile_pfp', e.target.result);
-                }
-                reader.readAsDataURL(file);
-                showSpinner(false); 
+            }
+            // Use first 3 apps
+            const featured = apps.slice(0, 3);
+            featured.forEach((app, i) => {
+                $(`bannerIcon${i}`).src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
+                $(`bannerTitle${i}`).textContent = app.name || 'App';
+                $(`bannerDesc${i}`).textContent = app.shortDescription || app.description || 'Awesome app';
+                $(`bannerTag${i}`).textContent = i === 0 ? '⭐ Editor\'s Choice' : i === 1 ? '🔥 Trending' : '✨ New Release';
+                // Click to open
+                document.querySelectorAll('.banner-slide')[i].onclick = () => {
+                    if (app.id && app.id !== 'dummy') viewAppDetails(app.id);
+                };
+            });
+
+            // Dots
+            dots.forEach((dot, i) => {
+                dot.onclick = () => goToBanner(i);
+            });
+
+            // Start auto-slide
+            clearInterval(bannerInterval);
+            bannerInterval = setInterval(() => {
+                goToBanner((bannerIndex + 1) % 3);
+            }, 5000);
+        }
+
+        function goToBanner(index) {
+            bannerIndex = index;
+            document.querySelectorAll('.banner-slide').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('#bannerDots span').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if(localStorage.getItem('stardust_profile_name')) document.getElementById('user-name-display').innerText = localStorage.getItem('stardust_profile_name');
-            if(localStorage.getItem('stardust_profile_handle')) document.getElementById('user-handle-display').innerText = localStorage.getItem('stardust_profile_handle');
-            if(localStorage.getItem('stardust_profile_pfp')) document.getElementById('user-pfp').src = localStorage.getItem('stardust_profile_pfp');
-            setFormRating(5);
-            loadProfileEcosystem();
-        });
+        // ============================================
+        // RENDER HOME SECTIONS
+        // ============================================
+        function renderHomeSections(apps) {
+            // Sort helpers
+            const sortedByDownloads = [...apps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0));
+            const sortedByDate = [...apps].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            const games = apps.filter(a => (a.category || '').toLowerCase() === 'games');
+            const nonGames = apps.filter(a => (a.category || '').toLowerCase() !== 'games');
 
-        database.ref('apps').on('value', (snapshot) => {
-            const data = snapshot.val();
-            allApps = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-            renderApps(allApps, 'home-apps');
-            if(document.getElementById('page-ranking').classList.contains('active')) {
-                loadRankings();
-            }
-            showSpinner(false);
-        }, (error) => {
-            showSpinner(false);
-        });
+            // Editor's Choice - top 5
+            renderHorizontal('editorsChoice', sortedByDownloads.slice(0, 5));
 
-        function renderApps(appsList, containerId) {
-            const container = document.getElementById(containerId);
+            // Trending - next 5
+            renderHorizontal('trendingApps', sortedByDownloads.slice(5, 10));
+
+            // New Releases - latest 5
+            renderHorizontal('newReleases', sortedByDate.slice(0, 5));
+
+            // Popular Games
+            renderHorizontal('popularGames', games.slice(0, 6));
+
+            // Popular Apps
+            renderHorizontal('popularApps', nonGames.slice(0, 6));
+        }
+
+        function renderHorizontal(containerId, apps) {
+            const container = $(containerId);
+            if (!container) return;
             container.innerHTML = '';
-            if(appsList.length === 0) {
-                container.innerHTML = '<p style="text-align:center;grid-column:1/-1;color:var(--text-gray);padding-top:40px;">No application packages found on server storage.</p>';
+            if (apps.length === 0) {
+                container.innerHTML =
+                '<div style="color:var(--text-gray);font-size:13px;padding:10px 0;">No apps available</div>';
                 return;
             }
-            appsList.forEach(app => {
+            apps.forEach(app => {
+                const div = document.createElement('div');
+                div.className = 'mini-card';
+                div.innerHTML = `
+                    <img src="${app.icon || 'https://img.icons8.com/color/144/android-os.png'}" alt="${app.name}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                    <div class="name">${app.name || 'App'}</div>
+                    <div class="sub">${app.downloadCount || 0} downloads</div>
+                `;
+                div.onclick = () => {
+                    if (app.id) viewAppDetails(app.id);
+                };
+                container.appendChild(div);
+            });
+        }
+
+        // ============================================
+        // CATEGORY FILTER
+        // ============================================
+        function filterByCategory(cat) {
+            const filtered = allApps.filter(a => (a.category || '').toLowerCase() === cat.toLowerCase());
+            const container = $('searchResults');
+            container.innerHTML = '';
+            if (filtered.length === 0) {
+                container.innerHTML =
+                `<p style="grid-column:1/-1;color:var(--text-gray);text-align:center;padding:40px 0;">No apps in ${cat} category</p>`;
+            } else {
+                renderAppGrid(filtered, container);
+            }
+            switchPage('search', `${cat}`);
+            $('searchInput').value = cat;
+        }
+
+        // ============================================
+        // APP GRID RENDER
+        // ============================================
+        function renderAppGrid(apps, container) {
+            container.innerHTML = '';
+            apps.forEach(app => {
                 const card = document.createElement('div');
                 card.className = 'app-card';
-                card.onclick = () => viewAppDetails(app.id);
                 card.innerHTML = `
-                    <div class="app-header">
-                        <img src="${app.icon}" class="app-icon" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
-                        <div>
-                            <h3 class="app-title">${app.name}</h3>
-                            <div class="app-meta">${app.version} • ${app.size}</div>
-                        </div>
-                    </div>
-                    <p class="app-desc">${app.shortDescription || app.description}</p>
-                    <div style="font-size:12px; color:var(--primary); font-weight:600; text-align: left;">Downloads Logged: ${app.downloadCount || 0}</div>
+                    <img src="${app.icon || 'https://img.icons8.com/color/144/android-os.png'}" class="app-icon" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                    <div class="app-title">${app.name || 'App'}</div>
+                    <div class="app-meta">${app.version || 'v1.0'} • ${app.size || '0 MB'}</div>
+                    <div class="app-rating">${'★'.repeat(Math.min(5, Math.round(app.rating || 4.5)))}</div>
+                    <div class="app-downloads">${app.downloadCount || 0} downloads</div>
                 `;
+                card.onclick = () => {
+                    if (app.id) viewAppDetails(app.id);
+                };
                 container.appendChild(card);
             });
         }
 
-        function uploadToImgBB(file, statusText) {
-            return new Promise((resolve, reject) => {
-                if(statusText) document.getElementById('loading-text').innerText = statusText;
-                
-                const formData = new FormData();
-                formData.append('image', file);
-
-                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) return response.json();
-                    throw new Error('Network payload rejected.');
-                })
-                .then(resData => {
-                    if(resData && resData.success && resData.data && resData.data.url) {
-                        resolve(resData.data.url);
-                    } else {
-                        reject(new Error("ImgBB rejected file structure parser."));
-                    }
-                })
-                .catch(error => {
-                    // Safe DataURL Local Real-time Engine Fallback 
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        resolve(e.target.result);
-                    };
-                    reader.onerror = function() {
-                        reject(error);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-        }
-
-        function handleAppSubmit(e) {
-            e.preventDefault();
-            showSpinner(true, "Launching secure production stream...");
-
-            const iconFile = document.getElementById('form-icon-file').files[0];
-            const screenshotFiles = document.getElementById('form-screenshot-file').files;
-            const apkDirectUrl = document.getElementById('form-apk-link').value.trim();
-
-            let iconUploadedUrl = "";
-            let screenshotUrlsArray = [];
-
-            uploadToImgBB(iconFile, "Deploying application branding asset link...")
-            .then(iconUrl => {
-                iconUploadedUrl = iconUrl;
-                
-                let uploadChain = Promise.resolve();
-                Array.from(screenshotFiles).forEach((file, index) => {
-                    uploadChain = uploadChain.then(() => {
-                        return uploadToImgBB(file, `Syncing Interface Capture Layout (${index + 1}/${screenshotFiles.length})...`)
-                        .then(url => {
-                            screenshotUrlsArray.push(url);
-                        });
-                    });
-                });
-                return uploadChain;
-            })
-            .then(() => {
-                document.getElementById('loading-text').innerText = "Broadcasting structure variables to Firebase server...";
-                
-                const finalPayload = {
-                    name: document.getElementById('form-name').value,
-                    version: document.getElementById('form-version').value,
-                    size: document.getElementById('form-size').value,
-                    shortDescription: document.getElementById('form-short-desc').value,
-                    description: document.getElementById('form-long-desc').value,
-                    icon: iconUploadedUrl,
-                    screenshot: screenshotUrlsArray.join(','), 
-                    downloadUrl: apkDirectUrl, 
-                    downloadCount: 0
-                };
-                
-                return database.ref('apps').push(finalPayload);
-            })
-            .then(() => {
-                showSpinner(false);
-                document.getElementById('upload-form').reset();
-                document.getElementById('wrapper-icon-preview').innerHTML = '';
-                document.getElementById('wrapper-screens-preview').innerHTML = '';
-                alert("Success Confirmation: Application completely pushed live.");
-                switchPage('home', 'Home');
-            })
-            .catch(err => {
-                showSpinner(false);
-                console.error(err);
-                alert("Deployment pipeline runtime exception: " + err.message);
-            });
-        }
-
-        function viewAppDetails(appId) {
-            activeAppId = appId;
-            const app = allApps.find(a => a.id === appId);
-            if(!app) return;
-
-            document.getElementById('det-icon').src = app.icon;
-            document.getElementById('det-title').innerText = app.name;
-            document.getElementById('det-meta').innerText = `${app.version} • ${app.size}`;
-            document.getElementById('det-downloads').innerText = `Total Downloads Matrix: ${app.downloadCount || 0}`;
-            document.getElementById('det-long-desc').innerText = app.description;
-            
-            const screenContainer = document.getElementById('det-screenshots');
-            screenContainer.innerHTML = '';
-            
-            if(app.screenshot) {
-                const images = app.screenshot.split(',');
-                images.forEach(imgUrl => {
-                    if(imgUrl.trim()) {
-                        const imgElem = document.createElement('img');
-                        imgElem.src = imgUrl.trim();
-                        imgElem.className = 'screenshot-img';
-                        imgElem.onclick = () => openImageViewer(imgUrl.trim());
-                        screenContainer.appendChild(imgElem);
-                    }
-                });
-            } else {
-                screenContainer.innerHTML = '<p style="color:var(--text-gray); font-size:12px;">No design captures added to record.</p>';
+        // ============================================
+        // SEARCH
+        // ============================================
+        function handleSearch() {
+            const query = $('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                $('searchResults').innerHTML = '';
+                return;
             }
-            
-            document.getElementById('det-download-btn').onclick = () => executeBinaryDownload(app);
+            let results = allApps.filter(app => {
+                const name = (app.name || '').toLowerCase();
+                const dev = (app.developer || '').toLowerCase();
+                const cat = (app.category || '').toLowerCase();
+                const tags = (app.tags || '').toLowerCase();
+                const desc = (app.description || '').toLowerCase();
 
-            syncAppReviewsList(appId);
-            setFormRating(5);
-            switchPage('details', app.name);
-        }
-
-        function executeBinaryDownload(app) {
-            database.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
-            
-            let dynamicLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
-            if(!dynamicLogs.includes(app.name)) dynamicLogs.push(app.name);
-            localStorage.setItem('stardust_download_logs', JSON.stringify(dynamicLogs));
-            loadProfileEcosystem();
-
-            window.open(app.downloadUrl, '_blank');
-        }
-
-        function syncAppReviewsList(appId) {
-            database.ref(`reviews/${appId}`).on('value', snapshot => {
-                const logs = snapshot.val();
-                const renderTarget = document.getElementById('det-reviews-list');
-                renderTarget.innerHTML = '';
-                if(!logs) {
-                    renderTarget.innerHTML = '<p style="color:var(--text-gray); font-size:13px; text-align:center; padding:10px 0;">No public evaluation submissions posted under this system node.</p>';
-                    return;
+                switch (currentSearchFilter) {
+                    case 'name':
+                        return name.includes(query);
+                    case 'developer':
+                        return dev.includes(query);
+                    case 'category':
+                        return cat.includes(query);
+                    case 'tags':
+                        return tags.includes(query);
+                    default:
+                        return name.includes(query) || dev.includes(query) || cat.includes(query) || tags.includes(query) ||
+                            desc.includes(query);
                 }
-                Object.values(logs).forEach(r => {
-                    let starsHtml = '';
-                    const starCount = r.rating || 5;
-                    for(let i=0; i<5; i++) {
-                        starsHtml += i < starCount ? '★' : '☆';
-                    }
-
-                    const isAdmin = (r.handle === '@marketadmin' || r.author.toLowerCase() === 'developer admin');
-                    const highlightedClass = isAdmin ? 'review-card-modern developer-highlight' : 'review-card-modern';
-
-                    renderTarget.innerHTML += `
-                        <div class="${highlightedClass}">
-                            <div class="review-top-meta">
-                                <div class="review-author">
-                                    ${isAdmin ? '<svg style="width:14px;height:14px;fill:#3b82f6;" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L1.41 8 10 17z"/></svg>' : ''}
-                                    ${r.author} <span style="color:var(--text-gray); font-weight:400; font-size:11px; margin-left:4px;">${r.handle}</span>
-                                </div>
-                                <div class="static-stars">${starsHtml}</div>
-                            </div>
-                            <div style="font-size:13px; color:var(--text-light); line-height:1.4; margin-top:4px;">${r.text}</div>
-                        </div>
-                    `;
-                });
             });
+            renderAppGrid(results, $('searchResults'));
         }
 
-        function submitUserReview() {
-            const field = document.getElementById('review-input');
-            if(!field.value.trim() || !activeAppId) return;
-
-            const targetAppName = allApps.find(a => a.id === activeAppId)?.name || "Application";
-            const reviewPayload = {
-                author: document.getElementById('user-name-display').innerText,
-                handle: document.getElementById('user-handle-display').innerText,
-                text: field.value.trim(),
-                rating: selectedRatingValue
-            };
-
-            database.ref(`reviews/${activeAppId}`).push(reviewPayload).then(() => {
-                let storedReviews = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
-                storedReviews.push(`[${selectedRatingValue} Star] Reviewed ${targetAppName}: "${field.value.trim()}"`);
-                localStorage.setItem('stardust_reviews_logs', JSON.stringify(storedReviews));
-                
-                field.value = '';
-                loadProfileEcosystem();
-            });
+        function searchQuery(q) {
+            $('searchInput').value = q;
+            handleSearch();
         }
 
-        function loadProfileEcosystem() {
-            const dLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
-            const rLogs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+        function setSearchFilter(filter) {
+            currentSearchFilter = filter;
+            document.querySelectorAll('#searchFilters button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`#searchFilters button[data-filter="${filter}"]`).classList.add('active');
+            handleSearch();
+        }
 
-            const downloadTarget = document.getElementById('profile-downloads');
-            downloadTarget.innerHTML = '';
-            if(dLogs.length === 0) {
-                downloadTarget.innerText = "No downloaded software packages logged.";
+        function startVoiceSearch() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.start();
+                recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    $('searchInput').value = transcript;
+                    handleSearch();
+                };
             } else {
-                dLogs.forEach(app => {
-                    downloadTarget.innerHTML += `<span class="history-badge">${app}</span>`;
-                });
+                alert('Voice search is not supported in this browser.');
             }
-            
-            const revTarget = document.getElementById('profile-reviews');
-            revTarget.innerHTML = '';
-            if(rLogs.length === 0) revTarget.innerText = "No public review logs submitted.";
-            else {
-                rLogs.forEach(log => {
-                    revTarget.innerHTML += `<div class="review-log-card">Log Matrix Entry: ${log}</div>`;
-                });
-            }
+        }
+
+        // ============================================
+        // RANKINGS
+        // ============================================
+        function setRankingFilter(filter) {
+            currentRankingFilter = filter;
+            document.querySelectorAll('#page-ranking .btn-outline').forEach(b => b.classList.remove('active'));
+            const btn = $(`rank${filter.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')}`);
+            if (btn) btn.classList.add('active');
+            loadRankings();
         }
 
         function loadRankings() {
-            const sorted = [...allApps].sort((a,b) => (b.downloadCount || 0) - (a.downloadCount || 0));
-            renderApps(sorted, 'ranking-apps');
+            let sorted = [...allApps];
+            switch (currentRankingFilter) {
+                case 'top-free':
+                    sorted.sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0));
+                    break;
+                case 'top-paid':
+                    sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+                    break;
+                case 'top-grossing':
+                    sorted.sort((a, b) => ((b.downloadCount || 0) * (b.price || 0)) - ((a.downloadCount || 0) * (a.price ||
+                    0)));
+                    break;
+                case 'trending':
+                    sorted.sort((a, b) => (b.trendingScore || 0) - (a.trendingScore || 0));
+                    break;
+                case 'top-rated':
+                    sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                default:
+                    sorted.sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0));
+            }
+            renderAppGrid(sorted, $('rankingApps'));
         }
 
-        function showSpinner(show, text = "") {
-            const overlay = document.getElementById('loading-spinner');
-            if(text) document.getElementById('loading-text').innerText = text;
-            overlay.style.display = show ? 'flex' : 'none';
+        // ============================================
+        // WISHLIST
+        // ============================================
+        function toggleWishlist() {
+            if (!activeAppId) return;
+            const index = wishlist.indexOf(activeAppId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                $('detWishlist').textContent = '♡';
+            } else {
+                wishlist.push(activeAppId);
+                $('detWishlist').textContent = '❤️';
+                addNotification(`${getAppName(activeAppId)} added to wishlist`);
+            }
+            localStorage.setItem('stardust_wishlist', JSON.stringify(wishlist));
+            updateWishlistBadge();
         }
 
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            const filtered = allApps.filter(a => a.name.toLowerCase().includes(q));
-            renderApps(filtered, 'search-results');
-        });
+        function getAppName(id) {
+            const app = allApps.find(a => a.id === id);
+            return app ? app.name : 'App';
+        }
 
-        function setFormRating(stars) {
-            selectedRatingValue = stars;
-            const elements = document.querySelectorAll('#stars-selector-wrap .star-clickable');
-            elements.forEach(el => {
-                const val = parseInt(el.getAttribute('data-star'));
-                if(val <= stars) el.classList.add('active');
-                else el.classList.remove('active');
+        function updateWishlistBadge() {
+            const count = wishlist.length;
+            // Update nav badge
+            const navWishlist = $('navWishlist');
+            let badge = navWishlist.querySelector('.nav-badge');
+            if (count > 0) {
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'nav-badge';
+                    navWishlist.appendChild(badge);
+                }
+                badge.textContent = count;
+            } else if (badge) {
+                badge.remove();
+            }
+        }
+
+        function renderWishlist() {
+            const container = $('wishlistGrid');
+            const wishApps = allApps.filter(a => wishlist.includes(a.id));
+            renderAppGrid(wishApps, container);
+            if (wishApps.length === 0) {
+                container.innerHTML =
+                    `<p style="grid-column:1/-1;color:var(--text-gray);text-align:center;padding:40px 0;">Your wishlist is empty. ❤️</p>`;
+            }
+        }
+
+        // ============================================
+        // NOTIFICATIONS
+        // ============================================
+        function addNotification(text) {
+            notifications.unshift({ text, timestamp: Date.now() });
+            if (notifications.length > 50) notifications.pop();
+            localStorage.setItem('stardust_notifications', JSON.stringify(notifications));
+            updateNotifBadge();
+        }
+
+        function updateNotifBadge() {
+            const dot = $('notifDot');
+            if (notifications.length > 0) {
+                dot.style.display = 'block';
+            } else {
+                dot.style.display = 'none';
+            }
+        }
+
+        function renderNotifications() {
+            const container = $('notificationList');
+            container.innerHTML = '';
+            if (notifications.length === 0) {
+                container.innerHTML =
+                    '<p style="color:var(--text-gray);text-align:center;padding:40px 0;">No notifications yet.</p>';
+                return;
+            }
+            notifications.forEach((n, i) => {
+                const div = document.createElement('div');
+                div.className = 'review-card';
+                div.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>${n.text}</span>
+                        <span style="font-size:11px;color:var(--text-muted);">${new Date(n.timestamp).toLocaleDateString()}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            // Mark as read
+            $('notifDot').style.display = 'none';
+        }
+
+        // ============================================
+        // PROFILE
+        // ============================================
+        function loadProfile() {
+            const name = localStorage.getItem('stardust_profile_name') || 'Developer Admin';
+            const handle = localStorage.getItem('stardust_profile_handle') || '@marketadmin';
+            const pfp = localStorage.getItem('stardust_profile_pfp') || 'https://img.icons8.com/clouds/200/user.png';
+
+            $('profileName').textContent = name;
+            $('profileHandle').textContent = handle;
+            $('profilePfp').src = pfp;
+
+            // Stats
+            const appCount = allApps.length;
+            const totalDownloads = allApps.reduce((sum, a) => sum + (a.downloadCount || 0), 0);
+            const totalReviews = allApps.reduce((sum, a) => sum + (a.reviewCount || 0), 0);
+
+            $('statApps').textContent = appCount;
+            $('statDownloads').textContent = totalDownloads.toLocaleString();
+            $('statReviews').textContent = totalReviews;
+            $('statWishlist').textContent = wishlist.length;
+
+            // Download history
+            const history = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+            const container = $('downloadHistory');
+            container.innerHTML = '';
+            if (history.length === 0) {
+                container.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No downloads yet</span>';
+            } else {
+                history.slice(0, 10).forEach(name => {
+                    const span = document.createElement('span');
+                    span.className = 'history-badge';
+                    span.style.cssText =
+                        'background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:20px;font-size:12px;';
+                    span.textContent = name;
+                    container.appendChild(span);
+                });
+            }
+
+            // Review logs
+            const revLogs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+            const revContainer = $('reviewLogs');
+            revContainer.innerHTML = '';
+            if (revLogs.length === 0) {
+                revContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No reviews yet</p>';
+            } else {
+                revLogs.slice(0, 10).forEach(log => {
+                    const div = document.createElement('div');
+                    div.className = 'review-log-card';
+                    div.style.cssText =
+                        'background:#1f2937;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--text-gray);margin-bottom:6px;';
+                    div.textContent = log;
+                    revContainer.appendChild(div);
+                });
+            }
+        }
+
+        function editProfile() {
+            const name = prompt('Display Name:', $('profileName').textContent);
+            if (name && name.trim()) {
+                localStorage.setItem('stardust_profile_name', name.trim());
+                $('profileName').textContent = name.trim();
+            }
+            const handle = prompt('Handle:', $('profileHandle').textContent);
+            if (handle && handle.trim()) {
+                localStorage.setItem('stardust_profile_handle', handle.trim());
+                $('profileHandle').textContent = handle.trim();
+            }
+        }
+
+        function uploadPFP(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            showLoading(true, 'Uploading profile picture...');
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const url = data.data.url;
+                        $('profilePfp').src = url;
+                        localStorage.setItem('stardust_profile_pfp', url);
+                    } else {
+                        // Fallback to local
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            $('profilePfp').src = e.target.result;
+                            localStorage.setItem('stardust_profile_pfp', e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    showLoading(false);
+                })
+                .catch(() => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        $('profilePfp').src = e.target.result;
+                        localStorage.setItem('stardust_profile_pfp', e.target.result);
+                        showLoading(false);
+                    };
+                    reader.readAsDataURL(file);
+                });
+        }
+
+        // ============================================
+        // ADMIN PANEL
+        // ============================================
+        function loadAdmin() {
+            $('adminTotalApps').textContent = allApps.length;
+            $('adminTotalDownloads').textContent = allApps.reduce((s, a) => s + (a.downloadCount || 0), 0).toLocaleString();
+            $('adminTotalReviews').textContent = allApps.reduce((s, a) => s + (a.reviewCount || 0), 0);
+            $('adminTotalUsers').textContent = '1'; // Simulated
+
+            const container = $('adminAppList');
+            container.innerHTML = '';
+            allApps.forEach(app => {
+                const div = document.createElement('div');
+                div.style.cssText =
+                    'display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);';
+                div.innerHTML = `
+                    <span style="font-size:13px;">${app.name} <span style="color:var(--text-gray);font-size:11px;">${app.downloadCount || 0} downloads</span></span>
+                    <div style="display:flex;gap:6px;">
+                        <button onclick="featureApp('${app.id}')" style="background:var(--primary);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">⭐ Feature</button>
+                        <button onclick="deleteApp('${app.id}')" style="background:var(--red);color:white;padding:2px 10px;border-radius:4px;font-size:11px;">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(div);
             });
         }
 
+        function featureApp(id) {
+            const app = allApps.find(a => a.id === id);
+            if (app) {
+                addNotification(`${app.name} has been featured! ⭐`);
+                alert(`${app.name} featured!`);
+            }
+        }
+
+        function deleteApp(id) {
+            if (confirm('Are you sure you want to delete this app?')) {
+                db.ref(`apps/${id}`).remove().then(() => {
+                    addNotification('App deleted from store');
+                });
+            }
+        }
+
+        // ============================================
+        // APP DETAILS
+        // ============================================
+        function viewAppDetails(appId) {
+            activeAppId = appId;
+            const app = allApps.find(a => a.id === appId);
+            if (!app) return;
+
+            // Basic info
+            $('detIcon').src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
+            $('detTitle').textContent = app.name || 'App';
+            $('detDeveloper').textContent = `by ${app.developer || 'Unknown Developer'}`;
+            $('detVersion').textContent = app.version || 'v1.0';
+            $('detSize').textContent = app.size || '0 MB';
+            $('detCategory').textContent = app.category || 'General';
+            $('detDownloads').textContent = `${app.downloadCount || 0} downloads`;
+
+            const rating = app.rating || 4.5;
+            $('detRating').innerHTML = `${rating.toFixed(1)} <span>★</span>`;
+            $('detReviewCount').textContent = `(${app.reviewCount || 0} reviews)`;
+
+            // Verified badge
+            $('detVerified').textContent = app.verified ? '✓ Verified' : '';
+
+            // Wishlist
+            $('detWishlist').textContent = wishlist.includes(appId) ? '❤️' : '♡';
+
+            // Description
+            $('detDescription').textContent = app.description || 'No description available.';
+
+            // Screenshots
+            const screenContainer = $('detScreenshots');
+            screenContainer.innerHTML = '';
+            if (app.screenshot) {
+                const imgs = app.screenshot.split(',');
+                imgs.forEach(url => {
+                    if (url.trim()) {
+                        const img = document.createElement('img');
+                        img.src = url.trim();
+                        img.onclick = () => openImageViewer(url.trim());
+                        screenContainer.appendChild(img);
+                    }
+                });
+            } else {
+                screenContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No screenshots available.</p>';
+            }
+
+            // What's New
+            const wnContainer = $('detWhatsNew');
+            wnContainer.innerHTML = '';
+            if (app.whatsNew) {
+                const items = app.whatsNew.split('\n');
+                items.forEach(item => {
+                    if (item.trim()) {
+                        const div = document.createElement('div');
+                        div.className = 'whats-new-item';
+                        div.innerHTML = `<span class="vn">✓</span> ${item.trim()}`;
+                        wnContainer.appendChild(div);
+                    }
+                });
+            } else {
+                wnContainer.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No update notes available.</p>';
+            }
+
+            // Version History
+            const vhContainer = $('detVersionHistory');
+            vhContainer.innerHTML = '';
+            if (app.versionHistory) {
+                const versions = app.versionHistory.split(',');
+                versions.forEach(v => {
+                    if (v.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'vh-item';
+                        span.textContent = v.trim();
+                        vhContainer.appendChild(span);
+                    }
+                });
+            } else {
+                vhContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">v1.0</span>';
+            }
+
+            // Permissions
+            const permContainer = $('detPermissions');
+            permContainer.innerHTML = '';
+            if (app.permissions) {
+                const perms = app.permissions.split(',');
+                perms.forEach(p => {
+                    if (p.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'perm';
+                        span.textContent = p.trim();
+                        permContainer.appendChild(span);
+                    }
+                });
+            } else {
+                permContainer.innerHTML = '<span class="perm">No permissions listed</span>';
+            }
+
+            // App Info
+            $('detPackage').textContent = app.package || 'com.example.app';
+            $('detVersionInfo').textContent = app.version || '1.0.0';
+            $('detSizeInfo').textContent = app.size || '0 MB';
+            $('detReleaseDate').textContent = app.releaseDate || '2024-01-01';
+            $('detUpdatedDate').textContent = app.updatedDate || '2024-01-01';
+            $('detAndroidVer').textContent = app.androidVer || '5.0+';
+            $('detLanguage').textContent = app.language || 'English';
+
+            // SHA256
+            $('detSHA256').textContent = app.sha256 || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0';
+
+            // Related Apps
+            const relContainer = $('detRelatedApps');
+            relContainer.innerHTML = '';
+            const related = allApps.filter(a => a.id !== appId && (a.category === app.category || a.id !== appId)).slice(0,
+            6);
+            if (related.length === 0) {
+                relContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No related apps found.</span>';
+            } else {
+                related.forEach(a => {
+                    const div = document.createElement('div');
+                    div.className = 'rel-item';
+                    div.innerHTML = `
+                        <img src="${a.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                        <div class="rn">${a.name || 'App'}</div>
+                    `;
+                    div.onclick = () => viewAppDetails(a.id);
+                    relContainer.appendChild(div);
+                });
+            }
+
+            // Reviews
+            loadReviews(appId);
+
+            // Install button
+            $('detInstallBtn').onclick = () => installApp();
+
+            // Switch page
+            switchPage('details', app.name);
+        }
+
+        // ============================================
+        // INSTALL
+        // ============================================
+        function installApp() {
+            const app = allApps.find(a => a.id === activeAppId);
+            if (!app) return;
+
+            // Increment download count
+            db.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
+            db.ref(`apps/${app.id}/reviewCount`).transaction(c => (c || 0) + 0);
+
+            // Log download
+            const logs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
+            if (!logs.includes(app.name)) logs.push(app.name);
+            localStorage.setItem('stardust_download_logs', JSON.stringify(logs));
+
+            addNotification(`Downloaded ${app.name}`);
+
+            // Open APK URL
+            if (app.downloadUrl) {
+                window.open(app.downloadUrl, '_blank');
+            } else {
+                alert(`Downloading ${app.name}... (Demo)`);
+            }
+        }
+
+        // ============================================
+        // REVIEWS
+        // ============================================
+        function setReviewRating(stars) {
+            reviewRating = stars;
+            document.querySelectorAll('#reviewStars span').forEach(el => {
+                const val = parseInt(el.dataset.star);
+                el.style.color = val <= stars ? 'var(--gold)' : 'var(--border-color)';
+            });
+        }
+
+        function submitReview() {
+            const input = $('reviewInput');
+            if (!input.value.trim() || !activeAppId) return;
+
+            const app = allApps.find(a => a.id === activeAppId);
+            const reviewData = {
+                author: localStorage.getItem('stardust_profile_name') || 'Developer Admin',
+                handle: localStorage.getItem('stardust_profile_handle') || '@marketadmin',
+                text: input.value.trim(),
+                rating: reviewRating,
+                timestamp: Date.now(),
+                images: reviewImages.join(',')
+            };
+
+            db.ref(`reviews/${activeAppId}`).push(reviewData).then(() => {
+                // Increment review count
+                db.ref(`apps/${activeAppId}/reviewCount`).transaction(c => (c || 0) + 1);
+
+                // Log review
+                const logs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+                logs.push(`[${reviewRating}★] ${app ? app.name : 'App'}: "${input.value.trim()}"`);
+                localStorage.setItem('stardust_reviews_logs', JSON.stringify(logs));
+
+                input.value = '';
+                reviewImages = [];
+                $('reviewImagePreviews').innerHTML = '';
+                addNotification(`You reviewed ${app ? app.name : 'an app'}`);
+                loadReviews(activeAppId);
+            });
+        }
+
+        function loadReviews(appId) {
+            db.ref(`reviews/${appId}`).on('value', snapshot => {
+                const data = snapshot.val();
+                const container = $('detReviewsList');
+                container.innerHTML = '';
+
+                if (!data) {
+                    container.innerHTML =
+                        '<p style="color:var(--text-gray);text-align:center;padding:20px 0;">No reviews yet. Be the first!</p>';
+                    return;
+                }
+
+                const reviews = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                // Rating graph
+                let ratings = [0, 0, 0, 0, 0];
+                reviews.forEach(r => {
+                    const star = Math.min(5, Math.max(1, Math.round(r.rating || 5)));
+                    ratings[star - 1]++;
+                });
+                const total = reviews.length;
+
+                let graphHtml = `<div class="rating-graph">`;
+                for (let i = 5; i >= 1; i--) {
+                    const count = ratings[i - 1] || 0;
+                    const pct = total > 0 ? (count / total) * 100 : 0;
+                    graphHtml += `
+                        <div class="rg-row">
+                            <span>${i}★</span>
+                            <div class="rg-bar"><div class="rg-fill" style="width:${pct}%;"></div></div>
+                            <span>${count}</span>
+                        </div>
+                    `;
+                }
+                graphHtml += `</div>`;
+                container.innerHTML = graphHtml;
+
+                // Reviews list
+                reviews.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = 'review-card';
+                    let stars = '';
+                    for (let i = 0; i < 5; i++) {
+                        stars += i < Math.round(r.rating || 5) ? '★' : '☆';
+                    }
+
+                    let imagesHtml = '';
+                    if (r.images) {
+                        const imgs = r.images.split(',');
+                        imgs.forEach(url => {
+                            if (url.trim()) {
+                                imagesHtml +=
+                                    `<img src="${url.trim()}" style="height:50px;border-radius:6px;object-fit:cover;cursor:pointer;" onclick="openImageViewer('${url.trim()}')">`;
+                            }
+                        });
+                    }
+
+                    const isDev = r.handle === '@marketadmin' || r.author.toLowerCase() === 'developer admin';
+
+                    div.innerHTML = `
+                        <div class="rev-head">
+                            <span class="rev-author">${r.author || 'Anonymous'} ${isDev ? '⭐' : ''}</span>
+                            <span class="rev-stars">${stars}</span>
+                        </div>
+                        <div class="rev-text">${r.text || ''}</div>
+                        ${imagesHtml ? `<div class="flex gap-8 mt-12" style="flex-wrap:wrap;">${imagesHtml}</div>` : ''}
+                        <div class="rev-actions">
+                            <button onclick="helpfulReview(this)">👍 Helpful</button>
+                            <button onclick="notHelpfulReview(this)">👎 Not Helpful</button>
+                            <span style="color:var(--text-muted);font-size:11px;">${new Date(r.timestamp).toLocaleDateString()}</span>
+                        </div>
+                        ${isDev ? `<div class="dev-reply"><strong>Developer:</strong> Thanks for your feedback! We appreciate it.</div>` : ''}
+                    `;
+                    container.appendChild(div);
+                });
+            });
+        }
+
+        function helpfulReview(btn) {
+            btn.textContent = '👍 Helpful ✓';
+            btn.style.color = 'var(--green)';
+        }
+
+        function notHelpfulReview(btn) {
+            btn.textContent = '👎 Not Helpful ✓';
+            btn.style.color = 'var(--red)';
+        }
+
+        function uploadReviewImages(input) {
+            const files = Array.from(input.files);
+            const previewContainer = $('reviewImagePreviews');
+
+            files.forEach(file => {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const url = data.data.url;
+                            reviewImages.push(url);
+                            const img = document.createElement('img');
+                            img.src = url;
+                            img.style.cssText =
+                                'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
+                            previewContainer.appendChild(img);
+                        }
+                    })
+                    .catch(() => {
+                        // Fallback
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            reviewImages.push(e.target.result);
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.cssText =
+                                'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
+                            previewContainer.appendChild(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+            });
+        }
+
+        // ============================================
+        // IMAGE VIEWER
+        // ============================================
         function openImageViewer(src) {
-            const viewer = document.getElementById('media-viewer');
-            const img = document.getElementById('media-viewer-img');
-            img.src = src;
+            const viewer = $('imageViewer');
+            $('viewerImage').src = src;
             viewer.classList.add('open');
         }
 
         function closeImageViewer() {
-            document.getElementById('media-viewer').classList.remove('open');
+            $('imageViewer').classList.remove('open');
         }
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        let darkMode = true;
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            const root = document.documentElement;
+            if (darkMode) {
+                root.style.setProperty('--bg-dark', '#0b0f19');
+                root.style.setProperty('--bg-card', '#111827');
+                root.style.setProperty('--bg-input', '#1f2937');
+                root.style.setProperty('--text-light', '#f9fafb');
+                root.style.setProperty('--text-gray', '#9ca3af');
+                root.style.setProperty('--border-color', '#374151');
+                $('themeIcon').innerHTML = '<path d="M9 2c-3.87 3.87-4.38 9.39-1.5 13.5C6.5 12.5 8.5 6.5 14 4c-1.58-1.29-3.86-2-5-2zm0 0c-3.87 3.87-4.38 9.39-1.5 13.5-1.5-2-3-4-3-6.5s1.5-4.5 3-6.5z"/>';
+            } else {
+                root.style.setProperty('--bg-dark', '#f1f5f9');
+                root.style.setProperty('--bg-card', '#ffffff');
+                root.style.setProperty('--bg-input', '#e2e8f0');
+                root.style.setProperty('--text-light', '#0f172a');
+                root.style.setProperty('--text-gray', '#475569');
+                root.style.setProperty('--border-color', '#cbd5e1');
+                $('themeIcon').innerHTML =
+                    '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z"/>';
+            }
+            localStorage.setItem('stardust_theme', darkMode ? 'dark' : 'light');
+        }
+
+        // ============================================
+        // FIREBASE LISTENER
+        // ============================================
+        db.ref('apps').on('value', snapshot => {
+            const data = snapshot.val();
+            allApps = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+
+            // Update UI
+            if (allApps.length > 0) {
+                initBanner(allApps);
+                renderHomeSections(allApps);
+
+                // Update home grid
+                const homeGrid = $('home-apps');
+                if (homeGrid) {
+                    const topApps = [...allApps].sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0)).slice(0, 8);
+                    renderAppGrid(topApps, homeGrid);
+                }
+            }
+
+            // Refresh current page if needed
+            const activePage = document.querySelector('.page.active');
+            if (activePage) {
+                const id = activePage.id.replace('page-', '');
+                if (id === 'ranking') loadRankings();
+                if (id === 'wishlist') renderWishlist();
+                if (id === 'profile') loadProfile();
+                if (id === 'admin') loadAdmin();
+                if (id === 'details' && activeAppId) {
+                    const stillExists = allApps.some(a => a.id === activeAppId);
+                    if (stillExists) {
+                        viewAppDetails(activeAppId);
+                    } else {
+                        switchPage('home', 'Stardust Store');
+                    }
+                }
+            }
+
+            showLoading(false);
+        }, error => {
+            showLoading(false);
+            console.error('Firebase error:', error);
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Restore theme
+            const savedTheme = localStorage.getItem('stardust_theme');
+            if (savedTheme === 'light') {
+                darkMode = false;
+                toggleTheme();
+            }
+
+            // Restore wishlist
+            wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
+            updateWishlistBadge();
+
+            // Restore notifications
+            notifications = JSON.parse(localStorage.getItem('stardust_notifications') || '[]');
+            updateNotifBadge();
+
+            // Restore profile
+            if (localStorage.getItem('stardust_profile_name')) {
+                $('profileName').textContent = localStorage.getItem('stardust_profile_name');
+            }
+            if (localStorage.getItem('stardust_profile_handle')) {
+                $('profileHandle').textContent = localStorage.getItem('stardust_profile_handle');
+            }
+            if (localStorage.getItem('stardust_profile_pfp')) {
+                $('profilePfp').src = localStorage.getItem('stardust_profile_pfp');
+            }
+
+            // Set default review rating
+            setReviewRating(5);
+
+            showLoading(true, 'Loading Stardust Store...');
+        });
+
+        // ============================================
+        // SEARCH SUGGESTIONS - Click to search
+        // ============================================
+        function searchQuery(q) {
+            $('searchInput').value = q;
+            handleSearch();
+            switchPage('search', 'Search');
+        }
+
+        console.log('🚀 Stardust Store Pro V2 loaded successfully!');
+        console.log('📦 Features: Home Banner | Editor\'s Choice | Trending | Categories | Search with filters | Wishlist | Notifications | Admin Panel | Ratings | Reviews with images | Version history | Permissions | Virus scan | Related apps | Dark/Light theme | Voice search | And more!');
     </script>
 </body>
 </html>
