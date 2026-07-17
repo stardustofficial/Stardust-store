@@ -447,6 +447,7 @@
             gap: 18px;
             align-items: flex-start;
             margin-bottom: 20px;
+            position: relative;
         }
         .detail-icon {
             width: 80px;
@@ -489,6 +490,35 @@
             font-size: 14px;
             color: var(--text-gray);
             font-weight: 400;
+        }
+
+        .detail-wishlist-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .detail-wishlist-btn:hover {
+            border-color: var(--primary);
+            background: var(--border-color);
+        }
+        .detail-wishlist-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-muted);
+            transition: var(--transition);
+        }
+        .detail-wishlist-btn.active svg {
+            fill: var(--red);
         }
 
         .detail-section {
@@ -1124,6 +1154,16 @@
                 font-size: 12px;
                 padding: 6px 14px;
             }
+            .detail-wishlist-btn {
+                top: 5px;
+                right: 5px;
+                width: 34px;
+                height: 34px;
+            }
+            .detail-wishlist-btn svg {
+                width: 18px;
+                height: 18px;
+            }
         }
 
         /* ===== LIGHT MODE TEXT HIGHLIGHT ===== */
@@ -1392,6 +1432,19 @@
         .light-mode .verified-badge {
             color: #16a34a;
         }
+        .light-mode .detail-wishlist-btn {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        .light-mode .detail-wishlist-btn:hover {
+            background: #cbd5e1;
+        }
+        .light-mode .detail-wishlist-btn svg {
+            fill: #475569;
+        }
+        .light-mode .detail-wishlist-btn.active svg {
+            fill: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -1574,7 +1627,7 @@
             <div class="detail-header">
                 <img src="" class="detail-icon" id="detIcon" alt="">
                 <div class="detail-info">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:50px;">
                         <h2 id="detTitle">App Name</h2>
                         <span class="verified-badge" id="detVerified" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified</span>
                     </div>
@@ -1590,6 +1643,9 @@
                         <span id="detReviewCount">(0 reviews)</span>
                     </div>
                 </div>
+                <button class="detail-wishlist-btn" id="detWishlistBtn" onclick="toggleWishlist()" title="Add to Wishlist">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
             </div>
 
             <button class="btn-primary" id="detInstallBtn" onclick="installApp()">
@@ -1751,6 +1807,7 @@
         let downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
         let reviewImages = [];
         let isDarkMode = true;
+        let wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
 
         const $ = id => document.getElementById(id);
         const headerTitle = $('headerTitle');
@@ -2016,7 +2073,6 @@
             const totalDownloads = allApps.reduce((s, a) => s + (a.downloadCount || 0), 0);
             $('statDownloads').textContent = totalDownloads.toLocaleString();
 
-            const wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
             $('statWishlist').textContent = wishlist.length;
 
             downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
@@ -2098,6 +2154,25 @@
         }
 
         // ============================================
+        // WISHLIST
+        // ============================================
+        function toggleWishlist() {
+            if (!activeAppId) return;
+            const index = wishlist.indexOf(activeAppId);
+            const btn = $('detWishlistBtn');
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                btn.classList.remove('active');
+            } else {
+                wishlist.push(activeAppId);
+                btn.classList.add('active');
+            }
+            localStorage.setItem('stardust_wishlist', JSON.stringify(wishlist));
+            // Update profile wishlist count
+            $('statWishlist').textContent = wishlist.length;
+        }
+
+        // ============================================
         // APP DETAILS
         // ============================================
         function viewAppDetails(appId) {
@@ -2107,6 +2182,9 @@
                 alert('App not found!');
                 return;
             }
+
+            // Increment view count when user opens app details
+            db.ref(`apps/${app.id}/views`).transaction(c => (c || 0) + 1);
 
             $('detIcon').src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
             $('detTitle').textContent = app.name || 'App';
@@ -2126,6 +2204,14 @@
             $('installProgress').style.width = '0%';
 
             $('detDescription').textContent = app.description || 'No description available.';
+
+            // Wishlist button
+            const wishlistBtn = $('detWishlistBtn');
+            if (wishlist.includes(appId)) {
+                wishlistBtn.classList.add('active');
+            } else {
+                wishlistBtn.classList.remove('active');
+            }
 
             // Screenshots
             const screenContainer = $('detScreenshots');
@@ -2284,7 +2370,7 @@
         }
 
         // ============================================
-        // REVIEWS - Fixed: Reviews stay visible
+        // REVIEWS - Fixed: Reviews count works
         // ============================================
         function setReviewRating(stars) {
             reviewRating = stars;
@@ -2311,8 +2397,22 @@
 
             // Save review to Firebase
             db.ref(`reviews/${activeAppId}`).push(reviewData).then(() => {
-                // Increment review count
-                db.ref(`apps/${activeAppId}/reviewCount`).transaction(c => (c || 0) + 1);
+                // Increment review count - ensure it works
+                db.ref(`apps/${activeAppId}/reviewCount`).transaction(current => {
+                    return (current || 0) + 1;
+                }).then(() => {
+                    // Update rating
+                    return db.ref(`reviews/${activeAppId}`).once('value').then(snap => {
+                        const data = snap.val();
+                        if (data) {
+                            const reviews = Object.values(data);
+                            const total = reviews.length;
+                            const sum = reviews.reduce((s, r) => s + (r.rating || 5), 0);
+                            const avg = sum / total;
+                            return db.ref(`apps/${activeAppId}/rating`).set(Math.round(avg * 10) / 10);
+                        }
+                    });
+                });
 
                 // Save to local logs
                 const logs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
@@ -2553,6 +2653,9 @@
                 document.body.classList.remove('light-mode');
             }
 
+            // Restore wishlist
+            wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
+
             // Restore profile
             if (localStorage.getItem('stardust_profile_name')) $('profileName').textContent = localStorage.getItem(
                 'stardust_profile_name');
@@ -2572,6 +2675,7 @@
         console.log('🔄 Real-time updates from Developer Console.');
         console.log('⭐ Reviews are now permanent and visible to all users.');
         console.log('📥 Download count increments on each install.');
+        console.log('❤️ Wishlist feature added!');
     </script>
 </body>
 </html>
