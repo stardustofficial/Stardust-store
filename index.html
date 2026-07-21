@@ -447,6 +447,7 @@
             gap: 18px;
             align-items: flex-start;
             margin-bottom: 20px;
+            position: relative;
         }
         .detail-icon {
             width: 80px;
@@ -489,6 +490,35 @@
             font-size: 14px;
             color: var(--text-gray);
             font-weight: 400;
+        }
+
+        .detail-wishlist-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .detail-wishlist-btn:hover {
+            border-color: var(--primary);
+            background: var(--border-color);
+        }
+        .detail-wishlist-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-muted);
+            transition: var(--transition);
+        }
+        .detail-wishlist-btn.active svg {
+            fill: var(--red);
         }
 
         .detail-section {
@@ -1124,6 +1154,16 @@
                 font-size: 12px;
                 padding: 6px 14px;
             }
+            .detail-wishlist-btn {
+                top: 5px;
+                right: 5px;
+                width: 34px;
+                height: 34px;
+            }
+            .detail-wishlist-btn svg {
+                width: 18px;
+                height: 18px;
+            }
         }
 
         /* ===== LIGHT MODE TEXT HIGHLIGHT ===== */
@@ -1392,6 +1432,19 @@
         .light-mode .verified-badge {
             color: #16a34a;
         }
+        .light-mode .detail-wishlist-btn {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        .light-mode .detail-wishlist-btn:hover {
+            background: #cbd5e1;
+        }
+        .light-mode .detail-wishlist-btn svg {
+            fill: #475569;
+        }
+        .light-mode .detail-wishlist-btn.active svg {
+            fill: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -1574,7 +1627,7 @@
             <div class="detail-header">
                 <img src="" class="detail-icon" id="detIcon" alt="">
                 <div class="detail-info">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:50px;">
                         <h2 id="detTitle">App Name</h2>
                         <span class="verified-badge" id="detVerified" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified</span>
                     </div>
@@ -1590,6 +1643,9 @@
                         <span id="detReviewCount">(0 reviews)</span>
                     </div>
                 </div>
+                <button class="detail-wishlist-btn" id="detWishlistBtn" onclick="toggleWishlist()" title="Add to Wishlist">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </button>
             </div>
 
             <button class="btn-primary" id="detInstallBtn" onclick="installApp()">
@@ -1751,6 +1807,7 @@
         let downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
         let reviewImages = [];
         let isDarkMode = true;
+        let wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
 
         const $ = id => document.getElementById(id);
         const headerTitle = $('headerTitle');
@@ -2013,10 +2070,10 @@
             $('profilePfp').src = pfp;
             $('profileBio').textContent = bio;
 
+            // Total downloads from all apps
             const totalDownloads = allApps.reduce((s, a) => s + (a.downloadCount || 0), 0);
             $('statDownloads').textContent = totalDownloads.toLocaleString();
 
-            const wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
             $('statWishlist').textContent = wishlist.length;
 
             downloadLogs = JSON.parse(localStorage.getItem('stardust_download_logs') || '[]');
@@ -2098,16 +2155,53 @@
         }
 
         // ============================================
-        // APP DETAILS
+        // WISHLIST
+        // ============================================
+        function toggleWishlist() {
+            if (!activeAppId) return;
+            const index = wishlist.indexOf(activeAppId);
+            const btn = $('detWishlistBtn');
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                btn.classList.remove('active');
+            } else {
+                wishlist.push(activeAppId);
+                btn.classList.add('active');
+            }
+            localStorage.setItem('stardust_wishlist', JSON.stringify(wishlist));
+            $('statWishlist').textContent = wishlist.length;
+        }
+
+        // ============================================
+        // APP DETAILS - FIXED: Real-time listener for counts
         // ============================================
         function viewAppDetails(appId) {
             activeAppId = appId;
+
+            // First check if app exists in allApps
             const app = allApps.find(a => a.id === appId);
             if (!app) {
                 alert('App not found!');
                 return;
             }
 
+            // Set up real-time listener for this app's data
+            db.ref(`apps/${appId}`).on('value', snapshot => {
+                const appData = snapshot.val();
+                if (!appData) {
+                    alert('App data not found!');
+                    return;
+                }
+
+                // Update UI with latest data
+                updateDetailUI(appId, appData);
+            });
+
+            // Switch to details page
+            switchPage('details', app.name || 'App');
+        }
+
+        function updateDetailUI(appId, app) {
             $('detIcon').src = app.icon || 'https://img.icons8.com/color/144/android-os.png';
             $('detTitle').textContent = app.name || 'App';
             $('detDeveloper').textContent = `by ${app.developerName || app.developer || 'Unknown Developer'}`;
@@ -2126,6 +2220,14 @@
             $('installProgress').style.width = '0%';
 
             $('detDescription').textContent = app.description || 'No description available.';
+
+            // Wishlist button
+            const wishlistBtn = $('detWishlistBtn');
+            if (wishlist.includes(appId)) {
+                wishlistBtn.classList.add('active');
+            } else {
+                wishlistBtn.classList.remove('active');
+            }
 
             // Screenshots
             const screenContainer = $('detScreenshots');
@@ -2233,17 +2335,15 @@
                 });
             }
 
-            // Reviews
+            // Reviews - load with listener
             loadReviews(appId);
 
             // Install button
             $('detInstallBtn').onclick = () => installApp();
-
-            switchPage('details', app.name);
         }
 
         // ============================================
-        // INSTALL - Increment download count
+        // INSTALL - FIXED: Uses transaction for atomic update
         // ============================================
         function installApp() {
             const app = allApps.find(a => a.id === activeAppId);
@@ -2252,6 +2352,32 @@
             const btnText = $('installBtnText');
             const progress = $('installProgress');
 
+            // First, increment download count in Firebase using transaction
+            db.ref(`apps/${app.id}/downloadCount`).transaction(current => {
+                return (current || 0) + 1;
+            }, (error, committed, snapshot) => {
+                if (error) {
+                    console.error('Transaction failed:', error);
+                    alert('Download count update failed. Please try again.');
+                    return;
+                }
+                if (committed) {
+                    console.log('Download count updated successfully!');
+                    // Update download date
+                    db.ref(`apps/${app.id}/downloadDate`).set(new Date().toISOString().split('T')[0]);
+                }
+            });
+
+            // Also increment views
+            db.ref(`apps/${app.id}/views`).transaction(current => (current || 0) + 1);
+
+            // Update local download logs
+            if (!downloadLogs.includes(app.name)) {
+                downloadLogs.push(app.name);
+                localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
+            }
+
+            // Show download progress
             btnText.textContent = 'Downloading...';
             let pct = 0;
             const interval = setInterval(() => {
@@ -2262,13 +2388,6 @@
                     progress.style.width = '100%';
                     btnText.textContent = 'Installing...';
                     setTimeout(() => {
-                        // Increment download count in Firebase
-                        db.ref(`apps/${app.id}/downloadCount`).transaction(c => (c || 0) + 1);
-                        db.ref(`apps/${app.id}/downloadDate`).set(new Date().toISOString().split('T')[0]);
-
-                        if (!downloadLogs.includes(app.name)) downloadLogs.push(app.name);
-                        localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
-
                         btnText.textContent = 'Install APK';
                         progress.style.width = '0%';
 
@@ -2281,10 +2400,13 @@
                 }
                 progress.style.width = `${Math.min(pct, 100)}%`;
             }, 300);
+
+            // Update profile stats
+            loadProfile();
         }
 
         // ============================================
-        // REVIEWS - Fixed: Reviews stay visible
+        // REVIEWS - FIXED: Proper count and rating update
         // ============================================
         function setReviewRating(stars) {
             reviewRating = stars;
@@ -2299,6 +2421,7 @@
                 alert('Please write a review before submitting.');
                 return;
             }
+
             const app = allApps.find(a => a.id === activeAppId);
             const reviewData = {
                 author: localStorage.getItem('stardust_profile_name') || 'Guest User',
@@ -2311,8 +2434,23 @@
 
             // Save review to Firebase
             db.ref(`reviews/${activeAppId}`).push(reviewData).then(() => {
-                // Increment review count
-                db.ref(`apps/${activeAppId}/reviewCount`).transaction(c => (c || 0) + 1);
+                // Increment review count using transaction
+                db.ref(`apps/${activeAppId}/reviewCount`).transaction(current => {
+                    return (current || 0) + 1;
+                });
+
+                // Recalculate average rating
+                db.ref(`reviews/${activeAppId}`).once('value').then(snap => {
+                    const data = snap.val();
+                    if (data) {
+                        const reviews = Object.values(data);
+                        const total = reviews.length;
+                        const sum = reviews.reduce((s, r) => s + (r.rating || 5), 0);
+                        const avg = sum / total;
+                        // Update rating with 1 decimal place
+                        db.ref(`apps/${activeAppId}/rating`).set(Math.round(avg * 10) / 10);
+                    }
+                });
 
                 // Save to local logs
                 const logs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
@@ -2333,6 +2471,9 @@
         }
 
         function loadReviews(appId) {
+            // Remove old listener if any
+            db.ref(`reviews/${appId}`).off();
+
             db.ref(`reviews/${appId}`).on('value', snapshot => {
                 const data = snapshot.val();
                 const container = $('detReviewsList');
@@ -2389,7 +2530,7 @@
                         });
                     }
 
-                    const isDev = r.handle === '@marketadmin' || r.author.toLowerCase() === 'developer admin';
+                    const isDev = r.handle === '@marketadmin' || (r.author && r.author.toLowerCase() === 'developer admin');
 
                     div.innerHTML = `
                         <div class="rev-head">
@@ -2530,8 +2671,17 @@
                 if (id === 'details' && activeAppId) {
                     const exists = allApps.some(a => a.id === activeAppId &&
                         (a.status === 'live' || a.status === 'approved'));
-                    if (exists) viewAppDetails(activeAppId);
-                    else switchPage('home', 'Stardust Store');
+                    if (exists) {
+                        // Re-fetch app data for real-time updates
+                        db.ref(`apps/${activeAppId}`).once('value', snap => {
+                            const appData = snap.val();
+                            if (appData) {
+                                updateDetailUI(activeAppId, appData);
+                            }
+                        });
+                    } else {
+                        switchPage('home', 'Stardust Store');
+                    }
                 }
             }
             showLoading(false);
@@ -2548,10 +2698,12 @@
                 isDarkMode = false;
                 toggleTheme();
             } else {
-                // Ensure dark mode is set properly
                 isDarkMode = true;
                 document.body.classList.remove('light-mode');
             }
+
+            // Restore wishlist
+            wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
 
             // Restore profile
             if (localStorage.getItem('stardust_profile_name')) $('profileName').textContent = localStorage.getItem(
@@ -2567,11 +2719,10 @@
             showLoading(true, 'Loading Stardust Store...');
         });
 
-        console.log('🚀 Stardust Store Pro - App Store connected to Firebase!');
-        console.log('📦 Only LIVE apps are shown to users.');
-        console.log('🔄 Real-time updates from Developer Console.');
-        console.log('⭐ Reviews are now permanent and visible to all users.');
-        console.log('📥 Download count increments on each install.');
+        console.log('🚀 Stardust Store Pro - Fixed Download & Review Counts');
+        console.log('📥 Download count: Uses Firebase transaction for atomic updates');
+        console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
+        console.log('🔄 Real-time: All counts update live for all users');
     </script>
 </body>
 </html>
