@@ -971,32 +971,150 @@
             color: white;
         }
 
+        /* ===== PROFESSIONAL LOADING SCREEN ===== */
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(11, 15, 25, 0.95);
             z-index: 5000;
             display: none;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 16px;
+            gap: 30px;
+            background: #f1f5f9;
+            transition: opacity 0.6s ease;
         }
         .loading-overlay.show {
             display: flex;
         }
-        .spinner {
-            width: 44px;
-            height: 44px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--primary);
+        .loading-overlay .loader-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .loading-overlay .loader-logo .logo-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.3);
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 12px 40px rgba(37, 99, 235, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 16px 56px rgba(37, 99, 235, 0.4); }
+        }
+        .loading-overlay .loader-logo .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin-top: 8px;
+        }
+        .loading-overlay .loader-logo .logo-text span {
+            color: #2563eb;
+        }
+        .loading-overlay .loader-spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .loading-overlay .loader-spinner {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            border: 4px solid #e2e8f0;
+            border-top-color: #2563eb;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            position: relative;
+        }
+        .loading-overlay .loader-spinner::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid rgba(37, 99, 235, 0.1);
+            animation: spin 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
         }
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
+        }
+        .loading-overlay .loader-progress {
+            width: 200px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loading-overlay .loader-progress .loader-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: progressAnim 2s ease-in-out infinite;
+        }
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        .loading-overlay .loader-text {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .loading-overlay .loader-text .dot {
+            display: inline-block;
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+        .loading-overlay .loader-text .dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-overlay .loader-text .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .loading-overlay .loader-tips {
+            font-size: 12px;
+            color: #94a3b8;
+            max-width: 280px;
+            text-align: center;
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        /* Dark mode loading screen */
+        .dark-mode .loading-overlay {
+            background: #0b0f19;
+        }
+        .dark-mode .loading-overlay .loader-logo .logo-text {
+            color: #f9fafb;
+        }
+        .dark-mode .loading-overlay .loader-spinner {
+            border-color: #1f2937;
+            border-top-color: #2563eb;
+        }
+        .dark-mode .loading-overlay .loader-spinner::after {
+            border-color: rgba(37, 99, 235, 0.15);
+        }
+        .dark-mode .loading-overlay .loader-progress {
+            background: #1f2937;
+        }
+        .dark-mode .loading-overlay .loader-text {
+            color: #9ca3af;
+        }
+        .dark-mode .loading-overlay .loader-tips {
+            color: #6b7280;
         }
 
         .form-group {
@@ -2043,10 +2161,22 @@
         </div>
     </nav>
 
-    <!-- LOADING -->
+    <!-- PROFESSIONAL LOADING SCREEN -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div id="loadingText" style="font-size:14px;color:var(--text-gray);">Loading...</div>
+        <div class="loader-logo">
+            <div class="logo-icon">✦</div>
+            <div class="logo-text">Stardust<span>Store</span></div>
+        </div>
+        <div class="loader-spinner-container">
+            <div class="loader-spinner"></div>
+            <div class="loader-progress">
+                <div class="loader-progress-bar" id="loaderProgressBar"></div>
+            </div>
+            <div class="loader-text" id="loadingText">
+                Loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+            </div>
+        </div>
+        <div class="loader-tips" id="loadingTip">✨ Discover amazing apps from around the world</div>
     </div>
 
     <!-- FIREBASE -->
@@ -2090,12 +2220,23 @@
         let isDarkMode = false; // Default to light mode
         let wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
 
+        // Loading tips
+        const loadingTips = [
+            '✨ Discover amazing apps from around the world',
+            '🚀 Find your next favorite app today',
+            '📱 Curated collection of best apps',
+            '⭐ Trusted by millions of users',
+            '🔒 Safe & secure downloads',
+            '🎮 Games, tools, entertainment and more',
+            '🌟 Quality apps with verified developers'
+        ];
+
         const $ = id => document.getElementById(id);
         const headerTitle = $('headerTitle');
         const backBtn = $('backBtn');
 
         // ============================================
-        // THEME - FIXED: Light mode default, remembers user preference
+        // THEME - Light mode default, remembers user preference
         // ============================================
         function applyTheme(darkMode) {
             isDarkMode = darkMode;
@@ -2136,12 +2277,35 @@
         }
 
         // ============================================
-        // LOADING
+        // LOADING - Enhanced with professional design
         // ============================================
         function showLoading(show, text = 'Loading...') {
             const overlay = $('loadingOverlay');
-            if (show) { $('loadingText').textContent = text;
-                overlay.classList.add('show'); } else overlay.classList.remove('show');
+            if (show) {
+                // Set random tip
+                const tip = loadingTips[Math.floor(Math.random() * loadingTips.length)];
+                $('loadingTip').textContent = tip;
+                $('loadingText').innerHTML = text + '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+                overlay.classList.add('show');
+                // Animate progress bar
+                const progressBar = $('loaderProgressBar');
+                progressBar.style.width = '0%';
+                let pct = 0;
+                const interval = setInterval(() => {
+                    pct += Math.random() * 8 + 2;
+                    if (pct >= 100) {
+                        pct = 100;
+                        clearInterval(interval);
+                    }
+                    progressBar.style.width = Math.min(pct, 100) + '%';
+                }, 200);
+                window._loadingProgressInterval = interval;
+            } else {
+                overlay.classList.remove('show');
+                if (window._loadingProgressInterval) {
+                    clearInterval(window._loadingProgressInterval);
+                }
+            }
         }
 
         // ============================================
@@ -2406,7 +2570,7 @@
             else downloadLogs.slice(0, 10).forEach(name => {
                 const span = document.createElement('span');
                 span.style.cssText =
-                    'background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:20px;font-size:12px;';
+                    'background:#e2e8f0;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;color:#0f172a;';
                 span.textContent = name;
                 container.appendChild(span);
             });
@@ -2419,7 +2583,7 @@
             else revLogs.slice(0, 10).forEach(log => {
                 const div = document.createElement('div');
                 div.style.cssText =
-                    'background:#1f2937;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:13px;color:var(--text-gray);margin-bottom:6px;';
+                    'background:#e2e8f0;border-left:3px solid var(--primary);padding:8px 12px;border-radius:6px;font-size:13px;color:#0f172a;margin-bottom:6px;';
                 div.textContent = log;
                 revContainer.appendChild(div);
             });
@@ -3000,7 +3164,7 @@
                 'stardust_profile_bio');
 
             setReviewRating(5);
-            showLoading(true, 'Loading Stardust Store...');
+            showLoading(true, 'Loading Stardust Store');
         });
 
         console.log('🚀 Stardust Store Pro - Fixed Download & Review Counts');
@@ -3008,6 +3172,7 @@
         console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
         console.log('🔄 Real-time: All counts update live for all users');
         console.log('🎨 Theme: Light mode default, remembers user preference');
+        console.log('✨ Loading: Professional animated loading screen');
     </script>
 </body>
 </html>
