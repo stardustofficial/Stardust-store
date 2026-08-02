@@ -2679,7 +2679,8 @@
                     return;
                 }
 
-                // Update UI with latest data                updateDetailUI(appId, appData);
+                // Update UI with latest data
+                updateDetailUI(appId, appData);
             });
 
             // Switch to details page
@@ -2828,7 +2829,7 @@
         }
 
         // ============================================
-        // INSTALL - FIXED: Opens download URL in browser
+        // INSTALL - FIXED: Uses transaction for atomic update
         // ============================================
         function installApp() {
             const app = allApps.find(a => a.id === activeAppId);
@@ -2862,8 +2863,8 @@
                 localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
             }
 
-            // Show download progress animation
-            btnText.textContent = 'Opening...';
+            // Show download progress
+            btnText.textContent = 'Downloading...';
             let pct = 0;
             const interval = setInterval(() => {
                 pct += Math.random() * 15 + 5;
@@ -2871,27 +2872,20 @@
                     pct = 100;
                     clearInterval(interval);
                     progress.style.width = '100%';
-                    btnText.textContent = 'Opening...';
-                    
+                    btnText.textContent = 'Installing...';
                     setTimeout(() => {
                         btnText.textContent = 'Install APK';
                         progress.style.width = '0%';
-                        
-                        // Open download URL in browser (opens in Chrome on Android)
+
                         if (app.downloadUrl) {
-                            // Use window.open to open in browser
-                            const win = window.open(app.downloadUrl, '_blank');
-                            // Fallback if popup blocked
-                            if (!win || win.closed || typeof win.closed == 'undefined') {
-                                window.location.href = app.downloadUrl;
-                            }
+                            window.open(app.downloadUrl, '_blank');
                         } else {
-                            alert(`Download link for ${app.name} is not available. Please check back later.`);
+                            alert(`Downloading ${app.name}... (Demo)`);
                         }
-                    }, 500);
+                    }, 800);
                 }
                 progress.style.width = `${Math.min(pct, 100)}%`;
-            }, 150);
+            }, 300);
 
             // Update profile stats
             loadProfile();
@@ -3174,7 +3168,7 @@
         });
 
         console.log('🚀 Stardust Store Pro - Fixed Download & Review Counts');
-        console.log('📥 Download: Opens APK URL in browser (Chrome)');
+        console.log('📥 Download count: Uses Firebase transaction for atomic updates');
         console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
         console.log('🔄 Real-time: All counts update live for all users');
         console.log('🎨 Theme: Light mode default, remembers user preference');
