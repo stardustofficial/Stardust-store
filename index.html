@@ -814,7 +814,7 @@
             background: var(--bg-card);
             height: 64px;
             display: flex;
-            justify-content: space-around;
+            justify-style: space-around;
             align-items: center;
             border-top: 1px solid var(--border-color);
             z-index: 1000;
@@ -2805,375 +2805,208 @@
             const relContainer = $('detRelatedApps');
             relContainer.innerHTML = '';
             const liveApps = allApps.filter(a => a.status === 'live' || a.status === 'approved');
-            const related = liveApps.filter(a => a.id !== appId && (a.category === app.category)).slice(0, 6);
-            if (related.length === 0) {
-                relContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No related apps found.</span>';
-            } else {
-                related.forEach(a => {
+            const related = liveApps.filter(a => a.id !== appId && a.category === app.category).slice(0, 6);
+            if (related.length > 0) {
+                related.forEach(rel => {
                     const div = document.createElement('div');
                     div.className = 'rel-item';
                     div.innerHTML = `
-                        <img src="${a.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
-                        <div class="rn">${a.name || 'App'}</div>
+                        <img src="${rel.icon || 'https://img.icons8.com/color/144/android-os.png'}" onerror="this.src='https://img.icons8.com/color/144/android-os.png'">
+                        <div class="rn">${rel.name}</div>
                     `;
-                    div.onclick = () => viewAppDetails(a.id);
+                    div.onclick = () => viewAppDetails(rel.id);
                     relContainer.appendChild(div);
                 });
+            } else {
+                relContainer.innerHTML = '<span style="color:var(--text-gray);font-size:13px;">No related apps</span>';
             }
 
-            // Reviews - load with listener
+            // Reviews List
             loadReviews(appId);
-
-            // Install button
-            $('detInstallBtn').onclick = () => installApp();
         }
 
         // ============================================
-        // INSTALL - FIXED: Uses window.location.href for WebView
+        // INSTALL APP
         // ============================================
         function installApp() {
+            if (!activeAppId) return;
             const app = allApps.find(a => a.id === activeAppId);
-            if (!app) return;
+            if (!app || !app.downloadUrl) {
+                alert('Download link not available!');
+                return;
+            }
 
             const btnText = $('installBtnText');
             const progress = $('installProgress');
-
-            // First, increment download count in Firebase using transaction
-            db.ref(`apps/${app.id}/downloadCount`).transaction(current => {
-                return (current || 0) + 1;
-            }, (error, committed, snapshot) => {
-                if (error) {
-                    console.error('Transaction failed:', error);
-                    alert('Download count update failed. Please try again.');
-                    return;
-                }
-                if (committed) {
-                    console.log('Download count updated successfully!');
-                    // Update download date
-                    db.ref(`apps/${app.id}/downloadDate`).set(new Date().toISOString().split('T')[0]);
-                }
-            });
-
-            // Also increment views
-            db.ref(`apps/${app.id}/views`).transaction(current => (current || 0) + 1);
-
-            // Update local download logs
-            if (!downloadLogs.includes(app.name)) {
-                downloadLogs.push(app.name);
-                localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
-            }
-
-            // Show download progress
+            
             btnText.textContent = 'Downloading...';
-            let pct = 0;
-            const interval = setInterval(() => {
-                pct += Math.random() * 15 + 5;
-                if (pct >= 100) {
-                    pct = 100;
-                    clearInterval(interval);
-                    progress.style.width = '100%';
-                    btnText.textContent = 'Opening...';
-                    setTimeout(() => {
-                        btnText.textContent = 'Install APK';
-                        progress.style.width = '0%';
+            progress.style.width = '30%';
 
-                        if (app.downloadUrl) {
-                            // FIXED: Use location.href instead of window.open for WebView
-                            window.location.href = app.downloadUrl;
-                        } else {
-                            alert(`Download link for ${app.name} is not available. Please check back later.`);
-                        }
-                    }, 500);
+            setTimeout(() => {
+                progress.style.width = '70%';
+            }, 500);
+
+            setTimeout(() => {
+                progress.style.width = '100%';
+                
+                // Real-time update for download count in Firebase
+                db.ref(`apps/${activeAppId}/downloadCount`).transaction(current => (current || 0) + 1);
+
+                // Add to local download logs
+                if (!downloadLogs.includes(app.name)) {
+                    downloadLogs.unshift(app.name);
+                    localStorage.setItem('stardust_download_logs', JSON.stringify(downloadLogs));
                 }
-                progress.style.width = `${Math.min(pct, 100)}%`;
-            }, 150);
 
-            // Update profile stats
-            loadProfile();
+                // Redirect directly using location.assign to avoid WebView onCreateWindow delay
+                window.location.href = app.downloadUrl;
+
+                setTimeout(() => {
+                    btnText.textContent = 'Install APK';
+                    progress.style.width = '0%';
+                }, 1000);
+            }, 1000);
         }
 
         // ============================================
-        // REVIEWS - FIXED: Proper count and rating update
+        // REVIEWS
         // ============================================
-        function setReviewRating(stars) {
-            reviewRating = stars;
-            document.querySelectorAll('#reviewStars span').forEach(el => {
-                el.style.color = parseInt(el.dataset.star) <= stars ? 'var(--gold)' : 'var(--border-color)';
+        function loadReviews(appId) {
+            const list = $('detReviewsList');
+            list.innerHTML = '';
+            db.ref(`reviews/${appId}`).on('value', snapshot => {
+                list.innerHTML = '';
+                const data = snapshot.val();
+                if (!data) {
+                    list.innerHTML = '<p style="color:var(--text-gray);font-size:13px;">No reviews yet. Be the first!</p>';
+                    return;
+                }
+                Object.values(data).forEach(rev => {
+                    const card = document.createElement('div');
+                    card.className = 'review-card';
+                    card.innerHTML = `
+                        <div class="rev-head">
+                            <span class="rev-author">${rev.author || 'Anonymous'}</span>
+                            <span class="rev-stars">${'★'.repeat(rev.rating || 5)}</span>
+                        </div>
+                        <p class="rev-text">${rev.text || ''}</p>
+                        ${rev.images ? `<div class="flex gap-8 mt-12">${rev.images.map(img=>`<img src="${img}" style="width:50px;height:50px;border-radius:6px;object-fit:cover;cursor:pointer;" onclick="openImageViewer('${img}')">`).join('')}</div>` : ''}
+                        ${rev.devReply ? `<div class="dev-reply"><strong>Developer Response:</strong> ${rev.devReply}</div>` : ''}
+                        <div class="rev-actions mt-12">
+                            <button onclick="likeReview('${appId}', '${rev.id}')">👍 Helpful (${rev.likes || 0})</button>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            });
+        }
+
+        function setReviewRating(r) {
+            reviewRating = r;
+            document.querySelectorAll('#reviewStars span').forEach((s, idx) => {
+                s.style.color = (idx < r) ? 'var(--gold)' : 'var(--border-color)';
+            });
+        }
+
+        function uploadReviewImages(input) {
+            if (!input.files) return;
+            const previews = $('reviewImagePreviews');
+            previews.innerHTML = '';
+            reviewImages = [];
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.cssText = 'width:50px;height:50px;border-radius:6px;object-fit:cover;';
+                    previews.appendChild(img);
+                    reviewImages.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
             });
         }
 
         function submitReview() {
-            const input = $('reviewInput');
-            if (!input.value.trim() || !activeAppId) {
-                alert('Please write a review before submitting.');
-                return;
-            }
+            if (!activeAppId) return;
+            const text = $('reviewInput').value.trim();
+            if (!text) { alert('Please enter a review'); return; }
 
-            const app = allApps.find(a => a.id === activeAppId);
-            const reviewData = {
-                author: localStorage.getItem('stardust_profile_name') || 'Guest User',
-                handle: localStorage.getItem('stardust_profile_handle') || '@guest',
-                text: input.value.trim(),
+            const name = localStorage.getItem('stardust_profile_name') || 'Guest User';
+            const revRef = db.ref(`reviews/${activeAppId}`).push();
+            
+            revRef.set({
+                id: revRef.key,
+                author: name,
                 rating: reviewRating,
+                text: text,
+                images: reviewImages,
                 timestamp: Date.now(),
-                images: reviewImages.join(',')
-            };
-
-            // Save review to Firebase
-            db.ref(`reviews/${activeAppId}`).push(reviewData).then(() => {
-                // Increment review count using transaction
-                db.ref(`apps/${activeAppId}/reviewCount`).transaction(current => {
-                    return (current || 0) + 1;
-                });
-
-                // Recalculate average rating
-                db.ref(`reviews/${activeAppId}`).once('value').then(snap => {
-                    const data = snap.val();
-                    if (data) {
-                        const reviews = Object.values(data);
-                        const total = reviews.length;
-                        const sum = reviews.reduce((s, r) => s + (r.rating || 5), 0);
-                        const avg = sum / total;
-                        // Update rating with 1 decimal place
-                        db.ref(`apps/${activeAppId}/rating`).set(Math.round(avg * 10) / 10);
-                    }
-                });
-
-                // Save to local logs
-                const logs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
-                logs.push(`[${reviewRating}★] ${app ? app.name : 'App'}: "${input.value.trim()}"`);
-                localStorage.setItem('stardust_reviews_logs', JSON.stringify(logs));
-
-                // Clear input
-                input.value = '';
-                reviewImages = [];
+                likes: 0
+            }).then(() => {
+                $('reviewInput').value = '';
                 $('reviewImagePreviews').innerHTML = '';
+                reviewImages = [];
+                
+                // Add to review logs
+                let revLogs = JSON.parse(localStorage.getItem('stardust_reviews_logs') || '[]');
+                const app = allApps.find(a => a.id === activeAppId);
+                revLogs.unshift(`Reviewed ${app ? app.name : 'an app'}: "${text.substring(0, 20)}..."`);
+                localStorage.setItem('stardust_reviews_logs', JSON.stringify(revLogs));
 
-                // Reload reviews to show new one
-                loadReviews(activeAppId);
-                alert('Review submitted successfully!');
-            }).catch(err => {
-                alert('Error submitting review: ' + err.message);
+                // Update review count on app
+                db.ref(`apps/${activeAppId}/reviewCount`).transaction(current => (current || 0) + 1);
+
+                alert('Review posted!');
             });
         }
 
-        function loadReviews(appId) {
-            // Remove old listener if any
-            db.ref(`reviews/${appId}`).off();
-
-            db.ref(`reviews/${appId}`).on('value', snapshot => {
-                const data = snapshot.val();
-                const container = $('detReviewsList');
-                container.innerHTML = '';
-
-                if (!data) {
-                    container.innerHTML =
-                        '<p style="color:var(--text-gray);text-align:center;padding:20px 0;">No reviews yet. Be the first!</p>';
-                    return;
-                }
-
-                const reviews = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                // Rating graph
-                let ratings = [0, 0, 0, 0, 0];
-                reviews.forEach(r => {
-                    const star = Math.min(5, Math.max(1, Math.round(r.rating || 5)));
-                    ratings[star - 1]++;
-                });
-                const total = reviews.length;
-
-                let graphHtml = `<div class="rating-graph">`;
-                for (let i = 5; i >= 1; i--) {
-                    const count = ratings[i - 1] || 0;
-                    const pct = total > 0 ? (count / total) * 100 : 0;
-                    graphHtml += `
-                        <div class="rg-row">
-                            <span>${i}★</span>
-                            <div class="rg-bar"><div class="rg-fill" style="width:${pct}%;"></div></div>
-                            <span>${count}</span>
-                        </div>
-                    `;
-                }
-                graphHtml += `</div>`;
-                container.innerHTML = graphHtml;
-
-                // Reviews list - each review visible
-                reviews.forEach(r => {
-                    const div = document.createElement('div');
-                    div.className = 'review-card';
-                    let stars = '';
-                    for (let i = 0; i < 5; i++) {
-                        stars += i < Math.round(r.rating || 5) ? '★' : '☆';
-                    }
-
-                    let imagesHtml = '';
-                    if (r.images) {
-                        const imgs = r.images.split(',');
-                        imgs.forEach(url => {
-                            if (url.trim()) {
-                                imagesHtml +=
-                                    `<img src="${url.trim()}" style="height:50px;border-radius:6px;object-fit:cover;cursor:pointer;margin:4px;" onclick="openImageViewer('${url.trim()}')">`;
-                            }
-                        });
-                    }
-
-                    const isDev = r.handle === '@marketadmin' || (r.author && r.author.toLowerCase() === 'developer admin');
-
-                    div.innerHTML = `
-                        <div class="rev-head">
-                            <span class="rev-author">${r.author || 'Anonymous'} ${isDev ? '⭐' : ''}</span>
-                            <span class="rev-stars">${stars}</span>
-                        </div>
-                        <div class="rev-text">${r.text || ''}</div>
-                        ${imagesHtml ? `<div class="flex gap-8 mt-12" style="flex-wrap:wrap;">${imagesHtml}</div>` : ''}
-                        <div class="rev-actions">
-                            <span style="color:var(--text-muted);font-size:11px;">${new Date(r.timestamp).toLocaleDateString()}</span>
-                            <button onclick="reportReview()" style="color:var(--red);">Report</button>
-                        </div>
-                        ${isDev ? `<div class="dev-reply"><strong>Developer:</strong> Thanks for your feedback! We appreciate it.</div>` : ''}
-                    `;
-                    container.appendChild(div);
-                });
-            });
+        function likeReview(appId, revId) {
+            db.ref(`reviews/${appId}/${revId}/likes`).transaction(c => (c || 0) + 1);
         }
 
-        function reportReview() { alert('Review reported for moderation.'); }
-
-        function uploadReviewImages(input) {
-            const files = Array.from(input.files);
-            const container = $('reviewImagePreviews');
-            files.forEach(file => {
-                const formData = new FormData();
-                formData.append('image', file);
-                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData })
-                    .then(res => res.json()).then(data => {
-                        if (data.success) {
-                            const url = data.data.url;
-                            reviewImages.push(url);
-                            const img = document.createElement('img');
-                            img.src = url;
-                            img.style.cssText =
-                                'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
-                            container.appendChild(img);
-                        }
-                    }).catch(() => {
-                        const reader = new FileReader();
-                        reader.onload = e => {
-                            reviewImages.push(e.target.result);
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.style.cssText =
-                                'height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border-color);';
-                            container.appendChild(img);
-                        };
-                        reader.readAsDataURL(file);
-                    });
-            });
+        function reportReview() {
+            alert('Review reported. Thank you for your feedback.');
         }
 
         // ============================================
         // IMAGE VIEWER
         // ============================================
-        function openImageViewer(src) { $('imageViewer').classList.add('open');
-            $('viewerImage').src = src; }
-
-        function closeImageViewer() { $('imageViewer').classList.remove('open'); }
-
-        // ============================================
-        // FIREBASE LISTENER
-        // ============================================
-        db.ref('apps').on('value', snapshot => {
-            const data = snapshot.val();
-            allApps = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-
-            // Only show live/approved apps in App Store
-            const liveApps = allApps.filter(a => a.status === 'live' || a.status === 'approved');
-
-            if (liveApps.length > 0) {
-                initBanner(liveApps);
-                renderHomeSections(liveApps);
-
-                // Home grid
-                const homeGrid = $('allAppsGrid');
-                renderAppGrid(liveApps.slice(0, 12), homeGrid);
-            } else {
-                // Show empty state
-                const homeGrid = $('allAppsGrid');
-                homeGrid.innerHTML = `
-                    <div class="empty-state" style="grid-column:1/-1;">
-                        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z"/></svg>
-                        <h3>No Apps Available</h3>
-                        <p>Check back later for new apps.</p>
-                    </div>
-                `;
-                ['editorsChoice', 'trendingApps', 'newReleases', 'popularGames', 'popularApps'].forEach(id => {
-                    const el = $(id);
-                    if (el) el.innerHTML =
-                        '<div style="color:var(--text-gray);font-size:13px;padding:10px 0;">No apps available</div>';
-                });
-            }
-
-            // Refresh current page
-            const activePage = document.querySelector('.page.active');
-            if (activePage) {
-                const id = activePage.id.replace('page-', '');
-                if (id === 'ranking') loadRankings();
-                if (id === 'profile') loadProfile();
-                if (id === 'details' && activeAppId) {
-                    const exists = allApps.some(a => a.id === activeAppId &&
-                        (a.status === 'live' || a.status === 'approved'));
-                    if (exists) {
-                        // Re-fetch app data for real-time updates
-                        db.ref(`apps/${activeAppId}`).once('value', snap => {
-                            const appData = snap.val();
-                            if (appData) {
-                                updateDetailUI(activeAppId, appData);
-                            }
-                        });
-                    } else {
-                        switchPage('home', 'Stardust Store');
-                    }
-                }
-            }
-            showLoading(false);
-        }, error => { showLoading(false);
-            console.error(error); });
+        function openImageViewer(url) {
+            $('viewerImage').src = url;
+            $('imageViewer').classList.add('open');
+        }
+        function closeImageViewer() {
+            $('imageViewer').classList.remove('open');
+        }
 
         // ============================================
-        // INIT
+        // INITIALIZATION
         // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Restore theme - default to light if no preference
+        window.onload = () => {
+            showLoading(true, 'Initializing Store');
+
+            // Apply saved theme
             const savedTheme = localStorage.getItem('stardust_theme');
-            if (savedTheme === 'dark') {
-                applyTheme(true);
-            } else {
-                applyTheme(false); // Light mode default
-            }
+            applyTheme(savedTheme === 'dark');
 
-            // Restore wishlist
-            wishlist = JSON.parse(localStorage.getItem('stardust_wishlist') || '[]');
-
-            // Restore profile
-            if (localStorage.getItem('stardust_profile_name')) $('profileName').textContent = localStorage.getItem(
-                'stardust_profile_name');
-            if (localStorage.getItem('stardust_profile_handle')) $('profileHandle').textContent = localStorage.getItem(
-                'stardust_profile_handle');
-            if (localStorage.getItem('stardust_profile_pfp')) $('profilePfp').src = localStorage.getItem(
-                'stardust_profile_pfp');
-            if (localStorage.getItem('stardust_profile_bio')) $('profileBio').textContent = localStorage.getItem(
-                'stardust_profile_bio');
-
-            setReviewRating(5);
-            showLoading(true, 'Loading Stardust Store');
-        });
-
-        console.log('🚀 Stardust Store Pro - Fixed Download & Review Counts');
-        console.log('📥 Download: Uses location.href for WebView compatibility');
-        console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
-        console.log('🔄 Real-time: All counts update live for all users');
-        console.log('🎨 Theme: Light mode default, remembers user preference');
-        console.log('✨ Loading: Professional animated loading screen');
+            // Listen to real-time app list changes
+            db.ref('apps').on('value', snapshot => {
+                const data = snapshot.val();
+                allApps = [];
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        allApps.push({ id: key, ...data[key] });
+                    });
+                }
+                
+                initBanner(allApps);
+                renderHomeSections(allApps);
+                showLoading(false);
+            }, err => {
+                console.error("Firebase fetch error:", err);
+                showLoading(false);
+            });
+        };
     </script>
 </body>
 </html>
