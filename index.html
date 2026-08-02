@@ -2829,7 +2829,7 @@
         }
 
         // ============================================
-        // INSTALL - FIXED: Uses transaction for atomic update
+        // INSTALL - FIXED: Uses window.location.href for WebView
         // ============================================
         function installApp() {
             const app = allApps.find(a => a.id === activeAppId);
@@ -2872,20 +2872,21 @@
                     pct = 100;
                     clearInterval(interval);
                     progress.style.width = '100%';
-                    btnText.textContent = 'Installing...';
+                    btnText.textContent = 'Opening...';
                     setTimeout(() => {
                         btnText.textContent = 'Install APK';
                         progress.style.width = '0%';
 
                         if (app.downloadUrl) {
-                            window.open(app.downloadUrl, '_blank');
+                            // FIXED: Use location.href instead of window.open for WebView
+                            window.location.href = app.downloadUrl;
                         } else {
-                            alert(`Downloading ${app.name}... (Demo)`);
+                            alert(`Download link for ${app.name} is not available. Please check back later.`);
                         }
-                    }, 800);
+                    }, 500);
                 }
                 progress.style.width = `${Math.min(pct, 100)}%`;
-            }, 300);
+            }, 150);
 
             // Update profile stats
             loadProfile();
@@ -3168,7 +3169,7 @@
         });
 
         console.log('🚀 Stardust Store Pro - Fixed Download & Review Counts');
-        console.log('📥 Download count: Uses Firebase transaction for atomic updates');
+        console.log('📥 Download: Uses location.href for WebView compatibility');
         console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
         console.log('🔄 Real-time: All counts update live for all users');
         console.log('🎨 Theme: Light mode default, remembers user preference');
