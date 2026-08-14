@@ -521,36 +521,6 @@
             fill: var(--red);
         }
 
-        /* ===== SHARE BUTTON ===== */
-        .detail-share-btn {
-            position: absolute;
-            top: 0;
-            right: 48px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .detail-share-btn:hover {
-            border-color: var(--primary);
-            background: var(--border-color);
-        }
-        .detail-share-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: var(--text-muted);
-            transition: var(--transition);
-        }
-        .detail-share-btn:hover svg {
-            fill: var(--primary);
-        }
-
         .detail-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -834,37 +804,6 @@
             width: 18px;
             height: 18px;
             fill: var(--text-light);
-        }
-
-        /* Profile Footer Links */
-        .profile-footer-links {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-        }
-        .profile-footer-links .links-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            font-size: 13px;
-        }
-        .profile-footer-links .links-container a {
-            color: var(--primary);
-            text-decoration: underline;
-            font-weight: 500;
-        }
-        .profile-footer-links .links-container a:hover {
-            color: var(--primary-dark);
-        }
-        .profile-footer-links .links-container .divider {
-            color: var(--text-muted);
-        }
-        .profile-footer-links .copyright {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 8px;
         }
 
         .bottom-nav {
@@ -1299,6 +1238,27 @@
             align-items: center;
         }
 
+        /* Profile footer links - Privacy & Terms */
+        .profile-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .profile-footer a {
+            color: var(--primary);
+            text-decoration: underline;
+            font-weight: 500;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .profile-footer a:hover {
+            color: var(--primary-dark);
+        }
+
         @media (max-width: 480px) {
             .banner-slider {
                 height: 150px;
@@ -1340,16 +1300,6 @@
                 height: 34px;
             }
             .detail-wishlist-btn svg {
-                width: 18px;
-                height: 18px;
-            }
-            .detail-share-btn {
-                top: 5px;
-                right: 44px;
-                width: 34px;
-                height: 34px;
-            }
-            .detail-share-btn svg {
                 width: 18px;
                 height: 18px;
             }
@@ -1634,22 +1584,6 @@
         .light-mode .detail-wishlist-btn.active svg {
             fill: #ef4444;
         }
-        .light-mode .detail-share-btn {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-        .light-mode .detail-share-btn:hover {
-            background: #cbd5e1;
-        }
-        .light-mode .detail-share-btn svg {
-            fill: #475569;
-        }
-        .light-mode .profile-footer-links .links-container a {
-            color: #2563eb;
-        }
-        .light-mode .profile-footer-links .links-container a:hover {
-            color: #1d4ed8;
-        }
 
         /* ===== DARK MODE ===== */
         .dark-mode .review-card .rev-head .rev-author {
@@ -1930,21 +1864,17 @@
         .dark-mode .detail-wishlist-btn.active svg {
             fill: #ef4444;
         }
-        .dark-mode .detail-share-btn {
-            background: #1f2937;
-            border-color: #374151;
+
+        /* Profile footer links - Privacy & Terms */
+        .profile-footer a {
+            color: var(--primary);
+            text-decoration: underline;
+            font-weight: 500;
+            font-size: 14px;
+            transition: var(--transition);
         }
-        .dark-mode .detail-share-btn:hover {
-            background: #374151;
-        }
-        .dark-mode .detail-share-btn svg {
-            fill: #6b7280;
-        }
-        .dark-mode .profile-footer-links .links-container a {
-            color: #60a5fa;
-        }
-        .dark-mode .profile-footer-links .links-container a:hover {
-            color: #93bbfc;
+        .profile-footer a:hover {
+            color: var(--primary-dark);
         }
     </style>
 </head>
@@ -2096,16 +2026,10 @@
                     <div id="reviewLogs"></div>
                 </div>
 
-                <!-- ===== PRIVACY POLICY & TERMS OF SERVICE ===== -->
-                <div class="profile-footer-links">
-                    <div class="links-container">
-                        <a href="privacy.html">Privacy Policy</a>
-                        <span class="divider">|</span>
-                        <a href="terms.html">Terms of Service</a>
-                    </div>
-                    <div class="copyright">
-                        &copy; 2026 Stardust Store. All rights reserved.
-                    </div>
+                <!-- Privacy & Terms Footer -->
+                <div class="profile-footer">
+                    <a href="privacy.html" target="_blank">Privacy Policy</a>
+                    <a href="terms.html" target="_blank">Terms of Service</a>
                 </div>
             </div>
         </div>
@@ -2141,7 +2065,7 @@
             <div class="detail-header">
                 <img src="" class="detail-icon" id="detIcon" alt="">
                 <div class="detail-info">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:100px;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:50px;">
                         <h2 id="detTitle">App Name</h2>
                         <span class="verified-badge" id="detVerified" style="display:none;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified</span>
                     </div>
@@ -2157,14 +2081,6 @@
                         <span id="detReviewCount">(0 reviews)</span>
                     </div>
                 </div>
-
-                <!-- ===== SHARE BUTTON ===== -->
-                <button class="detail-share-btn" onclick="shareApp()" title="Share App">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
-                    </svg>
-                </button>
-
                 <button class="detail-wishlist-btn" id="detWishlistBtn" onclick="toggleWishlist()" title="Add to Wishlist">
                     <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
@@ -2782,61 +2698,7 @@
         }
 
         // ============================================
-        // SHARE APP - Share via URL with query parameter
-        // ============================================
-        function shareApp() {
-            if (!activeAppId) return;
-
-            const app = allApps.find(a => a.id === activeAppId);
-            if (!app) return;
-
-            // Create shareable URL with query parameter
-            const shareUrl = window.location.origin + window.location.pathname + '?app=' + activeAppId;
-
-            // Try native share API first (mobile)
-            if (navigator.share) {
-                navigator.share({
-                    title: app.name || 'App',
-                    text: `Check out ${app.name || 'this app'} on Stardust Store!`,
-                    url: shareUrl
-                }).catch(() => {});
-            } else {
-                // Fallback: Copy to clipboard
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('✅ App link copied to clipboard!\n\nShare it with your friends.');
-                }).catch(() => {
-                    // If clipboard fails, show prompt
-                    prompt('Copy this link to share:', shareUrl);
-                });
-            }
-        }
-
-        // ============================================
-        // URL HANDLER - Check for ?app=ID on load
-        // ============================================
-        function handleUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            const appId = params.get('app');
-
-            if (appId) {
-                // Check if app exists
-                const app = allApps.find(a => a.id === appId);
-                if (app && (app.status === 'live' || app.status === 'approved')) {
-                    // Open app details after a small delay
-                    setTimeout(() => {
-                        viewAppDetails(appId);
-                    }, 500);
-                } else {
-                    // App not found, redirect to home
-                    switchPage('home', 'Stardust Store');
-                    // Remove query parameter from URL
-                    window.history.replaceState({}, '', window.location.pathname);
-                }
-            }
-        }
-
-        // ============================================
-        // APP DETAILS - Real-time listener for counts
+        // APP DETAILS - FIXED: Real-time listener for counts
         // ============================================
         function viewAppDetails(appId) {
             activeAppId = appId;
@@ -3006,7 +2868,7 @@
         }
 
         // ============================================
-        // INSTALL - Uses window.open to open in external browser
+        // INSTALL - FIXED: Uses window.open to open in external browser
         // ============================================
         function installApp() {
             const app = allApps.find(a => a.id === activeAppId);
@@ -3055,7 +2917,7 @@
                         progress.style.width = '0%';
 
                         if (app.downloadUrl) {
-                            // Use window.open with _blank to open in external browser
+                            // FIXED: Use window.open with _blank to open in external browser
                             window.open(app.downloadUrl, '_blank');
                         } else {
                             alert(`Download link for ${app.name} is not available. Please check back later.`);
@@ -3070,7 +2932,7 @@
         }
 
         // ============================================
-        // REVIEWS - Proper count and rating update
+        // REVIEWS - FIXED: Proper count and rating update
         // ============================================
         function setReviewRating(stars) {
             reviewRating = stars;
@@ -3290,9 +3152,6 @@
                 });
             }
 
-            // Handle URL parameters after apps loaded
-            handleUrlParams();
-
             // Refresh current page
             const activePage = document.querySelector('.page.active');
             if (activePage) {
@@ -3348,14 +3207,12 @@
             showLoading(true, 'Loading Stardust Store');
         });
 
-        console.log('🚀 Stardust Store Pro - Complete Edition');
+        console.log('🚀 Stardust Store Pro - Fixed Download for GitHub Releases');
         console.log('📥 Download: Uses window.open with _blank for external browser');
         console.log('⭐ Review count: Updates reviewCount and recalculates average rating');
         console.log('🔄 Real-time: All counts update live for all users');
         console.log('🎨 Theme: Light mode default, remembers user preference');
         console.log('✨ Loading: Professional animated loading screen');
-        console.log('🔗 Share: Shareable URL with ?app=ID query parameter');
-        console.log('📄 Privacy & Terms: Links in profile section');
     </script>
 </body>
 </html>
